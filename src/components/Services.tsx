@@ -1,5 +1,7 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
+import { ArrowRight, Sparkles, Check } from 'lucide-react';
+import { motion } from 'motion/react';
 
 interface ServicesProps {
   onSelectService: (serviceName: string) => void;
@@ -11,19 +13,20 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
   const visibleServices = services.filter((s) => s.visible !== false);
 
   return (
-    <section id="services" className="py-20 sm:py-28 bg-[#050508] relative">
+    <section id="services" className="py-20 sm:py-28 bg-[#050508] relative font-sans">
       <div className="max-w-6xl mx-auto px-6">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14">
+        <div className="text-center max-w-2xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
-            <span>SERVICES</span>
+            <span className="font-mono text-[11px]">SERVICES</span>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-white tracking-tight mb-3">
             {content.sectionHeadings.servicesHeading || 'WHAT WE DO'}
           </h2>
           <p className="text-sm sm:text-base text-zinc-400 font-normal">
-            {content.sectionHeadings.servicesSubheading || 'High-retention editing and content strategy built around growth.'}
+            {content.sectionHeadings.servicesSubheading ||
+              'High-retention editing and content strategy built around growth.'}
           </p>
         </div>
 
@@ -35,19 +38,24 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {visibleServices.map((service, index) => {
-              const isFirst = index === 0 || service.highlighted;
+              const isHighlighted = service.highlighted || index === 0;
               return (
-                <div
+                <motion.div
                   key={service.id}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-50px' }}
+                  transition={{ duration: 0.5, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
                   className={`rounded-2xl p-7 flex flex-col justify-between transition-all duration-300 relative group ${
-                    isFirst
-                      ? 'bg-zinc-950 border-2 border-blue-600/70 shadow-xl shadow-blue-950/20'
-                      : 'bg-zinc-950/70 border border-white/10 hover:border-white/20'
+                    isHighlighted
+                      ? 'bg-[#0b0b14] border-2 border-blue-600/70 shadow-2xl shadow-blue-950/30'
+                      : 'bg-[#08080f] border border-white/10 hover:border-white/20'
                   }`}
                 >
-                  {isFirst && (
+                  {isHighlighted && (
                     <div className="absolute -top-3 left-6">
-                      <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-600 text-white shadow-md">
+                      <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-blue-600 text-white shadow-md flex items-center gap-1">
+                        <Sparkles className="w-3 h-3" />
                         MAIN SPECIALTY
                       </span>
                     </div>
@@ -62,21 +70,21 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-xl sm:text-2xl font-display font-bold text-white mb-3 tracking-tight">
+                    <h3 className="text-xl sm:text-2xl font-display font-extrabold text-white mb-3 tracking-tight">
                       {service.title}
                     </h3>
 
                     {/* Description */}
-                    <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed mb-6">
+                    <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed mb-6 font-normal">
                       {service.description}
                     </p>
 
                     {/* Feature bullets if available */}
                     {service.features && service.features.length > 0 && (
-                      <ul className="space-y-2 mb-8 border-t border-white/5 pt-4">
+                      <ul className="space-y-2.5 mb-8 border-t border-white/5 pt-5">
                         {service.features.map((feature, fIdx) => (
-                          <li key={fIdx} className="flex items-start gap-2 text-xs text-zinc-300">
-                            <span className="text-blue-500 font-bold mt-0.5">•</span>
+                          <li key={fIdx} className="flex items-start gap-2.5 text-xs text-zinc-300 font-normal">
+                            <Check className="w-3.5 h-3.5 text-blue-400 shrink-0 mt-0.5" />
                             <span>{feature}</span>
                           </li>
                         ))}
@@ -85,20 +93,20 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
                   </div>
 
                   {/* Service CTA */}
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => onSelectService(service.title)}
-                    className={`w-full py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 ${
-                      isFirst
-                        ? 'bg-blue-600 text-white hover:bg-blue-500 active:scale-95 glow-blue-sm'
-                        : 'bg-zinc-900 text-zinc-300 hover:text-white hover:bg-zinc-800 border border-white/10'
+                    className={`w-full py-3.5 px-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 group ${
+                      isHighlighted
+                        ? 'bg-blue-600 text-white hover:bg-blue-500 shadow-[0_0_20px_rgba(37,99,235,0.35)]'
+                        : 'bg-[#12121c] text-zinc-300 hover:text-white hover:bg-zinc-800 border border-white/10'
                     }`}
                   >
-                    <span>{service.ctaText || 'START THIS SERVICE'}</span>
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </button>
-                </div>
+                    <span>{service.ctaText || 'REQUEST THIS SERVICE →'}</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  </motion.button>
+                </motion.div>
               );
             })}
           </div>

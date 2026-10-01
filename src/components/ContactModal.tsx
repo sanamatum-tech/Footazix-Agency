@@ -1,5 +1,7 @@
 import React from 'react';
 import { ContactSection } from './ContactSection';
+import { X } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -18,22 +20,24 @@ export const ContactModal: React.FC<ContactModalProps> = ({
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto"
       onClick={onClose}
     >
-      <div
-        className="relative w-full max-w-3xl bg-zinc-950 border border-white/15 rounded-3xl overflow-hidden shadow-2xl my-8"
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 12 }}
+        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+        className="relative w-full max-w-3xl bg-[#090912] border border-white/15 rounded-3xl overflow-hidden shadow-2xl my-8"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 z-20 p-2 rounded-xl text-zinc-400 hover:text-white bg-zinc-900/80 hover:bg-zinc-800 border border-white/10 transition-colors cursor-pointer"
+          className="absolute top-6 right-6 z-20 p-2 rounded-xl text-zinc-400 hover:text-white bg-[#12121c] hover:bg-[#1a1a28] border border-white/10 transition-colors cursor-pointer"
           aria-label="Close modal"
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <X className="w-5 h-5" />
         </button>
 
         <ContactSection
@@ -41,7 +45,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
           isModal={true}
           onClose={onClose}
         />
-      </div>
+      </motion.div>
     </div>
   );
 };

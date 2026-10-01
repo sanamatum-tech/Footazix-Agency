@@ -23,7 +23,7 @@
  * ↓
  * FINAL CTA
  * ↓
- * FOOTER (with subtle owner lock 🔒)
+ * FOOTER (with subtle owner lock)
  */
 
 import React, { useState } from 'react';

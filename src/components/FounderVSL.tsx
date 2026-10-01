@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { useApp } from '../context/AppContext';
+import { Play, Pause, Volume2, VolumeX, Maximize, AlertCircle } from 'lucide-react';
 
 export const FounderVSL: React.FC = () => {
   const { content } = useApp();
@@ -164,9 +165,7 @@ export const FounderVSL: React.FC = () => {
                 />
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                   <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-blue-600/90 text-white flex items-center justify-center pl-1 glow-blue-sm group-hover:scale-110 transition-transform">
-                    <svg className="w-7 h-7 sm:w-8 sm:h-8" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
+                    <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-white" />
                   </div>
                 </div>
               </div>
@@ -195,9 +194,7 @@ export const FounderVSL: React.FC = () => {
                 />
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                   <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-blue-600/90 text-white flex items-center justify-center pl-1 glow-blue-sm group-hover:scale-110 transition-transform">
-                    <svg className="w-7 h-7 sm:w-8 sm:h-8" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
+                    <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-white" />
                   </div>
                 </div>
               </div>
@@ -238,9 +235,7 @@ export const FounderVSL: React.FC = () => {
                   className="absolute inset-0 bg-black/45 hover:bg-black/30 transition-colors flex items-center justify-center cursor-pointer"
                 >
                   <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-blue-600 text-white flex items-center justify-center pl-1 glow-blue-sm hover:scale-110 active:scale-95 transition-transform duration-200">
-                    <svg className="w-7 h-7 sm:w-8 sm:h-8" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
+                    <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-white" />
                   </div>
                 </div>
               )}
@@ -273,13 +268,9 @@ export const FounderVSL: React.FC = () => {
                       aria-label={isPlaying ? 'Pause' : 'Play'}
                     >
                       {isPlaying ? (
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                        </svg>
+                        <Pause className="w-5 h-5 text-white" />
                       ) : (
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M8 5v14l11-7z" />
-                        </svg>
+                        <Play className="w-5 h-5 text-white fill-white" />
                       )}
                     </button>
 
@@ -290,14 +281,9 @@ export const FounderVSL: React.FC = () => {
                       aria-label={isMuted ? 'Unmute' : 'Mute'}
                     >
                       {isMuted ? (
-                        <svg className="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
-                        </svg>
+                        <VolumeX className="w-5 h-5 text-zinc-400 hover:text-white" />
                       ) : (
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                        </svg>
+                        <Volume2 className="w-5 h-5 text-zinc-300 hover:text-white" />
                       )}
                     </button>
 
@@ -329,9 +315,7 @@ export const FounderVSL: React.FC = () => {
                       className="p-1 hover:text-white transition-colors cursor-pointer"
                       aria-label="Toggle Fullscreen"
                     >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                      </svg>
+                      <Maximize className="w-4 h-4 text-zinc-300 hover:text-white" />
                     </button>
                   </div>
                 </div>

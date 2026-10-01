@@ -81,6 +81,7 @@ export interface Project {
   description: string;
   coverImage: string;
   videoUrl?: string;
+  projectUrl?: string;
   client?: string;
   displayOrder: number;
   status: 'published' | 'draft';
@@ -134,9 +135,11 @@ export interface MediaAsset {
   name: string;
   url: string;
   category: MediaCategory;
+  type?: 'image' | 'video' | 'poster' | 'logo' | string;
   size: string;
   dimensions?: string;
   uploadedAt: string;
+  createdAt?: string;
 }
 
 export interface AdminUser {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 
 interface ContactSectionProps {
   prefilledService?: string;
@@ -132,9 +133,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
         {isSubmitted ? (
           <div className="p-8 sm:p-10 rounded-2xl bg-zinc-900/90 border border-blue-500/40 text-center animate-in fade-in zoom-in-95 duration-200">
             <div className="w-14 h-14 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center mx-auto mb-4 border border-blue-500/40 shadow-[0_0_15px_rgba(37,99,235,0.3)]">
-              <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-              </svg>
+              <CheckCircle2 className="w-7 h-7 text-blue-400" />
             </div>
             <h3 className="text-xl sm:text-2xl font-display font-extrabold text-white tracking-tight mb-2">
               REQUEST RECEIVED.
@@ -153,9 +152,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
           <form onSubmit={handleSubmit} className="space-y-6">
             {errorMessage && (
               <div className="p-3.5 rounded-lg bg-red-950/60 border border-red-500/30 text-red-300 text-xs flex items-center gap-2">
-                <svg className="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
                 <span>{errorMessage}</span>
               </div>
             )}
@@ -284,7 +281,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
             >
               {isSubmitting ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin text-white" />
                   <span>SUBMITTING REQUEST...</span>
                 </>
               ) : (

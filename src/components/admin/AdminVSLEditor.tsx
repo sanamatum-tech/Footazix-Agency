@@ -1,6 +1,20 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { VSLSettings, VideoSourceType } from '../../types';
+import {
+  PlaySquare,
+  Upload,
+  Link,
+  Save,
+  Eye,
+  EyeOff,
+  CheckCircle2,
+  FileText,
+  Loader2,
+  AlertCircle,
+  Video,
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 
 export const AdminVSLEditor: React.FC = () => {
   const { content, updateWebsiteContent, saveStatus } = useApp();
@@ -21,7 +35,7 @@ export const AdminVSLEditor: React.FC = () => {
     if (!file) return;
 
     setLocalVideoName(file.name);
-    setUploadProgress(10);
+    setUploadProgress(15);
 
     const interval = setInterval(() => {
       setUploadProgress((p) => {
@@ -34,7 +48,7 @@ export const AdminVSLEditor: React.FC = () => {
           }));
           return 100;
         }
-        return p + 30;
+        return p + 25;
       });
     }, 150);
   };
@@ -62,261 +76,211 @@ export const AdminVSLEditor: React.FC = () => {
     e.preventDefault();
     const ok = await updateWebsiteContent({ vsl: vslData });
     if (ok) {
-      setStatusMessage('VSL settings saved to live session!');
-      setTimeout(() => setStatusMessage(''), 3000);
+      setStatusMessage('VSL settings saved to Supabase successfully.');
+    } else {
+      setStatusMessage('Error saving VSL settings.');
     }
-  };
-
-  const handleReset = () => {
-    setVslData(content.vsl);
-    setLocalVideoName('');
-    setUploadProgress(null);
-    setStatusMessage('Reverted to current published VSL settings.');
-    setTimeout(() => setStatusMessage(''), 2500);
+    setTimeout(() => setStatusMessage(''), 3000);
   };
 
   return (
-    <form onSubmit={handleSave} className="space-y-8 max-w-4xl pb-16">
-      {/* Header & Sticky Action Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl bg-zinc-950 border border-white/10 sticky top-4 z-20 backdrop-blur-md bg-zinc-950/95 shadow-xl">
+    <form onSubmit={handleSave} className="space-y-6 max-w-4xl mx-auto pb-16">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl bg-[#090910] border border-white/10">
         <div>
-          <h2 className="text-xl font-display font-bold text-white tracking-tight">
-            Founder VSL Video Settings
+          <h2 className="text-base sm:text-lg font-display font-extrabold text-white tracking-tight flex items-center gap-2">
+            <span>Founder VSL Settings</span>
           </h2>
           <p className="text-xs text-zinc-400 mt-0.5">
-            Configure video provider source, caption files, and player attributes.
+            Configure the 90-second video framework, video player source, poster frame, and VTT captions.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           {statusMessage && (
-            <span className="text-xs font-medium text-blue-400 animate-in fade-in duration-150">
-              {statusMessage}
+            <span className="text-xs text-blue-400 font-medium animate-in fade-in flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>{statusMessage}</span>
             </span>
           )}
 
           <button
-            type="button"
-            onClick={handleReset}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white bg-zinc-900 border border-white/10 transition-colors cursor-pointer"
-          >
-            Reset
-          </button>
-
-          <button
             type="submit"
             disabled={saveStatus === 'saving'}
-            className="px-6 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 active:scale-95 disabled:opacity-50 transition-all glow-blue-sm cursor-pointer flex items-center gap-2"
+            className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 active:scale-95 disabled:opacity-50 transition-all shadow-[0_0_16px_rgba(37,99,235,0.3)] cursor-pointer flex items-center gap-2"
           >
             {saveStatus === 'saving' ? (
               <>
-                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 <span>SAVING...</span>
               </>
-            ) : saveStatus === 'saved' ? (
-              <span>✓ SAVED</span>
             ) : (
-              <span>SAVE VSL SETTINGS</span>
+              <>
+                <Save className="w-3.5 h-3.5" />
+                <span>SAVE VSL SETTINGS</span>
+              </>
             )}
           </button>
         </div>
       </div>
 
-      {/* Video Source Selection Tabs */}
-      <div className="p-6 sm:p-8 rounded-2xl bg-zinc-950 border border-white/10 space-y-6">
+      {/* Main Settings Card */}
+      <div className="p-6 sm:p-8 rounded-2xl bg-[#090910] border border-white/10 space-y-6">
+        {/* Source Selector */}
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-3">
+          <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-2">
             Video Source Type
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-            {(
-              [
-                { id: 'youtube', label: 'YouTube' },
-                { id: 'drive', label: 'Google Drive' },
-                { id: 'direct', label: 'Direct Video URL' },
-                { id: 'local', label: 'Local Upload' },
-              ] as const
-            ).map((src) => (
-              <button
-                key={src.id}
-                type="button"
-                onClick={() => handleSourceChange(src.id)}
-                className={`py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer text-center ${
-                  vslData.videoSource === src.id
-                    ? 'bg-blue-600 text-white shadow-[0_0_12px_rgba(37,99,235,0.4)]'
-                    : 'bg-zinc-900 text-zinc-400 hover:text-white hover:bg-zinc-850 border border-white/10'
-                }`}
-              >
-                [ {src.label} ]
-              </button>
-            ))}
+            {[
+              { id: 'direct', label: 'Direct MP4 / CDN', icon: Video },
+              { id: 'youtube', label: 'YouTube Video', icon: PlaySquare },
+              { id: 'drive', label: 'Google Drive', icon: Link },
+              { id: 'local', label: 'Storage / Local', icon: Upload },
+            ].map((s) => {
+              const Icon = s.icon;
+              const isSelected = vslData.videoSource === s.id;
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => handleSourceChange(s.id as VideoSourceType)}
+                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-2 ${
+                    isSelected
+                      ? 'bg-blue-600/15 border-blue-500/40 text-white shadow-[0_0_12px_rgba(37,99,235,0.15)]'
+                      : 'bg-[#12121c] border-white/10 text-zinc-400 hover:text-white hover:border-white/20'
+                  }`}
+                >
+                  <Icon className={`w-4 h-4 ${isSelected ? 'text-blue-400' : 'text-zinc-400'}`} />
+                  <span className="text-xs font-semibold">{s.label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* Source-specific input UI */}
-        {vslData.videoSource === 'youtube' && (
-          <div className="p-4 rounded-xl bg-zinc-900/60 border border-white/10 space-y-2">
-            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">
-              YouTube Video URL
+        {/* Video URL or Uploader depending on source */}
+        {vslData.videoSource !== 'local' ? (
+          <div>
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+              {vslData.videoSource === 'youtube'
+                ? 'YouTube Video URL or Embed ID'
+                : vslData.videoSource === 'drive'
+                ? 'Google Drive Shareable / Preview Link'
+                : 'Direct MP4 Video Stream URL'}
             </label>
             <input
               type="text"
-              placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..."
               value={vslData.videoUrl}
               onChange={(e) => setVslData({ ...vslData, videoUrl: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 font-mono"
+              placeholder={
+                vslData.videoSource === 'youtube'
+                  ? 'https://www.youtube.com/watch?v=...'
+                  : vslData.videoSource === 'drive'
+                  ? 'https://drive.google.com/file/d/.../preview'
+                  : 'https://assets.mixkit.co/...mp4'
+              }
+              className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs font-mono outline-none focus:border-blue-500"
             />
-            <p className="text-[11px] text-zinc-500">
-              Supports standard YouTube URLs and shortlinks. Automatically converted to privacy-enhanced embed.
-            </p>
           </div>
-        )}
-
-        {vslData.videoSource === 'drive' && (
-          <div className="p-4 rounded-xl bg-zinc-900/60 border border-white/10 space-y-2">
-            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">
-              Google Drive Shareable Link
-            </label>
+        ) : (
+          <div className="p-4 rounded-xl bg-[#12121c] border border-dashed border-white/15 space-y-3">
+            <span className="text-xs font-bold text-white block">Upload Video File</span>
             <input
-              type="text"
-              placeholder="https://drive.google.com/file/d/FILE_ID/view?usp=sharing"
-              value={vslData.videoUrl}
-              onChange={(e) => setVslData({ ...vslData, videoUrl: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 font-mono"
+              type="file"
+              accept="video/*"
+              onChange={handleLocalVideoUpload}
+              className="text-xs text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500 cursor-pointer"
             />
-            <p className="text-[11px] text-zinc-500">
-              Ensure Google Drive sharing permissions are set to "Anyone with the link can view".
-            </p>
-          </div>
-        )}
-
-        {vslData.videoSource === 'direct' && (
-          <div className="p-4 rounded-xl bg-zinc-900/60 border border-white/10 space-y-2">
-            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">
-              Direct Video File Path or CDN URL (MP4 / WebM)
-            </label>
-            <input
-              type="text"
-              placeholder="/assets/vsl/footazix-vsl.mp4 or https://cdn.../video.mp4"
-              value={vslData.videoUrl}
-              onChange={(e) => setVslData({ ...vslData, videoUrl: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 font-mono"
-            />
-            <p className="text-[11px] text-zinc-500">
-              Direct HTML5 video link. Supports custom scrub timeline and track captions.
-            </p>
-          </div>
-        )}
-
-        {vslData.videoSource === 'local' && (
-          <div className="p-4 rounded-xl bg-zinc-900/60 border border-white/10 space-y-3">
-            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">
-              Local Video Browser Upload (Mock / Session State)
-            </label>
-            <div className="flex items-center gap-3">
-              <label className="px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-colors cursor-pointer">
-                <span>Select Local Video File</span>
-                <input
-                  type="file"
-                  accept="video/mp4,video/webm"
-                  onChange={handleLocalVideoUpload}
-                  className="hidden"
-                />
-              </label>
-
-              {localVideoName && (
-                <span className="text-xs text-zinc-300 font-mono">
-                  {localVideoName}
+            {uploadProgress !== null && (
+              <div className="space-y-1">
+                <div className="w-full h-1.5 rounded-full bg-zinc-800 overflow-hidden">
+                  <div
+                    className="h-full bg-blue-500 transition-all duration-200"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+                <span className="text-[10px] text-zinc-400 font-mono">
+                  {uploadProgress < 100 ? `Uploading: ${uploadProgress}%` : `Ready: ${localVideoName}`}
                 </span>
-              )}
-            </div>
-
-            {uploadProgress !== null && uploadProgress < 100 && (
-              <div className="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
-                <div
-                  className="bg-blue-500 h-full transition-all duration-200"
-                  style={{ width: `${uploadProgress}%` }}
-                />
               </div>
             )}
-            <p className="text-[11px] text-zinc-500">
-              Stored in browser object memory for instant local preview. Ready for Supabase Storage bucket in Phase 2.
-            </p>
           </div>
         )}
 
-        {/* Poster Image */}
+        {/* Poster Frame Image */}
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
-            Poster / Thumbnail Image URL
+          <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+            Poster Frame Image URL
           </label>
           <input
             type="text"
             value={vslData.posterUrl}
             onChange={(e) => setVslData({ ...vslData, posterUrl: e.target.value })}
             placeholder="/assets/vsl/vsl-poster.jpg"
-            className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 font-mono"
+            className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs font-mono outline-none focus:border-blue-500"
           />
         </div>
 
-        {/* Captions / CC Configuration */}
-        <div className="p-4 rounded-xl bg-zinc-900/40 border border-white/10 space-y-3">
+        {/* VTT Captions */}
+        <div className="p-4 rounded-xl bg-[#12121c] border border-white/10 space-y-2">
           <div className="flex items-center justify-between">
-            <div>
-              <span className="text-xs font-bold text-white block">Closed Captions (.VTT file)</span>
-              <span className="text-[11px] text-zinc-400">
-                Rule: If captions file is configured, CC button is active. If not configured, CC button is hidden.
-              </span>
+            <div className="flex items-center gap-2">
+              <FileText className="w-4 h-4 text-blue-400" />
+              <span className="text-xs font-bold text-white">Closed Captions (.vtt)</span>
             </div>
-            {vslData.captionUrl ? (
+            {vslData.captionUrl && (
               <button
                 type="button"
                 onClick={handleRemoveCaptions}
-                className="px-2.5 py-1 rounded text-xs font-semibold text-red-400 hover:text-red-300 bg-red-950/40 border border-red-500/30 cursor-pointer"
+                className="text-[11px] text-red-400 hover:text-red-300 cursor-pointer"
               >
-                Remove CC
+                Remove
               </button>
-            ) : (
-              <label className="px-3 py-1.5 rounded-lg text-xs font-semibold text-zinc-300 hover:text-white bg-zinc-800 hover:bg-zinc-750 border border-white/10 cursor-pointer">
-                <span>Upload .vtt file</span>
-                <input
-                  type="file"
-                  accept=".vtt"
-                  onChange={handleVTTUpload}
-                  className="hidden"
-                />
-              </label>
             )}
           </div>
 
-          {vslData.captionUrl ? (
-            <div className="flex items-center gap-2 text-xs text-blue-400 font-mono">
-              <span>✓ Captions configured:</span>
-              <span className="truncate max-w-sm text-zinc-400">{vslData.captionUrl}</span>
-            </div>
-          ) : (
-            <div className="text-xs text-zinc-500">
-              No caption file configured. CC button will remain hidden on public player (no fake captions).
-            </div>
-          )}
+          <p className="text-[11px] text-zinc-400">
+            Real WebVTT subtitle track. CC controls are only enabled on the public player when a valid caption track is attached.
+          </p>
+
+          <input
+            type="file"
+            accept=".vtt"
+            onChange={handleVTTUpload}
+            className="text-xs text-zinc-400 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-zinc-800 file:text-zinc-200 hover:file:bg-zinc-700 cursor-pointer"
+          />
         </div>
 
         {/* Published Toggle */}
-        <div className="flex items-center justify-between pt-2">
+        <div className="pt-2 border-t border-white/10 flex items-center justify-between">
           <div>
-            <span className="text-xs font-bold text-white block">VSL Section Status</span>
-            <span className="text-[11px] text-zinc-400">Show or hide the Founder VSL section on the public website.</span>
+            <span className="text-xs font-bold text-white block">Publish VSL Section</span>
+            <span className="text-[11px] text-zinc-400">
+              When published, the Founder VSL section is displayed in the main public website stream.
+            </span>
           </div>
+
           <button
             type="button"
             onClick={() => setVslData({ ...vslData, published: !vslData.published })}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-colors cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-mono uppercase font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
               vslData.published
-                ? 'bg-blue-600 text-white'
-                : 'bg-zinc-900 text-zinc-500 border border-white/10'
+                ? 'bg-blue-950/60 text-blue-400 border border-blue-500/30'
+                : 'bg-zinc-900 text-zinc-400 border border-white/10'
             }`}
           >
-            {vslData.published ? 'Published' : 'Hidden'}
+            {vslData.published ? (
+              <>
+                <Eye className="w-3.5 h-3.5" />
+                <span>Published</span>
+              </>
+            ) : (
+              <>
+                <EyeOff className="w-3.5 h-3.5" />
+                <span>Hidden</span>
+              </>
+            )}
           </button>
         </div>
       </div>

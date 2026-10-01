@@ -2,13 +2,34 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Project, ProjectCategory } from '../../types';
 import { portfolioService } from '../../services/portfolioService';
+import {
+  FolderKanban,
+  Plus,
+  Pencil,
+  Trash2,
+  ArrowUp,
+  ArrowDown,
+  ExternalLink,
+  Eye,
+  EyeOff,
+  LayoutGrid,
+  List,
+  Search,
+  CheckCircle2,
+  X,
+  Play,
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 
 const CATEGORIES: ProjectCategory[] = ['Reels', 'Shorts', 'YouTube', 'Brand', 'Motion', 'Other'];
 
 export const AdminPortfolio: React.FC = () => {
   const { projects } = useApp();
   const [editingProject, setEditingProject] = useState<Project | null>(null);
-  const [isAddingNew, setIsAddingNew] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [statusMessage, setStatusMessage] = useState('');
 
   // Form state
@@ -18,7 +39,9 @@ export const AdminPortfolio: React.FC = () => {
   const [coverImage, setCoverImage] = useState('/assets/portfolio/project-01/cover.jpg');
   const [videoUrl, setVideoUrl] = useState('');
   const [client, setClient] = useState('');
+  const [projectUrl, setProjectUrl] = useState('');
   const [status, setStatus] = useState<'published' | 'draft'>('published');
+  const [isDeletingId, setIsDeletingId] = useState<string | null>(null);
 
   const openAddModal = () => {
     setTitle('');
@@ -27,9 +50,10 @@ export const AdminPortfolio: React.FC = () => {
     setCoverImage('/assets/portfolio/project-01/cover.jpg');
     setVideoUrl('');
     setClient('');
+    setProjectUrl('');
     setStatus('published');
     setEditingProject(null);
-    setIsAddingNew(true);
+    setIsModalOpen(true);
   };
 
   const openEditModal = (p: Project) => {
@@ -40,12 +64,13 @@ export const AdminPortfolio: React.FC = () => {
     setCoverImage(p.coverImage);
     setVideoUrl(p.videoUrl || '');
     setClient(p.client || '');
+    setProjectUrl(p.projectUrl || '');
     setStatus(p.status);
-    setIsAddingNew(true);
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {
-    setIsAddingNew(false);
+    setIsModalOpen(false);
     setEditingProject(null);
   };
 
@@ -59,8 +84,9 @@ export const AdminPortfolio: React.FC = () => {
         category,
         description: description.trim(),
         coverImage,
-        videoUrl,
+        videoUrl: videoUrl.trim() || undefined,
         client: client.trim() || undefined,
+        projectUrl: projectUrl.trim() || undefined,
         status,
       });
       setStatusMessage('Project updated successfully.');
@@ -70,25 +96,24 @@ export const AdminPortfolio: React.FC = () => {
         category,
         description: description.trim(),
         coverImage,
-        videoUrl,
+        videoUrl: videoUrl.trim() || undefined,
         client: client.trim() || undefined,
+        projectUrl: projectUrl.trim() || undefined,
         status,
         displayOrder: projects.length + 1,
       });
-      setStatusMessage('New project added to portfolio.');
+      setStatusMessage('New project created.');
     }
 
-    setTimeout(() => setStatusMessage(''), 3000);
+    setTimeout(() => setStatusMessage(''), 2500);
     closeModal();
   };
 
-  const handleDelete = async (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (window.confirm('Are you sure you want to delete this project?')) {
-      await portfolioService.deleteProject(id);
-      setStatusMessage('Project deleted.');
-      setTimeout(() => setStatusMessage(''), 2500);
-    }
+  const confirmDelete = async (id: string) => {
+    await portfolioService.deleteProject(id);
+    setIsDeletingId(null);
+    setStatusMessage('Project deleted.');
+    setTimeout(() => setStatusMessage(''), 2500);
   };
 
   const handleTogglePublish = async (p: Project, e: React.MouseEvent) => {
@@ -103,298 +128,518 @@ export const AdminPortfolio: React.FC = () => {
     const targetIndex = direction === 'up' ? index - 1 : index + 1;
     if (targetIndex < 0 || targetIndex >= projects.length) return;
 
-    const copy = [...projects];
-    const temp = copy[index];
-    copy[index] = copy[targetIndex];
-    copy[targetIndex] = temp;
+    const newProjects = [...projects];
+    const temp = newProjects[index];
+    newProjects[index] = newProjects[targetIndex];
+    newProjects[targetIndex] = temp;
 
-    await portfolioService.reorderProjects(copy.map((c) => c.id));
+    const orderedIds = newProjects.map((p) => p.id);
+    await portfolioService.reorderProjects(orderedIds);
+    setStatusMessage('Display order updated.');
+    setTimeout(() => setStatusMessage(''), 2000);
   };
 
+  // Filtered projects
+  const filteredProjects = projects.filter((p) => {
+    const matchesSearch =
+      p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.client && p.client.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesCategory = categoryFilter === 'all' || p.category === categoryFilter;
+    return matchesSearch && matchesCategory;
+  });
+
   return (
-    <div className="space-y-6 max-w-5xl pb-16">
-      {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl bg-zinc-950 border border-white/10">
+    <div className="space-y-6 max-w-6xl mx-auto pb-16">
+      {/* Top Header & Actions */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl bg-[#090910] border border-white/10">
         <div>
-          <h2 className="text-xl font-display font-bold text-white tracking-tight">
-            Portfolio Projects CMS
+          <h2 className="text-base sm:text-lg font-display font-extrabold text-white tracking-tight flex items-center gap-2">
+            <span>Portfolio Projects</span>
+            <span className="text-xs font-mono font-normal text-zinc-400">
+              ({projects.length} total)
+            </span>
           </h2>
           <p className="text-xs text-zinc-400 mt-0.5">
-            Add, edit, reorder, or publish video editing showcase projects.
+            Manage high-retention video edits showcased on the public website.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           {statusMessage && (
-            <span className="text-xs font-medium text-blue-400 animate-in fade-in duration-150">
+            <span className="text-xs text-blue-400 font-medium animate-in fade-in">
               {statusMessage}
             </span>
           )}
 
+          {/* View Mode Toggle */}
+          <div className="flex items-center p-1 rounded-xl bg-[#12121c] border border-white/10">
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-1.5 rounded-lg transition-colors ${
+                viewMode === 'list' ? 'bg-blue-600 text-white' : 'text-zinc-400 hover:text-white'
+              }`}
+              title="List view"
+            >
+              <List className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-1.5 rounded-lg transition-colors ${
+                viewMode === 'grid' ? 'bg-blue-600 text-white' : 'text-zinc-400 hover:text-white'
+              }`}
+              title="Grid view"
+            >
+              <LayoutGrid className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
           <button
             onClick={openAddModal}
-            className="px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 active:scale-95 transition-all glow-blue-sm cursor-pointer flex items-center gap-2"
+            className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 active:scale-95 transition-all shadow-[0_0_16px_rgba(37,99,235,0.3)] cursor-pointer flex items-center gap-1.5"
           >
-            <span>+ ADD PROJECT</span>
+            <Plus className="w-3.5 h-3.5" />
+            <span>Create Project</span>
           </button>
         </div>
       </div>
 
-      {/* Projects List or Empty State */}
-      {projects.length === 0 ? (
-        <div className="rounded-2xl border border-white/10 bg-zinc-950 p-12 text-center">
-          <div className="w-12 h-12 rounded-full bg-blue-600/10 text-blue-400 flex items-center justify-center mx-auto mb-3">
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-            </svg>
-          </div>
-          <h3 className="text-base font-bold text-white mb-1">No projects yet.</h3>
-          <p className="text-xs text-zinc-400 mb-4">
-            Add your first project from the Portfolio button above.
+      {/* Filter & Search Bar */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-4 rounded-xl bg-[#090910] border border-white/10">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Search projects by title, client..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 rounded-lg bg-[#12121c] border border-white/10 text-white text-xs placeholder-zinc-500 outline-none focus:border-blue-500"
+          />
+        </div>
+
+        {/* Category Pills */}
+        <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+          <button
+            onClick={() => setCategoryFilter('all')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
+              categoryFilter === 'all'
+                ? 'bg-blue-600 text-white'
+                : 'text-zinc-400 hover:text-white bg-[#12121c] border border-white/5'
+            }`}
+          >
+            All
+          </button>
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setCategoryFilter(cat)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
+                categoryFilter === cat
+                  ? 'bg-blue-600 text-white'
+                  : 'text-zinc-400 hover:text-white bg-[#12121c] border border-white/5'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Projects List/Grid */}
+      {filteredProjects.length === 0 ? (
+        <div className="p-12 text-center rounded-2xl bg-[#090910] border border-white/10 space-y-3">
+          <FolderKanban className="w-8 h-8 text-zinc-600 mx-auto" />
+          <h3 className="text-sm font-bold text-white">No projects found</h3>
+          <p className="text-xs text-zinc-400 max-w-sm mx-auto">
+            {searchQuery || categoryFilter !== 'all'
+              ? 'Try adjusting your search query or category filter.'
+              : 'Add your first high-retention video project showcase.'}
           </p>
           <button
             onClick={openAddModal}
-            className="px-4 py-2 rounded-lg text-xs font-bold uppercase bg-blue-600 text-white"
+            className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-colors"
           >
-            + Add First Project
+            + Create First Project
           </button>
         </div>
-      ) : (
-        <div className="space-y-3">
-          {projects.map((project, idx) => (
+      ) : viewMode === 'list' ? (
+        <div className="space-y-2.5">
+          {filteredProjects.map((project, idx) => (
             <div
               key={project.id}
-              className="p-4 sm:p-5 rounded-xl bg-zinc-950 border border-white/10 hover:border-white/20 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              className="p-4 rounded-xl bg-[#090910] border border-white/10 hover:border-white/20 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 group"
             >
-              <div className="flex items-center gap-4">
-                {/* Reorder Buttons */}
-                <div className="flex flex-col gap-1 text-zinc-500">
+              <div className="flex items-center gap-3.5 min-w-0">
+                {/* Reorder Up/Down */}
+                <div className="flex flex-col gap-0.5 text-zinc-500">
                   <button
                     disabled={idx === 0}
                     onClick={() => handleMove(idx, 'up')}
-                    className="p-1 hover:text-white disabled:opacity-20 cursor-pointer"
+                    className="p-1 rounded hover:text-white hover:bg-zinc-800 disabled:opacity-20 cursor-pointer"
                     title="Move up"
+                    aria-label="Move up"
                   >
-                    ▲
+                    <ArrowUp className="w-3.5 h-3.5" />
                   </button>
                   <button
-                    disabled={idx === projects.length - 1}
+                    disabled={idx === filteredProjects.length - 1}
                     onClick={() => handleMove(idx, 'down')}
-                    className="p-1 hover:text-white disabled:opacity-20 cursor-pointer"
+                    className="p-1 rounded hover:text-white hover:bg-zinc-800 disabled:opacity-20 cursor-pointer"
                     title="Move down"
+                    aria-label="Move down"
                   >
-                    ▼
+                    <ArrowDown className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
                 {/* Thumbnail */}
-                <div className="w-16 h-12 rounded-lg overflow-hidden bg-zinc-900 shrink-0 border border-white/10">
+                <div className="w-20 h-14 rounded-lg overflow-hidden bg-zinc-900 shrink-0 border border-white/10 relative">
                   <img
                     src={project.coverImage}
                     alt={project.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
+                  {project.videoUrl && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                      <Play className="w-3.5 h-3.5 text-white fill-white" />
+                    </div>
+                  )}
                 </div>
 
-                {/* Details */}
-                <div>
+                {/* Info */}
+                <div className="min-w-0 space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-zinc-900 border border-white/10 text-blue-400">
+                    <span className="text-[10px] font-mono uppercase text-blue-400 font-semibold px-2 py-0.5 rounded bg-blue-950/60 border border-blue-500/30">
                       {project.category}
                     </span>
-                    <span
-                      className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded ${
-                        project.status === 'published'
-                          ? 'bg-blue-600/30 text-blue-300'
-                          : 'bg-zinc-800 text-zinc-400'
-                      }`}
-                    >
-                      {project.status}
-                    </span>
+                    <h3 className="text-sm font-bold text-white truncate">
+                      {project.title}
+                    </h3>
                     {project.client && (
-                      <span className="text-xs text-zinc-500">
-                        • {project.client}
+                      <span className="text-xs text-zinc-500 truncate hidden md:inline">
+                        · {project.client}
                       </span>
                     )}
                   </div>
-                  <h3 className="text-sm font-bold text-white mt-1">
-                    {project.title}
-                  </h3>
-                  <p className="text-xs text-zinc-400 line-clamp-1 max-w-lg">
+                  <p className="text-xs text-zinc-400 line-clamp-1 max-w-xl">
                     {project.description}
                   </p>
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex items-center gap-2 self-end sm:self-center">
+              {/* Status & Actions */}
+              <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
                 <button
                   onClick={(e) => handleTogglePublish(project, e)}
-                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white bg-zinc-900 border border-white/10 transition-colors cursor-pointer"
+                  className={`px-2.5 py-1 rounded-lg text-xs font-mono uppercase font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
+                    project.status === 'published'
+                      ? 'bg-blue-950/60 text-blue-400 border border-blue-500/30'
+                      : 'bg-zinc-900 text-zinc-400 border border-white/10'
+                  }`}
+                  title="Toggle Published / Draft"
                 >
-                  {project.status === 'published' ? 'Unpublish' : 'Publish'}
+                  {project.status === 'published' ? (
+                    <>
+                      <Eye className="w-3 h-3 text-blue-400" />
+                      <span>Live</span>
+                    </>
+                  ) : (
+                    <>
+                      <EyeOff className="w-3 h-3 text-zinc-400" />
+                      <span>Draft</span>
+                    </>
+                  )}
                 </button>
 
                 <button
                   onClick={() => openEditModal(project)}
-                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 transition-colors cursor-pointer"
+                  className="p-2 rounded-lg text-zinc-300 hover:text-white bg-[#12121c] border border-white/10 hover:border-white/20 transition-colors cursor-pointer"
+                  title="Edit project"
+                  aria-label="Edit project"
                 >
-                  Edit
+                  <Pencil className="w-3.5 h-3.5" />
                 </button>
 
                 <button
-                  onClick={(e) => handleDelete(project.id, e)}
-                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-red-400 hover:text-red-300 bg-red-950/30 border border-red-500/20 transition-colors cursor-pointer"
+                  onClick={() => setIsDeletingId(project.id)}
+                  className="p-2 rounded-lg text-zinc-400 hover:text-red-400 bg-[#12121c] border border-white/10 hover:border-red-500/30 transition-colors cursor-pointer"
+                  title="Delete project"
+                  aria-label="Delete project"
                 >
-                  Delete
+                  <Trash2 className="w-3.5 h-3.5" />
                 </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        /* Grid View */
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredProjects.map((project) => (
+            <div
+              key={project.id}
+              className="rounded-xl bg-[#090910] border border-white/10 hover:border-white/20 overflow-hidden transition-all flex flex-col justify-between group"
+            >
+              <div className="relative aspect-video w-full overflow-hidden bg-zinc-900">
+                <img
+                  src={project.coverImage}
+                  alt={project.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="absolute top-2.5 left-2.5">
+                  <span className="text-[10px] font-mono uppercase text-blue-400 font-semibold px-2 py-0.5 rounded bg-black/70 backdrop-blur-sm border border-blue-500/40">
+                    {project.category}
+                  </span>
+                </div>
+                <div className="absolute top-2.5 right-2.5">
+                  <span
+                    className={`text-[9px] font-mono uppercase px-2 py-0.5 rounded font-bold ${
+                      project.status === 'published'
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-black/70 text-zinc-400'
+                    }`}
+                  >
+                    {project.status}
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-4 space-y-2 flex-1 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-sm font-bold text-white line-clamp-1">
+                    {project.title}
+                  </h3>
+                  {project.client && (
+                    <span className="text-[11px] text-zinc-400 block font-mono">
+                      Client: {project.client}
+                    </span>
+                  )}
+                  <p className="text-xs text-zinc-400 line-clamp-2 mt-1">
+                    {project.description}
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-between pt-3 border-t border-white/5">
+                  <button
+                    onClick={(e) => handleTogglePublish(project, e)}
+                    className="text-xs text-zinc-400 hover:text-white"
+                  >
+                    {project.status === 'published' ? 'Unpublish' : 'Publish'}
+                  </button>
+
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => openEditModal(project)}
+                      className="p-1.5 rounded-lg text-zinc-300 hover:text-white bg-[#12121c] border border-white/10"
+                      title="Edit"
+                    >
+                      <Pencil className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => setIsDeletingId(project.id)}
+                      className="p-1.5 rounded-lg text-zinc-400 hover:text-red-400 bg-[#12121c] border border-white/10"
+                      title="Delete"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Add / Edit Project Modal */}
-      {isAddingNew && (
+      {/* Create / Edit Project Modal */}
+      {isModalOpen && (
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto"
-          onClick={closeModal}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
         >
           <div
-            className="w-full max-w-xl bg-zinc-950 border border-white/15 rounded-2xl p-6 sm:p-8 space-y-5 shadow-2xl my-8"
+            className="w-full max-w-xl bg-[#0b0b14] border border-white/15 rounded-2xl p-6 sm:p-7 space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between border-b border-white/10 pb-4">
-              <h3 className="text-lg font-display font-bold text-white">
-                {editingProject ? 'Edit Project' : 'Add New Portfolio Project'}
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <h3 className="text-base font-bold text-white">
+                {editingProject ? 'Edit Project' : 'Create New Project'}
               </h3>
-              <button onClick={closeModal} className="text-zinc-400 hover:text-white">
-                ✕
+              <button
+                onClick={closeModal}
+                className="p-1 rounded-lg text-zinc-400 hover:text-white bg-[#12121c]"
+              >
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
                   Project Title *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Creator Short-Form Retention Reel"
+                  placeholder="e.g. Creator Retention Reel"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-blue-500"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
-                    Category *
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                    Category
                   </label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value as ProjectCategory)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-blue-500"
                   >
-                    {CATEGORIES.map((cat) => (
-                      <option key={cat} value={cat} className="bg-zinc-950">
-                        {cat}
+                    {CATEGORIES.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
                       </option>
                     ))}
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
-                    Status
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                    Client Name (Optional)
                   </label>
-                  <select
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value as 'published' | 'draft')}
-                    className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500"
-                  >
-                    <option value="published" className="bg-zinc-950">Published</option>
-                    <option value="draft" className="bg-zinc-950">Draft</option>
-                  </select>
+                  <input
+                    type="text"
+                    placeholder="e.g. Modern Creator"
+                    value={client}
+                    onChange={(e) => setClient(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-blue-500"
+                  />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
-                  Short Description *
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                  Description *
                 </label>
                 <textarea
                   rows={3}
                   required
-                  placeholder="One or two sentences highlighting the editing style, sound design, and retention pacing."
+                  placeholder="Explain the editing mechanics, pacing, sound design..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 resize-none"
+                  className="w-full px-3.5 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-blue-500 leading-relaxed"
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
-                  Cover Image URL *
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="/assets/portfolio/project-01/cover.jpg or web URL"
-                  value={coverImage}
-                  onChange={(e) => setCoverImage(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 font-mono"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
-                    Client / Brand (Optional)
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                    Cover Thumbnail URL *
                   </label>
                   <input
                     type="text"
-                    placeholder="Creator / Brand name"
-                    value={client}
-                    onChange={(e) => setClient(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500"
+                    required
+                    placeholder="/assets/portfolio/project-01/cover.jpg"
+                    value={coverImage}
+                    onChange={(e) => setCoverImage(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs font-mono outline-none focus:border-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
-                    Video URL (Optional)
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                    Video URL (MP4 / Direct)
                   </label>
                   <input
                     type="text"
-                    placeholder="Video link"
+                    placeholder="https://...mp4 or YouTube"
                     value={videoUrl}
                     onChange={(e) => setVideoUrl(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 font-mono"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs font-mono outline-none focus:border-blue-500"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                    External Project URL
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="https://instagram.com/..."
+                    value={projectUrl}
+                    onChange={(e) => setProjectUrl(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs font-mono outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                    Publish Status
+                  </label>
+                  <select
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value as 'published' | 'draft')}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-blue-500"
+                  >
+                    <option value="published">Published (Visible on site)</option>
+                    <option value="draft">Draft (Private admin only)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white bg-[#12121c] border border-white/10"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 glow-blue-sm"
+                  className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 shadow-[0_0_16px_rgba(37,99,235,0.3)] transition-colors"
                 >
-                  {editingProject ? 'Save Changes' : 'Create Project'}
+                  {editingProject ? 'Save Project' : 'Create Project'}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {isDeletingId && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+        >
+          <div className="w-full max-w-md bg-[#0b0b14] border border-white/15 rounded-2xl p-6 space-y-4 shadow-2xl">
+            <h3 className="text-base font-bold text-white">Delete Portfolio Project?</h3>
+            <p className="text-xs text-zinc-400">
+              Are you sure you want to delete this project? This will permanently remove it from Supabase.
+            </p>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setIsDeletingId(null)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white bg-[#12121c] border border-white/10"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => confirmDelete(isDeletingId)}
+                className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-red-600 hover:bg-red-500"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       )}
