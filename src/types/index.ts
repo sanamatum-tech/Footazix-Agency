@@ -15,6 +15,7 @@ export interface VSLSettings {
   posterUrl: string;
   captionUrl?: string; // .vtt file url or local object url
   published: boolean;
+  fallbackMessage?: string;
 }
 
 export interface HeroSettings {
@@ -45,14 +46,31 @@ export interface BrandSettings {
   url: string;
   instagram: string;
   instagramHandle: string;
+  showInstagramButton?: boolean;
   email: string;
   tagline: string;
   supportingLine: string;
   accentColor: string;
 }
 
+export interface LegalDocument {
+  title: string;
+  lastUpdated: string;
+  content: string;
+}
+
+export interface HeaderSettings {
+  navWork: string;
+  navSystem: string;
+  navServices: string;
+  navAbout: string;
+  ctaText: string;
+  showInstagram?: boolean;
+}
+
 export interface WebsiteContent {
   brand: BrandSettings;
+  header?: HeaderSettings;
   hero: HeroSettings;
   vsl: VSLSettings;
   rawToReady: RawToReadySettings;
@@ -69,6 +87,10 @@ export interface WebsiteContent {
   footer: {
     copyrightText: string;
     tagline: string;
+  };
+  legal?: {
+    terms: LegalDocument;
+    privacy: LegalDocument;
   };
 }
 

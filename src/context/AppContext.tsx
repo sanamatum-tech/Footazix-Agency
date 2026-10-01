@@ -33,7 +33,7 @@ import { authService } from '../services/authService';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { INITIAL_WEBSITE_CONTENT } from '../data/mockData';
 
-export type ActiveView = 'public' | 'admin';
+export type ActiveView = 'public' | 'admin' | 'terms' | 'privacy';
 
 interface AppContextValue {
   // Navigation / View
@@ -41,6 +41,8 @@ interface AppContextValue {
   setActiveView: (view: ActiveView) => void;
   navigateToAdmin: () => void;
   navigateToPublic: () => void;
+  navigateToTerms: () => void;
+  navigateToPrivacy: () => void;
 
   // Auth (Supabase Auth + admin_profiles)
   currentUser: AdminUser | null;
@@ -72,13 +74,18 @@ interface AppContextValue {
 const AppContext = createContext<AppContextValue | null>(null);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const isInitialAdmin = typeof window !== 'undefined' && (
-    window.location.pathname.startsWith('/secureadmin') ||
-    window.location.hash === '#secureadmin' ||
-    window.location.search.includes('admin=true')
-  );
+  const getInitialView = (): ActiveView => {
+    if (typeof window === 'undefined') return 'public';
+    const path = window.location.pathname.toLowerCase();
+    if (path.startsWith('/secureadmin') || window.location.hash === '#secureadmin' || window.location.search.includes('admin=true')) {
+      return 'admin';
+    }
+    if (path.startsWith('/terms')) return 'terms';
+    if (path.startsWith('/privacy')) return 'privacy';
+    return 'public';
+  };
 
-  const [activeView, setActiveView] = useState<ActiveView>(isInitialAdmin ? 'admin' : 'public');
+  const [activeView, setActiveView] = useState<ActiveView>(getInitialView);
   const [currentUser, setCurrentUser] = useState<AdminUser | null>(authService.getCurrentUser());
   const [isSupabaseConnected] = useState<boolean>(isSupabaseConfigured());
   const [content, setContent] = useState<WebsiteContent>(INITIAL_WEBSITE_CONTENT);
@@ -106,11 +113,30 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   }, []);
 
+  const navigateToTerms = useCallback(() => {
+    setActiveView('terms');
+    if (typeof window !== 'undefined' && window.location.pathname !== '/terms') {
+      window.history.pushState({}, '', '/terms');
+    }
+  }, []);
+
+  const navigateToPrivacy = useCallback(() => {
+    setActiveView('privacy');
+    if (typeof window !== 'undefined' && window.location.pathname !== '/privacy') {
+      window.history.pushState({}, '', '/privacy');
+    }
+  }, []);
+
   // Sync browser back/forward buttons
   useEffect(() => {
     const handlePopState = () => {
-      if (window.location.pathname.startsWith('/secureadmin')) {
+      const path = window.location.pathname.toLowerCase();
+      if (path.startsWith('/secureadmin')) {
         setActiveView('admin');
+      } else if (path.startsWith('/terms')) {
+        setActiveView('terms');
+      } else if (path.startsWith('/privacy')) {
+        setActiveView('privacy');
       } else {
         setActiveView('public');
       }
@@ -246,6 +272,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setActiveView,
         navigateToAdmin,
         navigateToPublic,
+        navigateToTerms,
+        navigateToPrivacy,
         currentUser,
         isAuthenticated: !!currentUser,
         login,

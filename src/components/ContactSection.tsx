@@ -113,7 +113,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
   };
 
   return (
-    <div className={`relative ${isModal ? 'p-6 sm:p-10' : 'py-20 sm:py-28 bg-[#050508] border-t border-white/5'}`}>
+    <div className={`relative ${isModal ? 'p-0 sm:py-2' : 'py-20 sm:py-28 bg-[#050508] border-t border-white/5'}`}>
       <div className={`${isModal ? 'w-full' : 'max-w-3xl mx-auto px-6'}`}>
         {/* Header */}
         <div className="text-center max-w-xl mx-auto mb-8">
@@ -122,7 +122,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
             <span>START A PROJECT</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-white tracking-tight mb-2">
-            WORK WITH FOOTAZIX
+            BUILD WITH FOOTAZIX
           </h2>
           <p className="text-xs sm:text-sm text-zinc-400">
             Tell us about your content, and our team will connect with you.
@@ -189,7 +189,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
 
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                  Phone / WhatsApp <span className="text-zinc-600 text-[10px]">(optional)</span>
+                  Phone / WhatsApp
                 </label>
                 <input
                   type="tel"
@@ -202,7 +202,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
 
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                  Company / Creator Name <span className="text-zinc-600 text-[10px]">(optional)</span>
+                  Company / Creator Name
                 </label>
                 <input
                   type="text"
@@ -255,10 +255,10 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
               />
             </div>
 
-            {/* Budget Range (No $ or ₹ pricing symbols, per rule) */}
+            {/* Budget Range */}
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                Budget Range <span className="text-zinc-600 text-[10px]">(optional)</span>
+                Budget Range
               </label>
               <select
                 value={budget}

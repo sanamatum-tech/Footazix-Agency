@@ -47,21 +47,23 @@ export const FinalCTA: React.FC<FinalCTAProps> = ({ onOpenModal }) => {
             onClick={onOpenModal}
             className="w-full sm:w-auto px-8 py-4 text-xs font-bold uppercase tracking-wider text-white bg-blue-600 rounded-xl hover:bg-blue-500 transition-all duration-200 shadow-[0_0_24px_rgba(37,99,235,0.4)] cursor-pointer flex items-center justify-center gap-2 group"
           >
-            <span>START A PROJECT</span>
+            <span>BUILD WITH FOOTAZIX</span>
             <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
           </motion.button>
 
-          <motion.a
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            href={content.brand.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full sm:w-auto px-7 py-4 text-xs font-semibold uppercase tracking-wider text-zinc-300 bg-[#12121c] hover:text-white hover:bg-[#1a1a28] border border-white/10 rounded-xl transition-all duration-200 inline-flex items-center justify-center gap-2"
-          >
-            <span>INSTAGRAM</span>
-            <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
-          </motion.a>
+          {content.brand.showInstagramButton !== false && Boolean(content.brand.instagram) && (
+            <motion.a
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              href={content.brand.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto px-7 py-4 text-xs font-semibold uppercase tracking-wider text-zinc-300 bg-[#12121c] hover:text-white hover:bg-[#1a1a28] border border-white/10 rounded-xl transition-all duration-200 inline-flex items-center justify-center gap-2"
+            >
+              <span>INSTAGRAM</span>
+              <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
+            </motion.a>
+          )}
         </div>
       </motion.div>
     </section>

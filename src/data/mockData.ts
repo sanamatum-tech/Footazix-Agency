@@ -21,29 +21,39 @@ export const INITIAL_WEBSITE_CONTENT: WebsiteContent = {
     url: 'https://footazix.site',
     instagram: 'https://www.instagram.com/footazix',
     instagramHandle: '@footazix',
+    showInstagramButton: true,
     email: 'footazix@gmail.com',
     tagline: 'Turning Raw Footage Into Content Worth Watching.',
     supportingLine: 'Video Editing • Content • Growth',
     accentColor: '#2563eb', // Core Electric Cobalt Blue
+  },
+  header: {
+    navWork: 'Work',
+    navSystem: 'System',
+    navServices: 'Services',
+    navAbout: 'About',
+    ctaText: 'Build with Footazix',
+    showInstagram: true,
   },
   hero: {
     badgeText: 'FOOTAZIX / CONTENT GROWTH AGENCY',
     headlineLine1: 'TURN RAW FOOTAGE INTO',
     headlineLine2: 'CONTENT WORTH WATCHING.',
     supportingLine: 'Video Editing • Content • Growth',
-    description: 'We turn raw footage and ideas into content people want to watch.',
-    primaryCta: 'WORK WITH FOOTAZIX →',
-    secondaryCta: 'WATCH THE VSL ↓',
+    description: 'We turn raw footage and ideas into content people want to watch. High-retention editing for creators, brands, and businesses.',
+    primaryCta: 'BUILD WITH FOOTAZIX →',
+    secondaryCta: 'EXPLORE THE FOOTAZIX SYSTEM ↓',
   },
   vsl: {
-    label: 'FROM THE FOUNDER',
-    heading: 'SEE HOW FOOTAZIX WORKS.',
-    description: 'Who we are, what we do, and how we turn raw footage into better content.',
+    label: 'THE FOOTAZIX SYSTEM',
+    heading: 'SEE HOW FOOTAZIX TRANSFORMS CONTENT.',
+    description: 'See how we transform raw footage into content built for attention.',
     videoSource: 'direct',
     videoUrl: '/assets/vsl/footazix-vsl.mp4',
     posterUrl: '/assets/vsl/vsl-poster.jpg',
-    captionUrl: '', // empty by default = no CC button (per prompt rule)
+    captionUrl: '', // empty by default = no CC button
     published: true,
+    fallbackMessage: 'VIDEO UNAVAILABLE',
   },
   rawToReady: {
     heading: 'RAW → EDIT → READY',
@@ -79,6 +89,18 @@ export const INITIAL_WEBSITE_CONTENT: WebsiteContent = {
   footer: {
     copyrightText: 'Footazix. footazix.site. All rights reserved.',
     tagline: 'Turning raw footage into content worth watching.',
+  },
+  legal: {
+    terms: {
+      title: 'Terms & Conditions',
+      lastUpdated: 'October 2026',
+      content: 'Welcome to Footazix. By accessing or engaging our content production, video editing, and strategic consulting services, you agree to comply with and be bound by these terms. All client footage and media assets remain your intellectual property. Edited deliverables are granted under studio license upon completion of service retainers or project agreements.',
+    },
+    privacy: {
+      title: 'Privacy Policy',
+      lastUpdated: 'October 2026',
+      content: 'Footazix values and protects your privacy. We collect client contact information and project requirements solely for communication, project fulfillment, and agency collaboration. We never sell, rent, or distribute personal data or proprietary footage to third parties. All inquiries and media are securely handled through encrypted channels.',
+    },
   },
 };
 

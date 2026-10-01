@@ -10,6 +10,7 @@ import { AdminTeam } from './AdminTeam';
 import { AdminInquiries } from './AdminInquiries';
 import { AdminMediaLibrary } from './AdminMediaLibrary';
 import { AdminSettings } from './AdminSettings';
+import { FootazixLogo } from '../FootazixLogo';
 import {
   LayoutDashboard,
   Globe2,
@@ -75,14 +76,14 @@ export const AdminLayout: React.FC = () => {
       groupLabel: 'MAIN',
       items: [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+        { id: 'website', label: 'Website Editor', icon: Globe2 },
       ],
     },
     {
       groupLabel: 'CONTENT',
       items: [
-        { id: 'website', label: 'Website Editor', icon: Globe2 },
         { id: 'hero', label: 'Hero', icon: PanelsTopLeft },
-        { id: 'vsl', label: 'VSL', icon: PlaySquare },
+        { id: 'vsl', label: 'System / VSL', icon: PlaySquare },
         { id: 'portfolio', label: 'Portfolio', icon: FolderKanban },
         { id: 'services', label: 'Services', icon: BriefcaseBusiness },
         { id: 'team', label: 'Team', icon: UsersRound },
@@ -161,11 +162,10 @@ export const AdminLayout: React.FC = () => {
           >
             {mobileSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
-          <div className="flex items-center gap-2">
-            <span className="font-display font-extrabold text-white text-base tracking-tight">
-              {content.brand.name || 'FOOTAZIX'}
-            </span>
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-[110px] h-[30px] flex items-center">
+              <FootazixLogo className="h-full w-auto" />
+            </div>
             <span className="text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded bg-blue-950/60 border border-blue-500/30 text-blue-300">
               CMS
             </span>
@@ -201,12 +201,11 @@ export const AdminLayout: React.FC = () => {
       >
         <div className="flex flex-col flex-1 overflow-y-auto">
           {/* Brand header */}
-          <div className="p-6 border-b border-white/10 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <span className="font-display font-extrabold text-lg text-white tracking-tight">
-                {content.brand.name || 'FOOTAZIX'}
-              </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
+          <div className="p-5 border-b border-white/10 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-[125px] h-[34px] flex items-center">
+                <FootazixLogo className="h-full w-auto" />
+              </div>
               <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-blue-950/70 border border-blue-500/30 text-blue-300 font-semibold">
                 CMS
               </span>

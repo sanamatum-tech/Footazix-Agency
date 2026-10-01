@@ -1,5 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
+import { FootazixLogo } from './FootazixLogo';
 import { LockKeyhole, ExternalLink } from 'lucide-react';
 
 interface FooterProps {
@@ -7,27 +8,31 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
-  const { content, navigateToAdmin } = useApp();
+  const { content, navigateToAdmin, navigateToTerms, navigateToPrivacy } = useApp();
 
   const scrollTo = (id: string) => {
     const el = document.querySelector(id);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const showInstagram = content.brand.showInstagramButton !== false && Boolean(content.brand.instagram);
+
   return (
     <footer className="py-16 bg-[#040406] border-t border-white/10 text-zinc-400 text-xs font-sans">
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 pb-12 border-b border-white/5">
-          {/* Brand Wordmark & Subtitle */}
+          {/* Brand Wordmark with Official Logo & Subtitle */}
           <div>
             <a
               href="#"
-              className="text-xl font-display font-extrabold text-white tracking-tight hover:text-zinc-200 transition-colors flex items-center gap-2 group"
+              className="inline-flex items-center group cursor-pointer hover:opacity-90 transition-opacity"
+              aria-label="FOOTAZIX Home"
             >
-              <span>{content.brand.name || 'FOOTAZIX'}</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block shadow-[0_0_8px_rgba(37,99,235,0.8)] group-hover:scale-125 transition-transform" />
+              <div className="w-[130px] sm:w-[150px] h-[36px] flex items-center">
+                <FootazixLogo className="h-full w-auto" />
+              </div>
             </a>
-            <p className="text-zinc-400 text-xs mt-1.5 font-mono">
+            <p className="text-zinc-400 text-xs mt-2 font-mono">
               {content.brand.supportingLine || 'Video Editing • Content • Growth'}
             </p>
           </div>
@@ -41,10 +46,10 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
               Work
             </button>
             <button
-              onClick={() => scrollTo('#vsl')}
+              onClick={() => scrollTo('#system')}
               className="hover:text-white transition-colors cursor-pointer"
             >
-              VSL
+              System
             </button>
             <button
               onClick={() => scrollTo('#services')}
@@ -58,15 +63,19 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
             >
               About
             </button>
-            <a
-              href={content.brand.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors inline-flex items-center gap-1"
-            >
-              <span>Instagram</span>
-              <ExternalLink className="w-3 h-3 text-blue-400" />
-            </a>
+
+            {showInstagram && (
+              <a
+                href={content.brand.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors inline-flex items-center gap-1"
+              >
+                <span>Instagram</span>
+                <ExternalLink className="w-3 h-3 text-blue-400" />
+              </a>
+            )}
+
             <button
               onClick={onOpenContact}
               className="text-blue-400 hover:text-blue-300 transition-colors cursor-pointer"
@@ -76,12 +85,30 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
           </nav>
         </div>
 
-        {/* Bottom Bar: Copyright & Subtle Owner Lock */}
+        {/* Bottom Bar: Copyright, Legal Navigation & Discreet Owner Lock */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-zinc-400 font-mono text-[11px]">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-4">
             <span>
-              © {new Date().getFullYear()} {content.brand.name}. {content.brand.domain}. All rights reserved.
+              © {new Date().getFullYear()} {content.brand.name}. {content.brand.domain}.
             </span>
+
+            {/* Legal Links */}
+            <div className="flex items-center gap-3 border-l border-white/10 pl-3">
+              <button
+                onClick={navigateToTerms}
+                className="text-zinc-400 hover:text-zinc-200 transition-colors cursor-pointer underline underline-offset-2"
+              >
+                Terms & Conditions
+              </button>
+              <span className="text-zinc-700">•</span>
+              <button
+                onClick={navigateToPrivacy}
+                className="text-zinc-400 hover:text-zinc-200 transition-colors cursor-pointer underline underline-offset-2"
+              >
+                Privacy Policy
+              </button>
+            </div>
+
             {/* Owner Discreet Lock Button */}
             <button
               onClick={navigateToAdmin}

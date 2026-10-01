@@ -40,6 +40,7 @@ import { ContactModal } from './components/ContactModal';
 import { Footer } from './components/Footer';
 import { AdminLayout } from './components/admin/AdminLayout';
 import { AdminLogin } from './components/admin/AdminLogin';
+import { LegalPage } from './components/LegalPage';
 
 function MainWebsite() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
@@ -55,8 +56,8 @@ function MainWebsite() {
     setSelectedServiceForModal('');
   };
 
-  const scrollToVSL = () => {
-    const el = document.getElementById('vsl');
+  const scrollToSystem = () => {
+    const el = document.getElementById('system') || document.getElementById('vsl');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     }
@@ -75,10 +76,10 @@ function MainWebsite() {
         {/* 2. HERO */}
         <Hero
           onWorkWithUs={scrollToContact}
-          onWatchVSL={scrollToVSL}
+          onWatchVSL={scrollToSystem}
         />
 
-        {/* 3. FOUNDER VSL */}
+        {/* 3. FOOTAZIX SYSTEM (f/k/a Founder VSL) */}
         <FounderVSL />
 
         {/* 4. SELECTED WORK */}
@@ -122,6 +123,14 @@ function AppContent() {
       return <AdminLayout />;
     }
     return <AdminLogin />;
+  }
+
+  if (activeView === 'terms') {
+    return <LegalPage type="terms" />;
+  }
+
+  if (activeView === 'privacy') {
+    return <LegalPage type="privacy" />;
   }
 
   return <MainWebsite />;

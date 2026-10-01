@@ -11,6 +11,8 @@ import {
   PlaySquare,
   Flame,
   PanelBottom,
+  ShieldCheck,
+  PanelTop,
   Save,
   RotateCcw,
   CheckCircle2,
@@ -21,6 +23,7 @@ import { motion, AnimatePresence } from 'motion/react';
 
 type EditorTab =
   | 'settings'
+  | 'header'
   | 'hero'
   | 'about'
   | 'services'
@@ -28,7 +31,8 @@ type EditorTab =
   | 'portfolio'
   | 'vsl'
   | 'cta'
-  | 'footer';
+  | 'footer'
+  | 'legal';
 
 export const AdminWebsiteEditor: React.FC = () => {
   const { content, updateWebsiteContent, resetWebsiteContent, saveStatus } = useApp();
@@ -90,15 +94,17 @@ export const AdminWebsiteEditor: React.FC = () => {
   };
 
   const tabs: { id: EditorTab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-    { id: 'settings', label: 'Site Settings', icon: Globe2 },
+    { id: 'settings', label: 'General', icon: Globe2 },
+    { id: 'header', label: 'Header & Nav', icon: PanelTop },
     { id: 'hero', label: 'Hero', icon: Sparkles },
-    { id: 'about', label: 'About', icon: Layers },
+    { id: 'vsl', label: 'System', icon: PlaySquare },
+    { id: 'portfolio', label: 'Portfolio', icon: FolderKanban },
+    { id: 'about', label: 'Process', icon: Layers },
     { id: 'services', label: 'Services', icon: BriefcaseBusiness },
     { id: 'team', label: 'Team', icon: UsersRound },
-    { id: 'portfolio', label: 'Portfolio', icon: FolderKanban },
-    { id: 'vsl', label: 'VSL', icon: PlaySquare },
     { id: 'cta', label: 'Final CTA', icon: Flame },
     { id: 'footer', label: 'Footer', icon: PanelBottom },
+    { id: 'legal', label: 'Legal Pages', icon: ShieldCheck },
   ];
 
   return (
@@ -272,6 +278,116 @@ export const AdminWebsiteEditor: React.FC = () => {
                   value={formData.brand.instagram}
                   onChange={(e) => handleChange('brand.instagram', e.target.value)}
                   className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                />
+              </div>
+
+              <div className="sm:col-span-2 pt-3 border-t border-white/10 flex items-center justify-between">
+                <div>
+                  <label className="text-xs font-bold uppercase tracking-wider text-white block">
+                    Show Instagram Button
+                  </label>
+                  <p className="text-[11px] text-zinc-400 mt-0.5">
+                    Toggle Instagram visibility across website header, CTAs, and footer.
+                  </p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={formData.brand.showInstagramButton !== false}
+                  onChange={(e) => handleChange('brand.showInstagramButton', e.target.checked)}
+                  className="w-5 h-5 rounded bg-[#12121c] border-white/20 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 2. HEADER & NAVIGATION */}
+        {activeTab === 'header' && (
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-1">
+                Header & Navigation CMS
+              </h3>
+              <p className="text-xs text-zinc-400">
+                Configure public navigation labels, primary call-to-action button, and social link visibility.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                  Nav Item: Work
+                </label>
+                <input
+                  type="text"
+                  value={formData.header?.navWork || 'Work'}
+                  onChange={(e) => handleChange('header.navWork', e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                  Nav Item: System (f/k/a VSL)
+                </label>
+                <input
+                  type="text"
+                  value={formData.header?.navSystem || 'System'}
+                  onChange={(e) => handleChange('header.navSystem', e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                  Nav Item: Services
+                </label>
+                <input
+                  type="text"
+                  value={formData.header?.navServices || 'Services'}
+                  onChange={(e) => handleChange('header.navServices', e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                  Nav Item: About
+                </label>
+                <input
+                  type="text"
+                  value={formData.header?.navAbout || 'About'}
+                  onChange={(e) => handleChange('header.navAbout', e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                />
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                  Primary Header Action Button
+                </label>
+                <input
+                  type="text"
+                  value={formData.header?.ctaText || 'Build with Footazix'}
+                  onChange={(e) => handleChange('header.ctaText', e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-bold"
+                />
+              </div>
+
+              <div className="sm:col-span-2 p-4 rounded-xl bg-[#12121c] border border-white/10 flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-white block">
+                    Show Instagram Icon in Header
+                  </span>
+                  <span className="text-[11px] text-zinc-400 block mt-0.5">
+                    If disabled, the button disappears completely with zero empty gap.
+                  </span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={formData.brand.showInstagramButton !== false}
+                  onChange={(e) => handleChange('brand.showInstagramButton', e.target.checked)}
+                  className="w-5 h-5 rounded bg-zinc-900 border-white/20 text-blue-600 focus:ring-blue-500 cursor-pointer"
                 />
               </div>
             </div>
@@ -704,6 +820,118 @@ export const AdminWebsiteEditor: React.FC = () => {
                   value={formData.footer.tagline}
                   onChange={(e) => handleChange('footer.tagline', e.target.value)}
                   className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 11. LEGAL PAGES */}
+        {activeTab === 'legal' && (
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-1">
+                Legal & Compliance Documents
+              </h3>
+              <p className="text-xs text-zinc-400">
+                Manage Terms & Conditions (/terms) and Privacy Policy (/privacy) copy.
+              </p>
+            </div>
+
+            {/* Terms & Conditions Block */}
+            <div className="p-5 rounded-xl bg-[#12121c] border border-white/10 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-400">
+                  Document 01 — Terms & Conditions
+                </span>
+                <span className="text-[10px] font-mono text-zinc-400">Path: /terms</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                    Document Title
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.legal?.terms?.title || 'Terms & Conditions'}
+                    onChange={(e) => handleChange('legal.terms.title', e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#090910] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                    Last Updated Label
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.legal?.terms?.lastUpdated || 'October 2026'}
+                    onChange={(e) => handleChange('legal.terms.lastUpdated', e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#090910] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                  Terms & Conditions Text
+                </label>
+                <textarea
+                  rows={6}
+                  value={formData.legal?.terms?.content || ''}
+                  onChange={(e) => handleChange('legal.terms.content', e.target.value)}
+                  placeholder="Enter full Terms & Conditions clauses..."
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#090910] border border-white/10 text-white text-xs leading-relaxed focus:border-blue-500 outline-none font-mono resize-y"
+                />
+              </div>
+            </div>
+
+            {/* Privacy Policy Block */}
+            <div className="p-5 rounded-xl bg-[#12121c] border border-white/10 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-400">
+                  Document 02 — Privacy Policy
+                </span>
+                <span className="text-[10px] font-mono text-zinc-400">Path: /privacy</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                    Document Title
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.legal?.privacy?.title || 'Privacy Policy'}
+                    onChange={(e) => handleChange('legal.privacy.title', e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#090910] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                    Last Updated Label
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.legal?.privacy?.lastUpdated || 'October 2026'}
+                    onChange={(e) => handleChange('legal.privacy.lastUpdated', e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#090910] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                  Privacy Policy Text
+                </label>
+                <textarea
+                  rows={6}
+                  value={formData.legal?.privacy?.content || ''}
+                  onChange={(e) => handleChange('legal.privacy.content', e.target.value)}
+                  placeholder="Enter full Privacy Policy clauses..."
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#090910] border border-white/10 text-white text-xs leading-relaxed focus:border-blue-500 outline-none font-mono resize-y"
                 />
               </div>
             </div>

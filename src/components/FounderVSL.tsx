@@ -120,21 +120,21 @@ export const FounderVSL: React.FC = () => {
   };
 
   return (
-    <section id="vsl" className="py-20 sm:py-24 bg-[#050508] relative">
+    <section id="system" className="py-20 sm:py-28 bg-[#050508] relative font-sans">
       <div className="max-w-5xl mx-auto px-6">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-10">
+        <div className="text-center max-w-2xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
-            <span>{vsl.label || 'FROM THE FOUNDER'}</span>
+            <span className="font-mono text-[11px]">{vsl.label || 'THE FOOTAZIX SYSTEM'}</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-white tracking-tight mb-3">
-            {vsl.heading || 'SEE HOW FOOTAZIX WORKS.'}
+            {vsl.heading || 'SEE HOW FOOTAZIX TRANSFORMS CONTENT.'}
           </h2>
 
-          <p className="text-sm sm:text-base text-zinc-400 font-normal">
-            {vsl.description || 'Who we are, what we do, and how we turn raw footage into better content.'}
+          <p className="text-sm sm:text-base text-zinc-400 font-normal max-w-xl mx-auto leading-relaxed">
+            {vsl.description || 'See how we transform raw footage into content built for attention.'}
           </p>
         </div>
 
@@ -323,12 +323,17 @@ export const FounderVSL: React.FC = () => {
             </>
           )}
 
-          {/* Missing/Failed Video Notice */}
+          {/* Missing/Failed Video Notice — Clean, Zero Technical Jargon */}
           {videoError && (
-            <div className="absolute inset-0 bg-zinc-950/90 flex flex-col items-center justify-center p-6 text-center">
-              <p className="text-sm font-semibold text-zinc-300 mb-1">Video preview unavailable</p>
-              <p className="text-xs text-zinc-500 max-w-sm">
-                Configure your video in the Admin CMS under VSL Settings (YouTube, Google Drive, or upload file).
+            <div className="absolute inset-0 bg-[#07070d] flex flex-col items-center justify-center p-6 text-center">
+              <div className="w-12 h-12 rounded-full bg-blue-600/10 border border-blue-500/30 flex items-center justify-center text-blue-400 mb-3">
+                <Play className="w-5 h-5 fill-current ml-0.5" />
+              </div>
+              <p className="text-xs sm:text-sm font-display font-bold text-white tracking-widest uppercase mb-1">
+                {vsl.fallbackMessage || 'VIDEO UNAVAILABLE'}
+              </p>
+              <p className="text-xs text-zinc-400 max-w-sm">
+                The Footazix system reel is currently being updated.
               </p>
             </div>
           )}

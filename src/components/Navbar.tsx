@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { Menu, X, ArrowRight } from 'lucide-react';
+import { FootazixLogo } from './FootazixLogo';
+import { Menu, X, ArrowRight, Instagram } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface NavbarProps {
@@ -12,6 +13,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  const showInstagram = content.brand.showInstagramButton !== false && Boolean(content.brand.instagram);
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -21,10 +24,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
   }, []);
 
   const navLinks = [
-    { label: 'Work', href: '#work' },
-    { label: 'VSL', href: '#vsl' },
-    { label: 'Services', href: '#services' },
-    { label: 'About', href: '#about' },
+    { label: content.header?.navWork || 'Work', href: '#work' },
+    { label: content.header?.navSystem || 'System', href: '#system' },
+    { label: content.header?.navServices || 'Services', href: '#services' },
+    { label: content.header?.navAbout || 'About', href: '#about' },
   ];
 
   const handleLinkClick = (href: string) => {
@@ -39,55 +42,82 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 font-sans ${
         scrolled
-          ? 'bg-[#050508]/90 backdrop-blur-md border-b border-white/10 py-3.5'
+          ? 'bg-[#050508]/92 backdrop-blur-md border-b border-white/10 py-3.5 shadow-2xl shadow-black/60'
           : 'bg-transparent py-5'
       }`}
     >
-      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
-        {/* Brand Wordmark with cobalt blue dot */}
-        <a
+      <div className="max-w-6xl mx-auto px-5 sm:px-6 flex items-center justify-between">
+        {/* Official Footazix Logo (Desktop: ~140-170px, Mobile: ~115-140px) */}
+        <motion.a
+          initial={{ opacity: 0, x: -12 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           href="#"
-          className="text-lg font-extrabold font-display tracking-tight text-white hover:text-zinc-200 transition-colors shrink-0 flex items-center gap-2 group"
-          aria-label="FOOTAZIX Home"
+          className="shrink-0 flex items-center group cursor-pointer transition-opacity hover:opacity-90 active:scale-[0.99]"
+          aria-label="Footazix Home"
         >
-          <span>{content.brand.name || 'FOOTAZIX'}</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block shadow-[0_0_8px_rgba(37,99,235,0.8)] group-hover:scale-125 transition-transform" />
-        </a>
+          <div className="w-[125px] sm:w-[155px] h-[34px] sm:h-[40px] flex items-center">
+            <FootazixLogo className="h-full w-auto" />
+          </div>
+        </motion.a>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+        <motion.nav
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="hidden md:flex items-center gap-7 lg:gap-8 text-xs font-semibold uppercase tracking-wider text-zinc-400"
+        >
           {navLinks.map((link) => (
             <button
               key={link.label}
               onClick={() => handleLinkClick(link.href)}
-              className="hover:text-white transition-colors cursor-pointer py-1 relative text-left"
+              className="hover:text-white transition-colors cursor-pointer py-1 relative text-left group"
             >
-              {link.label}
+              <span>{link.label}</span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 transition-all duration-200 group-hover:w-full" />
             </button>
           ))}
-        </nav>
+        </motion.nav>
 
-        {/* Primary action button & Mobile Menu trigger */}
-        <div className="flex items-center gap-3">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+        {/* Right Action Stack: Optional Instagram + Primary CTA + Mobile Trigger */}
+        <motion.div
+          initial={{ opacity: 0, x: 12 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+          className="flex items-center gap-3"
+        >
+          {/* Conditional Instagram Button based strictly on CMS Toggle */}
+          {showInstagram && (
+            <a
+              href={content.brand.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Footazix Instagram"
+              className="hidden sm:inline-flex items-center justify-center p-2 rounded-xl text-zinc-400 hover:text-white bg-[#12121c] border border-white/10 hover:border-blue-500/40 transition-colors"
+            >
+              <Instagram className="w-4 h-4 text-blue-400" />
+            </a>
+          )}
+
+          {/* Primary CTA: "Build with Footazix" */}
+          <button
             onClick={() => onOpenContact()}
-            className="hidden sm:inline-flex items-center justify-center px-4 py-2 text-xs font-bold uppercase tracking-wider text-white bg-blue-600 rounded-xl hover:bg-blue-500 transition-all duration-150 whitespace-nowrap shadow-[0_0_16px_rgba(37,99,235,0.35)] cursor-pointer"
+            className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white bg-blue-600 rounded-xl hover:bg-blue-500 active:scale-95 transition-all duration-150 whitespace-nowrap shadow-[0_0_16px_rgba(37,99,235,0.35)] cursor-pointer"
           >
-            Start a Project
-          </motion.button>
+            {content.header?.ctaText || 'Build with Footazix'}
+          </button>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden flex items-center justify-center p-2 rounded-xl text-zinc-300 hover:text-white bg-zinc-900/80 border border-white/10 transition-colors cursor-pointer"
+            className="md:hidden flex items-center justify-center p-2.5 rounded-xl text-zinc-300 hover:text-white bg-zinc-900/90 border border-white/10 transition-colors cursor-pointer"
             aria-label={mobileMenuOpen ? 'Close Menu' : 'Open Menu'}
             aria-expanded={mobileMenuOpen}
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="w-5 h-5 text-white" /> : <Menu className="w-5 h-5" />}
           </button>
-        </div>
+        </motion.div>
       </div>
 
       {/* Mobile Drawer */}
@@ -110,16 +140,31 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                   {link.label}
                 </button>
               ))}
+
+              {/* Instagram link in mobile menu if enabled */}
+              {showInstagram && (
+                <a
+                  href={content.brand.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-left text-sm font-semibold uppercase tracking-wider text-blue-400 hover:text-blue-300 py-2 transition-colors"
+                >
+                  <Instagram className="w-4 h-4" />
+                  <span>Instagram</span>
+                </a>
+              )}
             </nav>
+
             <div className="pt-3 border-t border-white/10">
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   onOpenContact();
                 }}
-                className="w-full py-3 text-center text-xs font-bold uppercase tracking-wider text-white bg-blue-600 rounded-xl hover:bg-blue-500 active:scale-95 transition-all shadow-[0_0_16px_rgba(37,99,235,0.35)] cursor-pointer"
+                className="w-full py-3.5 text-center text-xs font-bold uppercase tracking-wider text-white bg-blue-600 rounded-xl hover:bg-blue-500 active:scale-95 transition-all shadow-[0_0_16px_rgba(37,99,235,0.35)] cursor-pointer flex items-center justify-center gap-2"
               >
-                Start a Project →
+                <span>{content.header?.ctaText || 'Build with Footazix'}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </motion.div>

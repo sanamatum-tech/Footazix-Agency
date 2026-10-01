@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { FootazixLogo } from '../FootazixLogo';
 import { LockKeyhole, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -39,15 +40,16 @@ export const AdminLogin: React.FC = () => {
     <div className="min-h-screen bg-[#050508] text-white flex flex-col justify-between py-6 px-4 sm:px-6 selection:bg-blue-600 selection:text-white font-sans antialiased">
       {/* Top Header */}
       <header className="w-full max-w-5xl mx-auto flex items-center justify-between pt-2 pb-4">
-        {/* Top-left: Brand Logo with signature cobalt blue dot */}
+        {/* Top-left: Brand Logo with official FootazixLogo */}
         <button
           type="button"
           onClick={navigateToPublic}
-          className="inline-flex items-center gap-2 text-base sm:text-lg font-extrabold font-display tracking-tight text-white hover:text-zinc-200 transition-colors cursor-pointer group"
+          className="inline-flex items-center group cursor-pointer hover:opacity-90 transition-opacity"
           aria-label="Return to Footazix homepage"
         >
-          <span>{content.brand.name || 'FOOTAZIX'}</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block shadow-[0_0_8px_rgba(37,99,235,0.8)] group-hover:scale-110 transition-transform" />
+          <div className="w-[125px] sm:w-[145px] h-[34px] flex items-center">
+            <FootazixLogo className="h-full w-auto" />
+          </div>
         </button>
 
         {/* Top-right: Subtle Secure Access Indicator */}

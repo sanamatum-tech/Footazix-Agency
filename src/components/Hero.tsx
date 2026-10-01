@@ -92,7 +92,7 @@ export const Hero: React.FC<HeroProps> = ({ onWorkWithUs, onWatchVSL }) => {
               onClick={onWorkWithUs}
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 text-xs font-bold uppercase tracking-wider text-white bg-blue-600 rounded-xl hover:bg-blue-500 transition-all duration-200 shadow-[0_0_24px_rgba(37,99,235,0.4)] cursor-pointer group"
             >
-              <span>{content.hero.primaryCta || 'WORK WITH FOOTAZIX →'}</span>
+              <span>{content.hero.primaryCta || 'BUILD WITH FOOTAZIX →'}</span>
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </motion.button>
 
@@ -103,7 +103,7 @@ export const Hero: React.FC<HeroProps> = ({ onWorkWithUs, onWatchVSL }) => {
               className="inline-flex items-center justify-center gap-2 px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-zinc-300 bg-zinc-900/80 hover:text-white hover:bg-zinc-800 border border-white/10 rounded-xl transition-all duration-200 cursor-pointer"
             >
               <Play className="w-3.5 h-3.5 text-blue-400 fill-blue-400" />
-              <span>{content.hero.secondaryCta || 'WATCH THE VSL ↓'}</span>
+              <span>{content.hero.secondaryCta || 'EXPLORE THE FOOTAZIX SYSTEM ↓'}</span>
             </motion.button>
           </motion.div>
         </div>

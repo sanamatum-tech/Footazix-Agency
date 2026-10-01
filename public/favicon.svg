@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="128" fill="#050508"/>
+  <g transform="translate(136, 116) scale(1.6)" fill="#ffffff">
+    <!-- Top swoosh -->
+    <path d="M 6 82 C 1 64 8 46 24 32 C 40 18 64 12 90 2 L 142 -22 C 146 -24 150 -20 148 -16 L 140 12 C 139 16 136 19 132 21 L 86 42 C 58 54 44 68 40 84 C 34 78 24 74 16 76 C 12 77 9 79 6 82 Z" fill="#ffffff"/>
+    <!-- Middle swoosh -->
+    <path d="M 6 150 C 1 132 8 114 24 100 C 40 86 64 80 90 70 L 142 46 C 146 44 150 48 148 52 L 140 80 C 139 84 136 87 132 89 L 86 110 C 58 122 44 136 40 152 C 34 146 24 142 16 144 C 12 145 9 147 6 150 Z" fill="#ffffff"/>
+    <!-- Bottom playhead wedge -->
+    <path d="M 88 154 L 146 122 C 149 120 152 123 151 127 L 142 162 C 141 165 137 167 134 165 L 86 142 C 82 140 83 134 88 132 Z" fill="#2563eb"/>
+  </g>
+</svg>
