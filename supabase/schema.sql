@@ -7,6 +7,16 @@
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- Standard privileges for Supabase API roles (RLS enforces actual row-level access)
+GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
+GRANT ALL ON ALL TABLES IN SCHEMA public TO anon, authenticated, service_role;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated, service_role;
+GRANT ALL ON ALL ROUTINES IN SCHEMA public TO anon, authenticated, service_role;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON ROUTINES TO anon, authenticated, service_role;
+
 -- ==============================================================================
 -- 2. ADMIN PROFILES TABLE & AUTH HELPERS
 -- ==============================================================================
@@ -349,3 +359,44 @@ CREATE POLICY "Admins can upload and manage media"
   TO authenticated
   USING (bucket_id = 'footazix-media' AND public.is_admin())
   WITH CHECK (bucket_id = 'footazix-media' AND public.is_admin());
+
+-- ==============================================================================
+-- 12. INITIAL SEED DATA
+-- ==============================================================================
+INSERT INTO public.site_settings (id, brand_name, domain, url, instagram, email)
+VALUES ('default', 'FOOTAZIX', 'footazix.site', 'https://footazix.site', 'https://www.instagram.com/footazix', 'footazix@gmail.com')
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO public.hero_content (id, headline_line1, headline_line2, supporting_line, description)
+VALUES ('default', 'TURN RAW FOOTAGE INTO', 'CONTENT WORTH WATCHING.', 'Video Editing • Content • Growth', 'We turn raw footage and ideas into content people want to watch. High-retention editing for creators, brands, and businesses.')
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO public.vsl_settings (id, label, heading, description, video_source, video_url, poster_url, published)
+VALUES ('default', 'FOUNDER VSL', 'SEE HOW FOOTAZIX WORKS.', 'A quick 90-second walk through our high-retention video editing framework.', 'direct', 'https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-video-editor-working-on-his-computer-42861-large.mp4', '/assets/vsl/vsl-poster.jpg', true)
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO public.about_content (id, heading, subheading)
+VALUES ('default', 'RAW → EDIT → READY', 'Three clean stages. Zero friction.')
+ON CONFLICT (id) DO NOTHING;
+
+-- Initial Services
+INSERT INTO public.services (number, title, description, features, highlighted, visible, display_order)
+VALUES 
+  ('01', 'VIDEO EDITING', 'High-retention short-form and long-form video editing engineered to capture and hold audience attention from the first second.', ARRAY['Pacing & Retention Hooks', 'Motion Graphics & Subtitles', 'Sound Design & Transitions', 'Format Adaptation (9:16 & 16:9)'], true, true, 1),
+  ('02', 'CONTENT SCRIPTING', 'Engaging hooks and punchy scripts crafted around your core message to keep viewers invested until the final frame.', ARRAY['Opening Hook Engineering', 'Structure & Story Flow', 'Concept Ideation', 'Clear Call-to-Actions'], false, true, 2),
+  ('03', 'CONTENT STRATEGY', 'Targeted advisory and publishing frameworks to turn one piece of recorded footage into multiple high-performing assets.', ARRAY['Footage Auditing & Batching', 'Cross-Platform Repurposing', 'Content Cadence Planning', 'Growth Optimization'], false, true, 3)
+ON CONFLICT DO NOTHING;
+
+-- Initial Team
+INSERT INTO public.team_members (name, role, description, photo, social_link, email, display_order, visible)
+VALUES 
+  ('Sanamatum', 'Founder & Creative Lead', 'Directing creative video editing workflows and high-retention content systems for modern creators and brands.', '/assets/founder.jpg', 'https://www.instagram.com/footazix', 'footazix@gmail.com', 1, true)
+ON CONFLICT DO NOTHING;
+
+-- Initial Projects
+INSERT INTO public.projects (title, category, description, cover_image, client_name, display_order, status)
+VALUES 
+  ('Creator Retention Reel', 'Reels', 'Paced short-form edit transforming raw talking-head footage into high-retention social content with kinetic typography.', '/assets/portfolio/project-01/cover.jpg', 'Creator Showcase', 1, 'published'),
+  ('Cinematic Brand Story', 'Brand', 'Editorial cut showcasing brand narrative with punchy sound design and color grading.', '/assets/vsl/vsl-poster.jpg', 'Modern Brand', 2, 'published'),
+  ('YouTube Long-Form Hook Cut', 'YouTube', 'Dynamic intro hook sequence engineered to retain viewer attention past the crucial 30-second mark.', '/assets/portfolio/project-01/cover.jpg', 'YouTube Studio', 3, 'published')
+ON CONFLICT DO NOTHING;
