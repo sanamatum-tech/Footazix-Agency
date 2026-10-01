@@ -1,12 +1,17 @@
 /**
- * FOOTAZIX — Content Growth & Video Editing Agency
+ * FOOTAZIX — Website + Admin CMS (Phase 1 Frontend Only)
+ * 
+ * Strict Architecture:
+ * - Decoupled data & service layers (ready for Supabase in Phase 2)
+ * - Zero external databases / zero API keys / zero fake backend claims
+ * - Real-time synchronized local state between Public Site and Admin CMS
  * 
  * Flow Order:
  * HEADER
  * ↓
  * HERO
  * ↓
- * FOUNDER VSL
+ * FOUNDER / INTRO VSL
  * ↓
  * SELECTED WORK
  * ↓
@@ -14,14 +19,15 @@
  * ↓
  * SERVICES
  * ↓
- * ABOUT / FOUNDER
+ * TEAM / ABOUT
  * ↓
  * FINAL CTA
  * ↓
- * FOOTER
+ * FOOTER (with subtle owner lock 🔒)
  */
 
 import React, { useState } from 'react';
+import { AppProvider, useApp } from './context/AppContext';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { FounderVSL } from './components/FounderVSL';
@@ -32,8 +38,10 @@ import { About } from './components/About';
 import { FinalCTA } from './components/FinalCTA';
 import { ContactModal } from './components/ContactModal';
 import { Footer } from './components/Footer';
+import { AdminLayout } from './components/admin/AdminLayout';
+import { AdminLogin } from './components/admin/AdminLogin';
 
-export default function App() {
+function MainWebsite() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [selectedServiceForModal, setSelectedServiceForModal] = useState<string>('');
 
@@ -55,18 +63,13 @@ export default function App() {
   };
 
   const scrollToContact = () => {
-    const el = document.getElementById('contact');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      openContactModal();
-    }
+    openContactModal();
   };
 
   return (
     <div className="min-h-screen bg-[#050508] text-white flex flex-col selection:bg-blue-600 selection:text-white">
       {/* 1. HEADER */}
-      <Navbar onOpenContact={() => openContactModal()} />
+      <Navbar onOpenContact={openContactModal} />
 
       <main className="flex-grow">
         {/* 2. HERO */}
@@ -91,22 +94,43 @@ export default function App() {
         {/* 6. SERVICES */}
         <Services onSelectService={(service) => openContactModal(service)} />
 
-        {/* 7. ABOUT / FOUNDER */}
+        {/* 7. TEAM / ABOUT */}
         <About />
 
-        {/* 8. FINAL CTA (Includes Direct Project Inquiry) */}
+        {/* 8. FINAL CTA */}
         <FinalCTA onOpenModal={() => openContactModal()} />
       </main>
 
-      {/* 9. FOOTER */}
+      {/* 9. FOOTER (Contains discreet owner lock button) */}
       <Footer onOpenContact={() => openContactModal()} />
 
-      {/* Instant Project Inquiry Modal (Accessible from any 'Start Project' or Service click) */}
+      {/* Internal Project Inquiry Modal */}
       <ContactModal
         isOpen={isContactModalOpen}
         onClose={closeContactModal}
         prefilledService={selectedServiceForModal}
       />
     </div>
+  );
+}
+
+function AppContent() {
+  const { activeView, isAuthenticated } = useApp();
+
+  if (activeView === 'admin') {
+    if (isAuthenticated) {
+      return <AdminLayout />;
+    }
+    return <AdminLogin />;
+  }
+
+  return <MainWebsite />;
+}
+
+export default function App() {
+  return (
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
   );
 }

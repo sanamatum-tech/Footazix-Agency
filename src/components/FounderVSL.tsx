@@ -1,76 +1,95 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { SITE_CONFIG } from '../config/siteContent';
+import { useApp } from '../context/AppContext';
 
 export const FounderVSL: React.FC = () => {
+  const { content } = useApp();
+  const vsl = content.vsl;
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(72);
+  const [duration, setDuration] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
-  const [showCaptions, setShowCaptions] = useState(true);
+  const [showCaptions, setShowCaptions] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [hasActualVideo, setHasActualVideo] = useState(false);
-  const [activeCaption, setActiveCaption] = useState<string>('');
+  const [videoError, setVideoError] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const simulationTimerRef = useRef<number | null>(null);
 
-  // Check if real video file is accessible
-  useEffect(() => {
-    fetch(SITE_CONFIG.vsl.videoSrc, { method: 'HEAD' })
-      .then((res) => {
-        if (res.ok) {
-          setHasActualVideo(true);
-        } else {
-          setHasActualVideo(false);
-        }
-      })
-      .catch(() => setHasActualVideo(false));
-  }, []);
-
-  // Update caption text based on current time
-  useEffect(() => {
-    const matched = SITE_CONFIG.vsl.captions.find(
-      (c) => currentTime >= c.start && currentTime <= c.end
-    );
-    setActiveCaption(matched ? matched.text : '');
-  }, [currentTime]);
-
-  // Handle Play/Pause
-  const togglePlay = () => {
-    if (hasActualVideo && videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play().catch(() => {});
+  // Helper to parse YouTube embed URL
+  const getYouTubeEmbedUrl = (url: string) => {
+    try {
+      if (!url) return '';
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+      const match = url.match(regExp);
+      const videoId = match && match[2].length === 11 ? match[2] : null;
+      if (videoId) {
+        return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
       }
+      return url;
+    } catch {
+      return url;
+    }
+  };
+
+  // Helper to parse Google Drive preview URL
+  const getGoogleDriveEmbedUrl = (url: string) => {
+    try {
+      if (!url) return '';
+      if (url.includes('/preview')) return url;
+      const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) {
+        return `https://drive.google.com/file/d/${match[1]}/preview`;
+      }
+      return url;
+    } catch {
+      return url;
+    }
+  };
+
+  const hasCaptionsConfigured = Boolean(vsl.captionUrl && vsl.captionUrl.trim().length > 0);
+
+  const handlePlayToggle = () => {
+    if (!videoRef.current) {
       setIsPlaying(!isPlaying);
+      return;
+    }
+
+    if (isPlaying) {
+      videoRef.current.pause();
+      setIsPlaying(false);
     } else {
-      if (isPlaying) {
-        if (simulationTimerRef.current) clearInterval(simulationTimerRef.current);
-        setIsPlaying(false);
-      } else {
-        setIsPlaying(true);
-        const startTime = Date.now() - currentTime * 1000;
-        simulationTimerRef.current = window.setInterval(() => {
-          const elapsed = (Date.now() - startTime) / 1000;
-          if (elapsed >= duration) {
-            setCurrentTime(0);
-            setIsPlaying(false);
-            if (simulationTimerRef.current) clearInterval(simulationTimerRef.current);
-          } else {
-            setCurrentTime(elapsed);
-          }
-        }, 100);
+      videoRef.current
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch(() => {
+          // If video element fails to play, set error
+          setVideoError(true);
+        });
+    }
+  };
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current) {
+      setCurrentTime(videoRef.current.currentTime);
+      if (videoRef.current.duration && !isNaN(videoRef.current.duration)) {
+        setDuration(videoRef.current.duration);
       }
     }
   };
 
+  const handleLoadedMetadata = () => {
+    if (videoRef.current && !isNaN(videoRef.current.duration)) {
+      setDuration(videoRef.current.duration);
+      setVideoError(false);
+    }
+  };
+
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = parseFloat(e.target.value);
-    setCurrentTime(newTime);
-    if (hasActualVideo && videoRef.current) {
-      videoRef.current.currentTime = newTime;
+    const time = parseFloat(e.target.value);
+    setCurrentTime(time);
+    if (videoRef.current) {
+      videoRef.current.currentTime = time;
     }
   };
 
@@ -93,208 +112,242 @@ export const FounderVSL: React.FC = () => {
   };
 
   const formatTime = (secs: number) => {
+    if (isNaN(secs) || secs < 0) return '0:00';
     const m = Math.floor(secs / 60);
     const s = Math.floor(secs % 60);
     return `${m}:${s < 10 ? '0' : ''}${s}`;
   };
 
-  useEffect(() => {
-    return () => {
-      if (simulationTimerRef.current) clearInterval(simulationTimerRef.current);
-    };
-  }, []);
-
   return (
-    <section id="vsl" className="relative py-20 bg-[#08080d] border-t border-b border-white/5">
+    <section id="vsl" className="py-20 sm:py-24 bg-[#050508] relative">
       <div className="max-w-5xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-10">
-          <div className="flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-            <span>{SITE_CONFIG.vsl.label}</span>
+          <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
+            <span>{vsl.label || 'FROM THE FOUNDER'}</span>
           </div>
-          <h2 className="text-2xl sm:text-4xl font-display font-extrabold text-white tracking-tight mb-3">
-            {SITE_CONFIG.vsl.heading}
+
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-white tracking-tight mb-3">
+            {vsl.heading || 'SEE HOW FOOTAZIX WORKS.'}
           </h2>
-          <p className="text-zinc-400 text-sm sm:text-base leading-relaxed">
-            "{SITE_CONFIG.vsl.description}"
+
+          <p className="text-sm sm:text-base text-zinc-400 font-normal">
+            {vsl.description || 'Who we are, what we do, and how we turn raw footage into better content.'}
           </p>
         </div>
 
-        {/* Video Player Frame */}
+        {/* Video Player Container */}
         <div
           ref={containerRef}
-          className={`relative rounded-2xl overflow-hidden bg-black border border-white/10 shadow-2xl transition-all duration-300 group ${
-            isFullscreen ? 'w-full h-full rounded-none' : 'aspect-video w-full'
-          }`}
+          className="relative w-full aspect-video rounded-2xl sm:rounded-3xl overflow-hidden bg-black border border-white/10 shadow-2xl group"
         >
-          {/* HTML5 Video */}
-          {hasActualVideo ? (
-            <video
-              ref={videoRef}
-              src={SITE_CONFIG.vsl.videoSrc}
-              poster={SITE_CONFIG.vsl.posterSrc}
-              playsInline
-              onTimeUpdate={() => {
-                if (videoRef.current) {
-                  setCurrentTime(videoRef.current.currentTime);
-                  setDuration(videoRef.current.duration || 72);
-                }
-              }}
-              onEnded={() => setIsPlaying(false)}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            /* Cinematic Poster */
-            <div className="relative w-full h-full bg-zinc-950 flex items-center justify-center">
-              <img
-                src={SITE_CONFIG.vsl.posterSrc}
-                alt="Footazix Founder Presentation"
-                referrerPolicy="no-referrer"
-                className={`w-full h-full object-cover transition-opacity duration-500 ${
-                  isPlaying ? 'opacity-35 brightness-75' : 'opacity-85'
-                }`}
+          {/* 1. YouTube Source */}
+          {vsl.videoSource === 'youtube' && vsl.videoUrl ? (
+            isPlaying ? (
+              <iframe
+                src={getYouTubeEmbedUrl(vsl.videoUrl)}
+                title={vsl.heading}
+                className="w-full h-full border-0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-
-              {/* In-Video Audio Visualizer when playing in preview */}
-              {isPlaying && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none p-6 text-center">
-                  <div className="flex items-center gap-1.5 mb-4">
-                    <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                    <span className="text-xs font-medium tracking-wider text-zinc-300 uppercase">
-                      FOOTAZIX FOUNDER OVERVIEW
-                    </span>
+            ) : (
+              <div
+                onClick={() => setIsPlaying(true)}
+                className="relative w-full h-full cursor-pointer group"
+              >
+                <img
+                  src={vsl.posterUrl || '/assets/vsl/vsl-poster.jpg'}
+                  alt={vsl.heading}
+                  className="w-full h-full object-cover grayscale contrast-110 group-hover:scale-[1.02] transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-blue-600/90 text-white flex items-center justify-center pl-1 glow-blue-sm group-hover:scale-110 transition-transform">
+                    <svg className="w-7 h-7 sm:w-8 sm:h-8" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
                   </div>
+                </div>
+              </div>
+            )
+          ) : null}
 
-                  <div className="flex items-end justify-center gap-1.5 h-10 w-44">
-                    {[40, 65, 85, 30, 95, 75, 45, 90, 60, 80, 50, 70, 95, 40].map((h, i) => (
-                      <div
-                        key={i}
-                        className="w-1.5 bg-blue-500 rounded-full transition-all duration-150"
-                        style={{
-                          height: `${Math.max(15, (h * (1 + Math.sin(currentTime * 5 + i))) / 2)}%`,
-                          opacity: 0.85,
-                        }}
-                      />
-                    ))}
+          {/* 2. Google Drive Source */}
+          {vsl.videoSource === 'drive' && vsl.videoUrl ? (
+            isPlaying ? (
+              <iframe
+                src={getGoogleDriveEmbedUrl(vsl.videoUrl)}
+                title={vsl.heading}
+                className="w-full h-full border-0"
+                allow="autoplay"
+                allowFullScreen
+              />
+            ) : (
+              <div
+                onClick={() => setIsPlaying(true)}
+                className="relative w-full h-full cursor-pointer group"
+              >
+                <img
+                  src={vsl.posterUrl || '/assets/vsl/vsl-poster.jpg'}
+                  alt={vsl.heading}
+                  className="w-full h-full object-cover grayscale contrast-110 group-hover:scale-[1.02] transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-blue-600/90 text-white flex items-center justify-center pl-1 glow-blue-sm group-hover:scale-110 transition-transform">
+                    <svg className="w-7 h-7 sm:w-8 sm:h-8" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            )
+          ) : null}
+
+          {/* 3. Direct Upload or Local Video Source */}
+          {(vsl.videoSource === 'direct' || vsl.videoSource === 'local') && (
+            <>
+              <video
+                ref={videoRef}
+                src={vsl.videoUrl || '/assets/vsl/footazix-vsl.mp4'}
+                poster={vsl.posterUrl || '/assets/vsl/vsl-poster.jpg'}
+                className="w-full h-full object-cover"
+                playsInline
+                onTimeUpdate={handleTimeUpdate}
+                onLoadedMetadata={handleLoadedMetadata}
+                onEnded={() => setIsPlaying(false)}
+                onError={() => setVideoError(true)}
+                onClick={handlePlayToggle}
+              >
+                {/* CC track: rendered ONLY if captionUrl is defined */}
+                {hasCaptionsConfigured && showCaptions && (
+                  <track
+                    kind="subtitles"
+                    src={vsl.captionUrl}
+                    srcLang="en"
+                    label="English"
+                    default
+                  />
+                )}
+              </video>
+
+              {/* Poster Play Overlay if not playing */}
+              {!isPlaying && (
+                <div
+                  onClick={handlePlayToggle}
+                  className="absolute inset-0 bg-black/45 hover:bg-black/30 transition-colors flex items-center justify-center cursor-pointer"
+                >
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-blue-600 text-white flex items-center justify-center pl-1 glow-blue-sm hover:scale-110 active:scale-95 transition-transform duration-200">
+                    <svg className="w-7 h-7 sm:w-8 sm:h-8" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
                   </div>
                 </div>
               )}
-            </div>
+
+              {/* Custom Dark Glass Controls Bar */}
+              <div
+                className={`absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 via-black/60 to-transparent transition-opacity duration-300 ${
+                  isPlaying ? 'opacity-0 group-hover:opacity-100' : 'opacity-100'
+                }`}
+              >
+                {/* Timeline Scrubber */}
+                <div className="relative mb-3">
+                  <input
+                    type="range"
+                    min="0"
+                    max={duration || 100}
+                    step="0.1"
+                    value={currentTime}
+                    onChange={handleSeek}
+                    className="w-full h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-blue-500 hover:h-1.5 transition-all"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between text-xs text-zinc-300">
+                  <div className="flex items-center gap-3">
+                    {/* Play/Pause */}
+                    <button
+                      onClick={handlePlayToggle}
+                      className="p-1 hover:text-white transition-colors cursor-pointer"
+                      aria-label={isPlaying ? 'Pause' : 'Play'}
+                    >
+                      {isPlaying ? (
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                        </svg>
+                      ) : (
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      )}
+                    </button>
+
+                    {/* Mute */}
+                    <button
+                      onClick={toggleMute}
+                      className="p-1 hover:text-white transition-colors cursor-pointer"
+                      aria-label={isMuted ? 'Unmute' : 'Mute'}
+                    >
+                      {isMuted ? (
+                        <svg className="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                        </svg>
+                      ) : (
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                        </svg>
+                      )}
+                    </button>
+
+                    {/* Time Counter */}
+                    <span className="font-mono text-[11px] text-zinc-400">
+                      {formatTime(currentTime)} / {formatTime(duration)}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    {/* CC button: rendered ONLY if captionUrl is configured */}
+                    {hasCaptionsConfigured && (
+                      <button
+                        onClick={() => setShowCaptions(!showCaptions)}
+                        className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-colors cursor-pointer border ${
+                          showCaptions
+                            ? 'bg-blue-600 text-white border-blue-500'
+                            : 'bg-zinc-900 text-zinc-400 border-white/10 hover:text-white'
+                        }`}
+                        title="Toggle Captions"
+                      >
+                        CC
+                      </button>
+                    )}
+
+                    {/* Fullscreen */}
+                    <button
+                      onClick={toggleFullscreen}
+                      className="p-1 hover:text-white transition-colors cursor-pointer"
+                      aria-label="Toggle Fullscreen"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </>
           )}
 
-          {/* Subtitles Overlay */}
-          {showCaptions && activeCaption && (
-            <div className="absolute bottom-20 left-1/2 -translate-x-1/2 max-w-xl w-[90%] px-4 py-2 bg-black/85 backdrop-blur-md rounded-lg border border-white/10 text-center pointer-events-none z-20">
-              <p className="text-xs sm:text-sm font-medium text-white tracking-wide">
-                {activeCaption}
+          {/* Missing/Failed Video Notice */}
+          {videoError && (
+            <div className="absolute inset-0 bg-zinc-950/90 flex flex-col items-center justify-center p-6 text-center">
+              <p className="text-sm font-semibold text-zinc-300 mb-1">Video preview unavailable</p>
+              <p className="text-xs text-zinc-500 max-w-sm">
+                Configure your video in the Admin CMS under VSL Settings (YouTube, Google Drive, or upload file).
               </p>
             </div>
           )}
-
-          {/* Center Play Button */}
-          {!isPlaying && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
-              <button
-                onClick={togglePlay}
-                aria-label="Play Founder Video"
-                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center pl-1 shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 glow-blue-lg cursor-pointer"
-              >
-                <svg className="w-7 h-7 sm:w-8 sm:h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </button>
-            </div>
-          )}
-
-          {/* Controls Bar */}
-          <div
-            className={`absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-black/80 to-transparent z-30 transition-opacity duration-200 ${
-              isPlaying ? 'opacity-90 hover:opacity-100 group-hover:opacity-100' : 'opacity-100'
-            }`}
-          >
-            {/* Scrubber */}
-            <div className="flex items-center gap-3 mb-2">
-              <input
-                type="range"
-                min="0"
-                max={duration}
-                step="0.1"
-                value={currentTime}
-                onChange={handleSeek}
-                aria-label="Video scrubber"
-                className="w-full h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
-              />
-            </div>
-
-            {/* Bottom Row */}
-            <div className="flex items-center justify-between text-xs text-zinc-300 font-medium">
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={togglePlay}
-                  className="hover:text-white transition-colors cursor-pointer"
-                  aria-label={isPlaying ? 'Pause' : 'Play'}
-                >
-                  {isPlaying ? (
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6" />
-                    </svg>
-                  ) : (
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  )}
-                </button>
-
-                <span>
-                  {formatTime(currentTime)} / {formatTime(duration)}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-4">
-                {/* CC Toggle */}
-                <button
-                  onClick={() => setShowCaptions(!showCaptions)}
-                  className={`px-1.5 py-0.5 rounded border text-[11px] font-bold transition-colors cursor-pointer ${
-                    showCaptions ? 'border-blue-500 text-blue-400 bg-blue-500/10' : 'border-zinc-700 text-zinc-500'
-                  }`}
-                  aria-label="Toggle Captions"
-                >
-                  CC
-                </button>
-
-                {/* Mute */}
-                <button
-                  onClick={toggleMute}
-                  className="hover:text-white transition-colors cursor-pointer"
-                  aria-label={isMuted ? 'Unmute' : 'Mute'}
-                >
-                  {isMuted ? (
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
-                    </svg>
-                  ) : (
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                    </svg>
-                  )}
-                </button>
-
-                {/* Fullscreen */}
-                <button
-                  onClick={toggleFullscreen}
-                  className="hover:text-white transition-colors cursor-pointer"
-                  aria-label="Toggle Fullscreen"
-                >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>

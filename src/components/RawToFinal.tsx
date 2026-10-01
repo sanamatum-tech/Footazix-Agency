@@ -1,29 +1,32 @@
 import React from 'react';
-import { SITE_CONFIG } from '../config/siteContent';
+import { useApp } from '../context/AppContext';
 
 export const RawToFinal: React.FC = () => {
+  const { content } = useApp();
+  const rawToReady = content.rawToReady;
+
   return (
     <section className="py-16 bg-[#08080c] border-t border-b border-white/5 relative overflow-hidden">
       <div className="max-w-5xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center max-w-xl mx-auto mb-10">
           <div className="flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
             <span>THE TRANSFORMATION</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-white tracking-tight">
-            {SITE_CONFIG.rawToReady.heading}
+            {rawToReady.heading || 'RAW → EDIT → READY'}
           </h2>
           <p className="text-zinc-400 text-xs sm:text-sm mt-1">
-            {SITE_CONFIG.rawToReady.subheading}
+            {rawToReady.subheading || 'A focused transformation pipeline designed to turn unedited footage into high-retention content.'}
           </p>
         </div>
 
         {/* Compact Visual Transformation Strip */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative">
-          {SITE_CONFIG.rawToReady.steps.map((step, idx) => (
+          {(rawToReady.steps || []).map((step, idx) => (
             <div
-              key={step.num}
+              key={step.num || idx}
               className={`p-5 rounded-xl border transition-all duration-200 relative ${
                 idx === 1
                   ? 'bg-zinc-900/90 border-blue-500/50 glow-blue-sm'
@@ -49,7 +52,7 @@ export const RawToFinal: React.FC = () => {
               </p>
 
               {/* Step indicator arrow for desktop */}
-              {idx < 2 && (
+              {idx < (rawToReady.steps.length - 1) && (
                 <div className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-zinc-900 border border-white/20 text-blue-400 items-center justify-center text-xs font-bold shadow-md">
                   →
                 </div>

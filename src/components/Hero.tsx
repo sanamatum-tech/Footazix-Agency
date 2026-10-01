@@ -1,5 +1,5 @@
 import React from 'react';
-import { SITE_CONFIG } from '../config/siteContent';
+import { useApp } from '../context/AppContext';
 import { FootazixHero3D } from './FootazixHero3D';
 
 interface HeroProps {
@@ -8,6 +8,8 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onWorkWithUs, onWatchVSL }) => {
+  const { content } = useApp();
+
   return (
     <section className="relative min-h-[85vh] md:min-h-screen flex items-center justify-center pt-28 pb-16 overflow-hidden bg-radial-hero">
       {/* Background ambient lighting accents */}
@@ -22,22 +24,27 @@ export const Hero: React.FC<HeroProps> = ({ onWorkWithUs, onWatchVSL }) => {
       <div className="relative max-w-6xl mx-auto px-6 w-full z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         {/* Left Column: Typographic Focus */}
         <div className="lg:col-span-7 flex flex-col items-start text-left">
-          {/* Tagline */}
+          {/* Small label */}
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-4 sm:mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-            <span>{SITE_CONFIG.hero.badgeText}</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
+            <span>{content.hero.badgeText}</span>
           </div>
 
-          {/* Main Headline */}
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-display font-extrabold text-white tracking-tight leading-[1.12] mb-5 text-balance">
-            <span>{SITE_CONFIG.hero.headlineLine1}</span>
+          {/* Main Headline (Manrope 800) */}
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-display font-extrabold text-white tracking-tight leading-[1.12] mb-4 text-balance">
+            <span>{content.hero.headlineLine1}</span>
             <br />
-            <span className="text-blue-500">{SITE_CONFIG.hero.headlineLine2}</span>
+            <span className="text-blue-500">{content.hero.headlineLine2}</span>
           </h1>
 
           {/* Supporting line */}
-          <p className="text-sm sm:text-base font-medium text-zinc-300 mb-8 flex items-center gap-2">
-            <span>{SITE_CONFIG.hero.supportingLine}</span>
+          <p className="text-sm sm:text-base font-semibold text-zinc-300 mb-2">
+            {content.hero.supportingLine}
+          </p>
+
+          {/* Description */}
+          <p className="text-xs sm:text-sm font-normal text-zinc-400 mb-8 max-w-lg leading-relaxed">
+            {content.hero.description}
           </p>
 
           {/* Action CTAs */}
@@ -46,7 +53,7 @@ export const Hero: React.FC<HeroProps> = ({ onWorkWithUs, onWatchVSL }) => {
               onClick={onWorkWithUs}
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 text-xs font-bold uppercase tracking-wider text-white bg-blue-600 rounded-lg hover:bg-blue-500 active:scale-95 transition-all duration-200 glow-blue-sm cursor-pointer"
             >
-              <span>{SITE_CONFIG.hero.primaryCta}</span>
+              <span>{content.hero.primaryCta}</span>
             </button>
 
             <button
@@ -56,7 +63,7 @@ export const Hero: React.FC<HeroProps> = ({ onWorkWithUs, onWatchVSL }) => {
               <svg className="w-3.5 h-3.5 text-blue-400" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M8 5v14l11-7z" />
               </svg>
-              <span>{SITE_CONFIG.hero.secondaryCta}</span>
+              <span>{content.hero.secondaryCta}</span>
             </button>
           </div>
         </div>
