@@ -72,16 +72,16 @@ export const AdminMediaLibrary: React.FC = () => {
           </div>
         </div>
 
-        {/* Prototype architecture banner */}
+        {/* Supabase Storage banner */}
         <div className="p-3.5 rounded-xl bg-blue-950/30 border border-blue-500/20 text-blue-200 text-xs flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
             <span>
-              Local/browser asset management prototype. Prepared for Supabase Storage bucket (`footazix-media`) in Phase 2.
+              Connected to Supabase Storage bucket (<code className="text-blue-400">footazix-media</code>). Assets generate public cloud CDN URLs for portfolio and posters.
             </span>
           </div>
           <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-blue-600/30 text-blue-300">
-            Phase 1
+            Storage RLS
           </span>
         </div>
 
@@ -94,8 +94,8 @@ export const AdminMediaLibrary: React.FC = () => {
               </svg>
             </div>
             <div>
-              <span className="text-xs font-bold text-white block">Upload Local Asset</span>
-              <span className="text-[11px] text-zinc-400">JPG, PNG, WebP, MP4 (saved to session state)</span>
+              <span className="text-xs font-bold text-white block">Upload Asset to Storage</span>
+              <span className="text-[11px] text-zinc-400">JPG, PNG, WebP, MP4, VTT (uploaded to Supabase Storage)</span>
             </div>
           </div>
 

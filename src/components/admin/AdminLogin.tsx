@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 
 export const AdminLogin: React.FC = () => {
-  const { login, navigateToPublic, content } = useApp();
+  const { login, navigateToPublic, content, isSupabaseConnected } = useApp();
   const [email, setEmail] = useState('admin@footazix.site');
   const [password, setPassword] = useState('footazix2026');
   const [rememberMe, setRememberMe] = useState(true);
@@ -16,7 +16,7 @@ export const AdminLogin: React.FC = () => {
     const res = await login(email, password, rememberMe);
     setIsSubmitting(false);
     if (!res.success) {
-      setError(res.error || 'Login failed. Please check credentials.');
+      setError(res.error || 'Login failed. Please check credentials or Supabase user configuration.');
     }
   };
 
@@ -43,9 +43,19 @@ export const AdminLogin: React.FC = () => {
           <span>Return to Website</span>
         </button>
 
-        <span className="text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded bg-zinc-900 border border-white/10 text-zinc-400">
-          CMS Prototype
-        </span>
+        <div className="flex items-center gap-2">
+          {isSupabaseConnected ? (
+            <span className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded bg-blue-950/60 border border-blue-500/40 text-blue-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+              Supabase Auth Connected
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded bg-zinc-900 border border-white/10 text-zinc-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+              Supabase Ready (Offline Preview)
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -63,16 +73,20 @@ export const AdminLogin: React.FC = () => {
           </p>
         </div>
 
-        {/* Prototype Auth Architecture Disclaimer Banner */}
+        {/* Supabase Integration Status Banner */}
         <div className="mb-6 p-3.5 rounded-xl bg-blue-950/40 border border-blue-500/30 text-blue-200 text-xs">
           <div className="flex items-start gap-2">
             <svg className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <div>
-              <span className="font-semibold text-white">Frontend UI Prototype:</span>
-              <p className="text-[11px] text-zinc-400 mt-0.5">
-                Local mock authentication layer configured. Ready for 1:1 Supabase Auth connection in Phase 2.
+              <span className="font-semibold text-white">
+                {isSupabaseConnected ? 'Supabase Authentication Active:' : 'Supabase Integration Ready:'}
+              </span>
+              <p className="text-[11px] text-zinc-300 mt-0.5">
+                {isSupabaseConnected
+                  ? 'Authenticating through Supabase Auth with Row Level Security (RLS) policies on admin_profiles.'
+                  : 'Add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to connect live Supabase cloud. Local preview enabled.'}
               </p>
             </div>
           </div>
@@ -128,7 +142,9 @@ export const AdminLogin: React.FC = () => {
                 />
                 <span className="text-zinc-300">Remember me</span>
               </label>
-              <span className="text-zinc-500 text-[11px]">Phase 1 Local Mock</span>
+              <span className="text-zinc-500 text-[11px]">
+                {isSupabaseConnected ? 'RLS Protected' : 'Preview Mode'}
+              </span>
             </div>
 
             <button

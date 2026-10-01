@@ -2,7 +2,8 @@
  * FOOTAZIX — Unified App & CMS Context
  * 
  * Provides live, decoupled reactive state for both Public Website and Admin Panel.
- * Synchronizes with the local services layer (which later connects to Supabase).
+ * Connected to Supabase (PostgreSQL, Auth, Storage, and Row Level Security)
+ * with graceful local fallback.
  */
 
 import React, {
@@ -29,6 +30,7 @@ import { teamService } from '../services/teamService';
 import { inquiryService } from '../services/inquiryService';
 import { mediaService } from '../services/mediaService';
 import { authService } from '../services/authService';
+import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { INITIAL_WEBSITE_CONTENT } from '../data/mockData';
 
 export type ActiveView = 'public' | 'admin';
@@ -40,11 +42,14 @@ interface AppContextValue {
   navigateToAdmin: () => void;
   navigateToPublic: () => void;
 
-  // Auth (Prototype)
+  // Auth (Supabase Auth + admin_profiles)
   currentUser: AdminUser | null;
   isAuthenticated: boolean;
   login: (email: string, password: string, remember?: boolean) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
+
+  // Supabase Status
+  isSupabaseConnected: boolean;
 
   // Data
   content: WebsiteContent;
@@ -67,7 +72,6 @@ interface AppContextValue {
 const AppContext = createContext<AppContextValue | null>(null);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Check initial URL to see if /secureadmin was requested
   const isInitialAdmin = typeof window !== 'undefined' && (
     window.location.pathname.startsWith('/secureadmin') ||
     window.location.hash === '#secureadmin' ||
@@ -76,6 +80,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const [activeView, setActiveView] = useState<ActiveView>(isInitialAdmin ? 'admin' : 'public');
   const [currentUser, setCurrentUser] = useState<AdminUser | null>(authService.getCurrentUser());
+  const [isSupabaseConnected] = useState<boolean>(isSupabaseConfigured());
   const [content, setContent] = useState<WebsiteContent>(INITIAL_WEBSITE_CONTENT);
   const [projects, setProjects] = useState<Project[]>([]);
   const [services, setServices] = useState<Service[]>([]);
@@ -114,7 +119,20 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // Initial load
+  // Listen to Supabase auth state changes
+  useEffect(() => {
+    authService.initAuth().then((user) => {
+      if (user) setCurrentUser(user);
+    });
+
+    const unsubAuth = authService.subscribe((user) => {
+      setCurrentUser(user);
+    });
+
+    return () => unsubAuth();
+  }, []);
+
+  // Initial load from Supabase / data layer
   const loadData = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -142,7 +160,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   useEffect(() => {
     loadData();
 
-    // Subscribe to real-time service changes
+    // Subscribe to service changes
     const unsubContent = contentService.subscribe((c) => setContent(c));
     const unsubProjects = portfolioService.subscribe((p) => setProjects(p));
     const unsubServices = servicesService.subscribe((s) => setServices(s));
@@ -179,7 +197,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const updateWebsiteContent = async (partial: Partial<WebsiteContent>) => {
     try {
       setSaveStatus('saving');
-      setSaveMessage('Saving changes...');
+      setSaveMessage('Saving changes to Supabase...');
       const updated = await contentService.updateWebsiteContent(partial);
       setContent(updated);
       setSaveStatus('saved');
@@ -232,6 +250,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         isAuthenticated: !!currentUser,
         login,
         logout,
+        isSupabaseConnected,
         content,
         projects,
         services,

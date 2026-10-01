@@ -1,10 +1,12 @@
 /**
- * FOOTAZIX — Media Service
+ * FOOTAZIX — Supabase Media & Storage Service
  * 
- * Clean abstraction for media assets.
- * Prepared for future Supabase Storage bucket: `footazix-media`
+ * Uploads media assets to Supabase Storage bucket: `footazix-media`
+ * Generates public URLs for portfolio covers, team photos, and VSL posters.
+ * Falls back to local preview when credentials are not yet configured.
  */
 
+import { supabase, isSupabaseConfigured, SUPABASE_STORAGE_BUCKET } from '../lib/supabase';
 import { MediaAsset, MediaCategory } from '../types';
 import { INITIAL_MEDIA } from '../data/mockData';
 
@@ -46,19 +48,95 @@ export const mediaService = {
   },
 
   async getMedia(category?: MediaCategory): Promise<MediaAsset[]> {
-    await new Promise((r) => setTimeout(r, 60));
-    const all = getStoredMedia();
-    if (category) {
-      return all.filter((a) => a.category === category);
+    const local = getStoredMedia();
+
+    // If Supabase is configured, try listing files from storage bucket
+    if (isSupabaseConfigured() && supabase) {
+      try {
+        const folder = category || '';
+        const { data: files, error } = await supabase.storage
+          .from(SUPABASE_STORAGE_BUCKET)
+          .list(folder, { limit: 100, sortBy: { column: 'created_at', order: 'desc' } });
+
+        if (!error && files && files.length > 0) {
+          const storageAssets: MediaAsset[] = files
+            .filter((f) => f.name && !f.name.startsWith('.'))
+            .map((f) => {
+              const filePath = folder ? `${folder}/${f.name}` : f.name;
+              const { data: { publicUrl } } = supabase!.storage
+                .from(SUPABASE_STORAGE_BUCKET)
+                .getPublicUrl(filePath);
+
+              return {
+                id: `sp-${f.id || f.name}`,
+                name: f.name,
+                url: publicUrl,
+                category: category || 'images',
+                size: formatBytes(f.metadata?.size || 0),
+                uploadedAt: f.created_at ? f.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
+              };
+            });
+
+          // Merge storage assets with local cache without duplicates
+          const existingUrls = new Set(storageAssets.map((a) => a.url));
+          const merged = [...storageAssets, ...local.filter((a) => !existingUrls.has(a.url))];
+          saveStoredMedia(merged);
+          return category ? merged.filter((a) => a.category === category) : merged;
+        }
+      } catch (err) {
+        console.warn('Storage listing notice:', err);
+      }
     }
-    return all;
+
+    if (category) {
+      return local.filter((a) => a.category === category);
+    }
+    return local;
   },
 
   async uploadMedia(file: File, category: MediaCategory): Promise<MediaAsset> {
-    // Simulated upload delay
-    await new Promise((r) => setTimeout(r, 400));
+    // 1. If Supabase is configured, upload directly to Supabase Storage
+    if (isSupabaseConfigured() && supabase) {
+      try {
+        const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+        const filePath = `${category}/${Date.now()}_${cleanName}`;
 
-    // Create a local blob/object URL for client preview
+        const { data, error } = await supabase.storage
+          .from(SUPABASE_STORAGE_BUCKET)
+          .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: false,
+          });
+
+        if (error) {
+          console.error('Supabase storage upload error:', error);
+          throw new Error(error.message);
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+          .from(SUPABASE_STORAGE_BUCKET)
+          .getPublicUrl(data.path);
+
+        const asset: MediaAsset = {
+          id: `media-${Date.now()}`,
+          name: file.name,
+          url: publicUrl,
+          category,
+          size: formatBytes(file.size),
+          uploadedAt: new Date().toISOString().split('T')[0],
+        };
+
+        const current = getStoredMedia();
+        const updated = [asset, ...current];
+        saveStoredMedia(updated);
+        return asset;
+      } catch (err: any) {
+        console.warn('Supabase storage upload failed, falling back to local object URL:', err.message);
+      }
+    }
+
+    // 2. Fallback to local object URL preview
+    await new Promise((r) => setTimeout(r, 300));
     const objectUrl = URL.createObjectURL(file);
     const media: MediaAsset = {
       id: `media-${Date.now()}`,
@@ -76,8 +154,21 @@ export const mediaService = {
   },
 
   async deleteMedia(id: string): Promise<boolean> {
-    await new Promise((r) => setTimeout(r, 80));
     const current = getStoredMedia();
+    const target = current.find((m) => m.id === id);
+
+    if (isSupabaseConfigured() && supabase && target && target.url.includes(SUPABASE_STORAGE_BUCKET)) {
+      try {
+        // Extract relative path from URL
+        const parts = target.url.split(`${SUPABASE_STORAGE_BUCKET}/`);
+        if (parts[1]) {
+          await supabase.storage.from(SUPABASE_STORAGE_BUCKET).remove([decodeURIComponent(parts[1])]);
+        }
+      } catch (err) {
+        console.warn('Storage delete error:', err);
+      }
+    }
+
     const filtered = current.filter((m) => m.id !== id);
     saveStoredMedia(filtered);
     return true;

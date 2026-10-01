@@ -1,10 +1,11 @@
 /**
  * FOOTAZIX — Services Service
  * 
- * Clean abstraction for agency services.
- * Prepared for future Supabase table: `agency_services`
+ * Interacts with Supabase `services` table with Row Level Security.
+ * Public visitors view visible services; admins manage full catalog.
  */
 
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { Service } from '../types';
 import { INITIAL_SERVICES } from '../data/mockData';
 
@@ -33,6 +34,20 @@ function saveStoredServices(services: Service[]): void {
   }
 }
 
+function mapRowToService(row: any): Service {
+  return {
+    id: row.id,
+    number: row.number,
+    title: row.title,
+    description: row.description,
+    features: row.features || [],
+    ctaText: row.cta_text || 'REQUEST THIS SERVICE →',
+    highlighted: Boolean(row.highlighted),
+    visible: row.visible ?? true,
+    order: row.display_order ?? 1,
+  };
+}
+
 export const servicesService = {
   subscribe(listener: Listener): () => void {
     listeners.add(listener);
@@ -40,27 +55,107 @@ export const servicesService = {
   },
 
   async getServices(): Promise<Service[]> {
-    await new Promise((r) => setTimeout(r, 60));
+    if (isSupabaseConfigured() && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('services')
+          .select('*')
+          .order('display_order', { ascending: true });
+
+        if (!error && data) {
+          const mapped = data.map(mapRowToService);
+          saveStoredServices(mapped);
+          return mapped;
+        }
+      } catch (err) {
+        console.warn('Failed fetching services from Supabase, using cache:', err);
+      }
+    }
+
     return getStoredServices().sort((a, b) => a.order - b.order);
   },
 
   async createService(data: Omit<Service, 'id'>): Promise<Service> {
-    await new Promise((r) => setTimeout(r, 120));
     const services = getStoredServices();
-    const newService: Service = {
+
+    if (isSupabaseConfigured() && supabase) {
+      try {
+        const { data: inserted, error } = await supabase
+          .from('services')
+          .insert([
+            {
+              number: data.number,
+              title: data.title,
+              description: data.description,
+              features: data.features,
+              cta_text: data.ctaText,
+              highlighted: data.highlighted,
+              visible: data.visible,
+              display_order: data.order || services.length + 1,
+            },
+          ])
+          .select()
+          .single();
+
+        if (!error && inserted) {
+          const newService = mapRowToService(inserted);
+          const updated = [...services, newService];
+          saveStoredServices(updated);
+          return newService;
+        }
+      } catch (err) {
+        console.error('Failed creating service in Supabase:', err);
+      }
+    }
+
+    const fallbackService: Service = {
       ...data,
       id: `srv-${Date.now()}`,
       order: services.length + 1,
     };
-    const updated = [...services, newService];
+    const updated = [...services, fallbackService];
     saveStoredServices(updated);
-    return newService;
+    return fallbackService;
   },
 
   async updateService(id: string, updates: Partial<Service>): Promise<Service> {
-    await new Promise((r) => setTimeout(r, 100));
     const services = getStoredServices();
     const index = services.findIndex((s) => s.id === id);
+
+    if (isSupabaseConfigured() && supabase) {
+      try {
+        const payload: Record<string, any> = {
+          updated_at: new Date().toISOString(),
+        };
+        if (updates.number !== undefined) payload.number = updates.number;
+        if (updates.title !== undefined) payload.title = updates.title;
+        if (updates.description !== undefined) payload.description = updates.description;
+        if (updates.features !== undefined) payload.features = updates.features;
+        if (updates.ctaText !== undefined) payload.cta_text = updates.ctaText;
+        if (updates.highlighted !== undefined) payload.highlighted = updates.highlighted;
+        if (updates.visible !== undefined) payload.visible = updates.visible;
+        if (updates.order !== undefined) payload.display_order = updates.order;
+
+        const { data: updatedRow, error } = await supabase
+          .from('services')
+          .update(payload)
+          .eq('id', id)
+          .select()
+          .single();
+
+        if (!error && updatedRow) {
+          const mapped = mapRowToService(updatedRow);
+          if (index !== -1) {
+            services[index] = mapped;
+          }
+          saveStoredServices([...services]);
+          return mapped;
+        }
+      } catch (err) {
+        console.error('Failed updating service in Supabase:', err);
+      }
+    }
+
     if (index === -1) throw new Error('Service not found');
     const updated = { ...services[index], ...updates };
     services[index] = updated;
@@ -69,7 +164,14 @@ export const servicesService = {
   },
 
   async deleteService(id: string): Promise<boolean> {
-    await new Promise((r) => setTimeout(r, 100));
+    if (isSupabaseConfigured() && supabase) {
+      try {
+        await supabase.from('services').delete().eq('id', id);
+      } catch (err) {
+        console.error('Failed deleting service in Supabase:', err);
+      }
+    }
+
     const services = getStoredServices();
     const filtered = services.filter((s) => s.id !== id);
     saveStoredServices(filtered);
@@ -77,7 +179,6 @@ export const servicesService = {
   },
 
   async reorderServices(orderedIds: string[]): Promise<Service[]> {
-    await new Promise((r) => setTimeout(r, 80));
     const services = getStoredServices();
     const reordered = orderedIds
       .map((id, index) => {
@@ -87,6 +188,23 @@ export const servicesService = {
       .filter((s): s is Service => s !== null);
 
     saveStoredServices(reordered);
+
+    if (isSupabaseConfigured() && supabase) {
+      const client = supabase;
+      try {
+        await Promise.all(
+          reordered.map((srv) =>
+            client
+              .from('services')
+              .update({ display_order: srv.order })
+              .eq('id', srv.id)
+          )
+        );
+      } catch (err) {
+        console.warn('Error syncing reordered services to Supabase:', err);
+      }
+    }
+
     return reordered;
   },
 
