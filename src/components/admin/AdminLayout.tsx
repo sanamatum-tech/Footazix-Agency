@@ -163,9 +163,7 @@ export const AdminLayout: React.FC = () => {
             {mobileSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
           <div className="flex items-center gap-2.5">
-            <div className="w-[110px] h-[30px] flex items-center">
-              <FootazixLogo className="h-full w-auto" />
-            </div>
+            <FootazixLogo className="w-[115px] h-auto object-contain" />
             <span className="text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded bg-blue-950/60 border border-blue-500/30 text-blue-300">
               CMS
             </span>
@@ -203,9 +201,7 @@ export const AdminLayout: React.FC = () => {
           {/* Brand header */}
           <div className="p-5 border-b border-white/10 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-[125px] h-[34px] flex items-center">
-                <FootazixLogo className="h-full w-auto" />
-              </div>
+              <FootazixLogo className="w-[130px] h-auto object-contain" />
               <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-blue-950/70 border border-blue-500/30 text-blue-300 font-semibold">
                 CMS
               </span>

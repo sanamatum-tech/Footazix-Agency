@@ -2,8 +2,8 @@
  * FOOTAZIX — Supabase Media & Storage Service
  * 
  * Uploads media assets to Supabase Storage bucket: `footazix-media`
- * Generates public URLs for portfolio covers, team photos, and VSL posters.
- * Falls back to local preview when credentials are not yet configured.
+ * Generates public URLs for logos, favicons, portfolio covers, team photos, and VSL posters.
+ * Uses persistent base64 data URLs for offline fallback (NO temporary blob: URLs).
  */
 
 import { supabase, isSupabaseConfigured, SUPABASE_STORAGE_BUCKET } from '../lib/supabase';
@@ -17,6 +17,9 @@ const listeners: Set<Listener> = new Set();
 
 function getStoredMedia(): MediaAsset[] {
   try {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return INITIAL_MEDIA;
+    }
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return INITIAL_MEDIA;
     return JSON.parse(raw);
@@ -28,7 +31,9 @@ function getStoredMedia(): MediaAsset[] {
 
 function saveStoredMedia(assets: MediaAsset[]): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(assets));
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(assets));
+    }
     listeners.forEach((fn) => fn(assets));
   } catch (err) {
     console.error('Failed saving media to localStorage:', err);
@@ -41,6 +46,15 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(file);
+  });
+}
+
 export const mediaService = {
   subscribe(listener: Listener): () => void {
     listeners.add(listener);
@@ -50,7 +64,6 @@ export const mediaService = {
   async getMedia(category?: MediaCategory): Promise<MediaAsset[]> {
     const local = getStoredMedia();
 
-    // If Supabase is configured, try listing files from storage bucket
     if (isSupabaseConfigured() && supabase) {
       try {
         const folder = category || '';
@@ -77,7 +90,6 @@ export const mediaService = {
               };
             });
 
-          // Merge storage assets with local cache without duplicates
           const existingUrls = new Set(storageAssets.map((a) => a.url));
           const merged = [...storageAssets, ...local.filter((a) => !existingUrls.has(a.url))];
           saveStoredMedia(merged);
@@ -105,7 +117,8 @@ export const mediaService = {
           .from(SUPABASE_STORAGE_BUCKET)
           .upload(filePath, file, {
             cacheControl: '3600',
-            upsert: false,
+            upsert: true,
+            contentType: file.type || undefined,
           });
 
         if (error) {
@@ -131,17 +144,16 @@ export const mediaService = {
         saveStoredMedia(updated);
         return asset;
       } catch (err: any) {
-        console.warn('Supabase storage upload failed, falling back to local object URL:', err.message);
+        console.warn('Supabase storage upload failed, falling back to persistent data URL:', err.message);
       }
     }
 
-    // 2. Fallback to local object URL preview
-    await new Promise((r) => setTimeout(r, 300));
-    const objectUrl = URL.createObjectURL(file);
+    // 2. Persistent fallback to base64 data URL (NOT a temporary blob URL)
+    const dataUrl = await fileToDataUrl(file);
     const media: MediaAsset = {
       id: `media-${Date.now()}`,
       name: file.name,
-      url: objectUrl,
+      url: dataUrl,
       category,
       size: formatBytes(file.size),
       uploadedAt: new Date().toISOString().split('T')[0],
@@ -153,13 +165,28 @@ export const mediaService = {
     return media;
   },
 
+  /**
+   * Upload brand asset (Header Logo, Favicon, Footer Logo, OG Image)
+   * Guaranteed to return a permanent Supabase Storage public URL or persistent data URL.
+   */
+  async uploadBrandAsset(
+    file: File,
+    folder: 'logos' | 'favicons' | 'branding' = 'branding'
+  ): Promise<{ url: string; name: string; size: string }> {
+    const asset = await this.uploadMedia(file, folder);
+    return {
+      url: asset.url,
+      name: asset.name,
+      size: asset.size,
+    };
+  },
+
   async deleteMedia(id: string): Promise<boolean> {
     const current = getStoredMedia();
     const target = current.find((m) => m.id === id);
 
     if (isSupabaseConfigured() && supabase && target && target.url.includes(SUPABASE_STORAGE_BUCKET)) {
       try {
-        // Extract relative path from URL
         const parts = target.url.split(`${SUPABASE_STORAGE_BUCKET}/`);
         if (parts[1]) {
           await supabase.storage.from(SUPABASE_STORAGE_BUCKET).remove([decodeURIComponent(parts[1])]);

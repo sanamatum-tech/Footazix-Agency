@@ -47,9 +47,7 @@ export const AdminLogin: React.FC = () => {
           className="inline-flex items-center group cursor-pointer hover:opacity-90 transition-opacity"
           aria-label="Return to Footazix homepage"
         >
-          <div className="w-[125px] sm:w-[145px] h-[34px] flex items-center">
-            <FootazixLogo className="h-full w-auto" />
-          </div>
+            <FootazixLogo className="w-[125px] sm:w-[145px] h-auto object-contain" />
         </button>
 
         {/* Top-right: Subtle Secure Access Indicator */}

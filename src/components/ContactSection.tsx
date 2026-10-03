@@ -29,7 +29,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
   isModal = false,
   onClose,
 }) => {
-  const { createInquiry } = useApp();
+  const { createInquiry, content } = useApp();
+  const modalConfig = content.contactModal;
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -50,6 +51,25 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  const badgeText = modalConfig?.badge || 'START A PROJECT';
+  const titleText = modalConfig?.title || 'BUILD WITH FOOTAZIX';
+  const subtitleText =
+    modalConfig?.subtitle ||
+    'Tell us about your content, and our team will connect with you.';
+  const nameLabel = modalConfig?.nameLabel || 'Name';
+  const emailLabel = modalConfig?.emailLabel || 'Email';
+  const phoneLabel = modalConfig?.phoneLabel || 'Phone / WhatsApp';
+  const companyLabel = modalConfig?.companyLabel || 'Brand / Channel / Company';
+  const servicesLabel = modalConfig?.servicesLabel || 'Services Needed';
+  const detailsLabel = modalConfig?.detailsLabel || 'Project Details / Footage Link';
+  const budgetLabel = modalConfig?.budgetLabel || 'Estimated Monthly Budget / Scope';
+  const submitText = modalConfig?.submitText || 'SUBMIT PROJECT INQUIRY';
+  const successTitle = modalConfig?.successTitle || 'REQUEST RECEIVED.';
+  const successMessage =
+    modalConfig?.successMessage ||
+    'Thank you. Our team will review your request and connect with you shortly.';
+  const doneButtonText = modalConfig?.doneButtonText || 'Done';
 
   const toggleService = (srv: string) => {
     if (selectedServices.includes(srv)) {
@@ -119,13 +139,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
         <div className="text-center max-w-xl mx-auto mb-8">
           <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-2">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
-            <span>START A PROJECT</span>
+            <span>{badgeText}</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-white tracking-tight mb-2">
-            BUILD WITH FOOTAZIX
+            {titleText}
           </h2>
           <p className="text-xs sm:text-sm text-zinc-400">
-            Tell us about your content, and our team will connect with you.
+            {subtitleText}
           </p>
         </div>
 
@@ -136,16 +156,16 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
               <CheckCircle2 className="w-7 h-7 text-blue-400" />
             </div>
             <h3 className="text-xl sm:text-2xl font-display font-extrabold text-white tracking-tight mb-2">
-              REQUEST RECEIVED.
+              {successTitle}
             </h3>
             <p className="text-sm text-zinc-300 max-w-md mx-auto mb-6 leading-relaxed">
-              Thank you. Our team will review your request and connect with you shortly.
+              {successMessage}
             </p>
             <button
               onClick={handleReset}
               className="px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-colors cursor-pointer"
             >
-              Done
+              {doneButtonText}
             </button>
           </div>
         ) : (
@@ -161,7 +181,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                  Name <span className="text-blue-500">*</span>
+                  {nameLabel} <span className="text-blue-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -175,7 +195,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
 
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                  Email <span className="text-blue-500">*</span>
+                  {emailLabel} <span className="text-blue-500">*</span>
                 </label>
                 <input
                   type="email"
@@ -189,7 +209,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
 
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                  Phone / WhatsApp
+                  {phoneLabel}
                 </label>
                 <input
                   type="tel"
@@ -202,11 +222,11 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
 
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                  Company / Creator Name
+                  {companyLabel}
                 </label>
                 <input
                   type="text"
-                  placeholder="@handle or brand"
+                  placeholder="@handle or Company"
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl bg-zinc-900/90 border border-white/10 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-blue-500 transition-colors"
@@ -214,23 +234,23 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
               </div>
             </div>
 
-            {/* What do you need? Selection Pills */}
+            {/* Service Selection */}
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2.5">
-                What do you need? <span className="text-blue-500">*</span>
+                {servicesLabel}
               </label>
               <div className="flex flex-wrap gap-2">
                 {SERVICE_OPTIONS.map((srv) => {
                   const isSelected = selectedServices.includes(srv);
                   return (
                     <button
-                      key={srv}
                       type="button"
+                      key={srv}
                       onClick={() => toggleService(srv)}
-                      className={`px-3.5 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all duration-150 cursor-pointer ${
+                      className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                         isSelected
-                          ? 'bg-blue-600 text-white shadow-[0_0_12px_rgba(37,99,235,0.4)]'
-                          : 'bg-zinc-900 text-zinc-400 hover:text-white hover:bg-zinc-800 border border-white/10'
+                          ? 'bg-blue-600 text-white border border-blue-500 shadow-[0_0_12px_rgba(37,99,235,0.3)]'
+                          : 'bg-zinc-900/90 text-zinc-400 border border-white/10 hover:text-white hover:border-white/20'
                       }`}
                     >
                       {srv}
@@ -240,52 +260,52 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
               </div>
             </div>
 
-            {/* Project Details */}
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                Project Details <span className="text-blue-500">*</span>
-              </label>
-              <textarea
-                required
-                rows={3}
-                placeholder="Tell us about your raw footage, video format, target cadence, or reference style..."
-                value={details}
-                onChange={(e) => setDetails(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-zinc-900/90 border border-white/10 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-blue-500 transition-colors resize-none"
-              />
-            </div>
-
             {/* Budget Range */}
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                Budget Range
+                {budgetLabel}
               </label>
               <select
                 value={budget}
                 onChange={(e) => setBudget(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-zinc-900/90 border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-zinc-900/90 border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-colors cursor-pointer"
               >
                 {BUDGET_OPTIONS.map((opt) => (
-                  <option key={opt} value={opt} className="bg-zinc-950 text-white">
+                  <option key={opt} value={opt} className="bg-zinc-900 text-white">
                     {opt}
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* Submit Button */}
+            {/* Project Details */}
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+                {detailsLabel} <span className="text-blue-500">*</span>
+              </label>
+              <textarea
+                required
+                rows={4}
+                placeholder="Share your current video cadence, goals, links to raw footage / drive folders, or reference styles..."
+                value={details}
+                onChange={(e) => setDetails(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl bg-zinc-900/90 border border-white/10 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-blue-500 transition-colors resize-none"
+              />
+            </div>
+
+            {/* Submit Action */}
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-4 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 active:scale-95 disabled:opacity-50 transition-all duration-200 glow-blue-sm cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 disabled:opacity-50 transition-all duration-200 cursor-pointer shadow-[0_0_24px_rgba(37,99,235,0.4)] flex items-center justify-center gap-2"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin text-white" />
-                  <span>SUBMITTING REQUEST...</span>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Submitting...</span>
                 </>
               ) : (
-                <span>SUBMIT PROJECT REQUEST →</span>
+                <span>{submitText}</span>
               )}
             </button>
           </form>

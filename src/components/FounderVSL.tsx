@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useApp } from '../context/AppContext';
-import { Play, Pause, Volume2, VolumeX, Maximize, AlertCircle } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, Maximize, AlertCircle, ArrowRight } from 'lucide-react';
 
 export const FounderVSL: React.FC = () => {
   const { content } = useApp();
@@ -16,6 +16,10 @@ export const FounderVSL: React.FC = () => {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  const showBadge = vsl.showBadge !== false && Boolean(vsl.label);
+  const showHeading = vsl.showHeading !== false && Boolean(vsl.heading);
+  const showDescription = vsl.showDescription !== false && Boolean(vsl.description);
 
   // Helper to parse YouTube embed URL
   const getYouTubeEmbedUrl = (url: string) => {
@@ -64,7 +68,6 @@ export const FounderVSL: React.FC = () => {
         .play()
         .then(() => setIsPlaying(true))
         .catch(() => {
-          // If video element fails to play, set error
           setVideoError(true);
         });
     }
@@ -103,6 +106,7 @@ export const FounderVSL: React.FC = () => {
 
   const toggleFullscreen = () => {
     if (!containerRef.current) return;
+
     if (!document.fullscreenElement) {
       containerRef.current.requestFullscreen().catch(() => {});
       setIsFullscreen(true);
@@ -124,18 +128,24 @@ export const FounderVSL: React.FC = () => {
       <div className="max-w-5xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
-            <span className="font-mono text-[11px]">{vsl.label || 'THE FOOTAZIX SYSTEM'}</span>
-          </div>
+          {showBadge && (
+            <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
+              <span className="font-mono text-[11px]">{vsl.label || 'THE FOOTAZIX SYSTEM'}</span>
+            </div>
+          )}
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-white tracking-tight mb-3">
-            {vsl.heading || 'SEE HOW FOOTAZIX TRANSFORMS CONTENT.'}
-          </h2>
+          {showHeading && (
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-white tracking-tight mb-3">
+              {vsl.heading || 'SEE HOW FOOTAZIX TRANSFORMS CONTENT.'}
+            </h2>
+          )}
 
-          <p className="text-sm sm:text-base text-zinc-400 font-normal max-w-xl mx-auto leading-relaxed">
-            {vsl.description || 'See how we transform raw footage into content built for attention.'}
-          </p>
+          {showDescription && (
+            <p className="text-sm sm:text-base text-zinc-400 font-normal max-w-xl mx-auto leading-relaxed">
+              {vsl.description || 'See how we transform raw footage into content built for attention.'}
+            </p>
+          )}
         </div>
 
         {/* Video Player Container */}
@@ -216,7 +226,6 @@ export const FounderVSL: React.FC = () => {
                 onError={() => setVideoError(true)}
                 onClick={handlePlayToggle}
               >
-                {/* CC track: rendered ONLY if captionUrl is defined */}
                 {hasCaptionsConfigured && showCaptions && (
                   <track
                     kind="subtitles"
@@ -261,7 +270,6 @@ export const FounderVSL: React.FC = () => {
 
                 <div className="flex items-center justify-between text-xs text-zinc-300">
                   <div className="flex items-center gap-3">
-                    {/* Play/Pause */}
                     <button
                       onClick={handlePlayToggle}
                       className="p-1 hover:text-white transition-colors cursor-pointer"
@@ -274,7 +282,6 @@ export const FounderVSL: React.FC = () => {
                       )}
                     </button>
 
-                    {/* Mute */}
                     <button
                       onClick={toggleMute}
                       className="p-1 hover:text-white transition-colors cursor-pointer"
@@ -287,14 +294,12 @@ export const FounderVSL: React.FC = () => {
                       )}
                     </button>
 
-                    {/* Time Counter */}
                     <span className="font-mono text-[11px] text-zinc-400">
                       {formatTime(currentTime)} / {formatTime(duration)}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    {/* CC button: rendered ONLY if captionUrl is configured */}
                     {hasCaptionsConfigured && (
                       <button
                         onClick={() => setShowCaptions(!showCaptions)}
@@ -309,7 +314,6 @@ export const FounderVSL: React.FC = () => {
                       </button>
                     )}
 
-                    {/* Fullscreen */}
                     <button
                       onClick={toggleFullscreen}
                       className="p-1 hover:text-white transition-colors cursor-pointer"
@@ -323,7 +327,7 @@ export const FounderVSL: React.FC = () => {
             </>
           )}
 
-          {/* Missing/Failed Video Notice — Clean, Zero Technical Jargon */}
+          {/* Missing/Failed Video Notice */}
           {videoError && (
             <div className="absolute inset-0 bg-[#07070d] flex flex-col items-center justify-center p-6 text-center">
               <div className="w-12 h-12 rounded-full bg-blue-600/10 border border-blue-500/30 flex items-center justify-center text-blue-400 mb-3">
@@ -338,6 +342,22 @@ export const FounderVSL: React.FC = () => {
             </div>
           )}
         </div>
+
+        {/* Optional Section CTA */}
+        {vsl.showCta && vsl.ctaText && (
+          <div className="text-center mt-8">
+            <button
+              onClick={() => {
+                const el = document.getElementById('work');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20 cursor-pointer"
+            >
+              <span>{vsl.ctaText}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

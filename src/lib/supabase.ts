@@ -16,10 +16,11 @@ const DEFAULT_SUPABASE_URL = 'https://gdwlkqrzcixjajzvcwvg.supabase.co';
 const DEFAULT_SUPABASE_KEY = 'sb_publishable_UlPvejNsd99sBwnB66HJqg_7pGmZ2l9';
 
 // Read env variables safely with project fallback
-const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL).trim();
+const env = typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env : (typeof process !== 'undefined' ? process.env : {});
+const supabaseUrl = (env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL).trim();
 const supabaseAnonKey = (
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-  import.meta.env.VITE_SUPABASE_ANON_KEY ||
+  env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  env.VITE_SUPABASE_ANON_KEY ||
   DEFAULT_SUPABASE_KEY
 ).trim();
 

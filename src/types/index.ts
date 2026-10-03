@@ -6,38 +6,230 @@
 
 export type VideoSourceType = 'youtube' | 'drive' | 'direct' | 'local';
 
-export interface VSLSettings {
+export interface HeaderLogoSettings {
+  url: string;
+  alt: string;
+  desktopWidth: number;
+  mobileWidth: number;
+  visible: boolean;
+}
+
+export interface FaviconSettings {
+  url: string;
+  appleTouchIconUrl?: string;
+  visible: boolean;
+}
+
+export interface FooterLogoSettings {
+  useHeaderLogo: boolean;
+  url: string;
+  desktopWidth: number;
+  visible: boolean;
+}
+
+export interface OgImageSettings {
+  url: string;
+  alt: string;
+}
+
+export interface BrandingAssetsSettings {
+  headerLogo: HeaderLogoSettings;
+  favicon: FaviconSettings;
+  footerLogo: FooterLogoSettings;
+  ogImage: OgImageSettings;
+}
+
+export interface NavItemConfig {
+  id: string;
   label: string;
-  heading: string;
-  description: string;
-  videoSource: VideoSourceType;
-  videoUrl: string;
-  posterUrl: string;
-  captionUrl?: string; // .vtt file url or local object url
-  published: boolean;
-  fallbackMessage?: string;
+  href: string;
+  visible: boolean;
+  order: number;
+}
+
+export interface HeaderSettings {
+  navWork: string;
+  navSystem: string;
+  navServices: string;
+  navAbout: string;
+  ctaText: string;
+  showInstagram?: boolean;
+  showCta?: boolean;
+  showLogo?: boolean;
+  showWorkLink?: boolean;
+  showSystemLink?: boolean;
+  showServicesLink?: boolean;
+  showAboutLink?: boolean;
+  navItems?: NavItemConfig[];
 }
 
 export interface HeroSettings {
   badgeText: string;
+  showBadge?: boolean;
+  eyebrow?: string;
   headlineLine1: string;
   headlineLine2: string;
   supportingLine: string;
+  showSupportingLine?: boolean;
   description: string;
+  showDescription?: boolean;
   primaryCta: string;
+  showPrimaryCta?: boolean;
   secondaryCta: string;
+  showSecondaryCta?: boolean;
+  smallSupportingText?: string;
+}
+
+export interface VSLSettings {
+  label: string;
+  showBadge?: boolean;
+  heading: string;
+  showHeading?: boolean;
+  description: string;
+  showDescription?: boolean;
+  videoSource: VideoSourceType;
+  videoUrl: string;
+  posterUrl: string;
+  captionUrl?: string;
+  published: boolean;
+  fallbackMessage?: string;
+  ctaText?: string;
+  showCta?: boolean;
 }
 
 export interface RawToReadyStep {
   num: string;
   title: string;
   desc: string;
+  badge?: string;
 }
 
 export interface RawToReadySettings {
+  badge?: string;
+  showBadge?: boolean;
   heading: string;
   subheading: string;
+  showSubheading?: boolean;
+  coreStepBadge?: string;
   steps: RawToReadyStep[];
+  ctaText?: string;
+  showCta?: boolean;
+}
+
+export interface PortfolioSettings {
+  badge?: string;
+  showBadge?: boolean;
+  heading?: string;
+  subheading?: string;
+  showSubheading?: boolean;
+  categories?: string[];
+  showFilters?: boolean;
+  emptyTitle?: string;
+  emptyDesc?: string;
+  cardCtaText?: string;
+}
+
+export interface ServicesSectionSettings {
+  badge?: string;
+  showBadge?: boolean;
+  heading?: string;
+  subheading?: string;
+  showSubheading?: boolean;
+  highlightedBadge?: string;
+  showFeatureList?: boolean;
+  showCta?: boolean;
+  showNumbers?: boolean;
+}
+
+export interface AboutSectionSettings {
+  badge?: string;
+  showBadge?: boolean;
+  heading?: string;
+  subheading?: string;
+  copy?: string;
+  socialButtonText?: string;
+  emailButtonText?: string;
+  emptyText?: string;
+  showPhotos?: boolean;
+  showSocialLinks?: boolean;
+  showEmails?: boolean;
+}
+
+export interface FinalCtaSettings {
+  badge?: string;
+  showBadge?: boolean;
+  heading?: string;
+  supporting?: string;
+  showSupporting?: boolean;
+  primaryCta?: string;
+  showPrimaryCta?: boolean;
+  secondaryCta?: string;
+  showSecondaryCta?: boolean;
+}
+
+export interface FooterSettings {
+  description?: string;
+  showDescription?: boolean;
+  navSectionTitle?: string;
+  navWork?: string;
+  navSystem?: string;
+  navServices?: string;
+  navAbout?: string;
+  contactText?: string;
+  socialSectionTitle?: string;
+  instagramText?: string;
+  showInstagram?: boolean;
+  copyrightText: string;
+  showCopyright?: boolean;
+  legalSectionTitle?: string;
+  termsLabel?: string;
+  privacyLabel?: string;
+  showLegal?: boolean;
+  backToTopText?: string;
+  showBackToTop?: boolean;
+  tagline?: string;
+}
+
+export interface SectionVisibilitySettings {
+  header: boolean;
+  hero: boolean;
+  system: boolean;
+  portfolio: boolean;
+  process: boolean;
+  services: boolean;
+  about: boolean;
+  team: boolean;
+  finalCta: boolean;
+  footer: boolean;
+  instagram: boolean;
+  startProjectModal: boolean;
+}
+
+export interface SeoSettings {
+  siteTitle: string;
+  metaDescription: string;
+  ogTitle: string;
+  ogDescription: string;
+  ogImage: string;
+  canonicalUrl: string;
+  keywords: string;
+}
+
+export interface ContactModalContentSettings {
+  badge?: string;
+  title?: string;
+  subtitle?: string;
+  nameLabel?: string;
+  emailLabel?: string;
+  phoneLabel?: string;
+  companyLabel?: string;
+  servicesLabel?: string;
+  detailsLabel?: string;
+  budgetLabel?: string;
+  submitText?: string;
+  successTitle?: string;
+  successMessage?: string;
+  doneButtonText?: string;
 }
 
 export interface BrandSettings {
@@ -59,21 +251,16 @@ export interface LegalDocument {
   content: string;
 }
 
-export interface HeaderSettings {
-  navWork: string;
-  navSystem: string;
-  navServices: string;
-  navAbout: string;
-  ctaText: string;
-  showInstagram?: boolean;
-}
-
 export interface WebsiteContent {
   brand: BrandSettings;
-  header?: HeaderSettings;
+  brandingAssets: BrandingAssetsSettings;
+  header: HeaderSettings;
   hero: HeroSettings;
   vsl: VSLSettings;
+  portfolio?: PortfolioSettings;
   rawToReady: RawToReadySettings;
+  servicesContent?: ServicesSectionSettings;
+  aboutContent?: AboutSectionSettings;
   sectionHeadings: {
     portfolioHeading: string;
     portfolioSubheading: string;
@@ -84,10 +271,12 @@ export interface WebsiteContent {
     finalCtaHeadline: string;
     finalCtaSupporting: string;
   };
-  footer: {
-    copyrightText: string;
-    tagline: string;
-  };
+  finalCta?: FinalCtaSettings;
+  footer: FooterSettings;
+  sectionVisibility: SectionVisibilitySettings;
+  sectionOrder: string[];
+  seo: SeoSettings;
+  contactModal?: ContactModalContentSettings;
   legal?: {
     terms: LegalDocument;
     privacy: LegalDocument;
@@ -107,6 +296,7 @@ export interface Project {
   client?: string;
   displayOrder: number;
   status: 'published' | 'draft';
+  featured?: boolean;
   createdAt?: string;
 }
 
@@ -142,7 +332,7 @@ export interface Inquiry {
   email: string;
   phone?: string;
   company?: string;
-  services: string[]; // e.g. ['Video Editing', 'Reels / Shorts']
+  services: string[];
   details: string;
   budget?: string;
   status: InquiryStatus;
@@ -150,7 +340,7 @@ export interface Inquiry {
   notes?: string;
 }
 
-export type MediaCategory = 'images' | 'videos' | 'posters' | 'logos';
+export type MediaCategory = 'images' | 'videos' | 'posters' | 'logos' | 'branding' | 'favicons';
 
 export interface MediaAsset {
   id: string;

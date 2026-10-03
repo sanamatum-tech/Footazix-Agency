@@ -75,9 +75,7 @@ Clients may request the permanent deletion of their contact records or archived 
             className="flex items-center gap-2 group cursor-pointer hover:opacity-90 transition-opacity"
             aria-label="Return to Footazix Home"
           >
-            <div className="w-[130px] sm:w-[150px] h-[36px] flex items-center">
-              <FootazixLogo className="h-full w-auto" />
-            </div>
+            <FootazixLogo className="w-[130px] sm:w-[150px] h-auto object-contain" />
           </button>
 
           <button

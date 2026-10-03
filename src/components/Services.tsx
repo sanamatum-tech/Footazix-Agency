@@ -9,25 +9,44 @@ interface ServicesProps {
 
 export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
   const { content, services } = useApp();
+  const servicesConfig = content.servicesContent;
 
   const visibleServices = services.filter((s) => s.visible !== false);
+
+  const showBadge = servicesConfig?.showBadge !== false;
+  const showSubheading = servicesConfig?.showSubheading !== false;
+  const showNumbers = servicesConfig?.showNumbers !== false;
+  const showFeatureList = servicesConfig?.showFeatureList !== false;
+  const showCta = servicesConfig?.showCta !== false;
+
+  const badgeText = servicesConfig?.badge || 'SERVICES';
+  const headingText =
+    servicesConfig?.heading || content.sectionHeadings?.servicesHeading || 'WHAT WE DO';
+  const subheadingText =
+    servicesConfig?.subheading ||
+    content.sectionHeadings?.servicesSubheading ||
+    'High-retention editing and content strategy built around growth.';
+  const highlightedBadge = servicesConfig?.highlightedBadge || 'MAIN SPECIALTY';
 
   return (
     <section id="services" className="py-20 sm:py-28 bg-[#050508] relative font-sans">
       <div className="max-w-6xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
-            <span className="font-mono text-[11px]">SERVICES</span>
-          </div>
+          {showBadge && (
+            <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
+              <span className="font-mono text-[11px]">{badgeText}</span>
+            </div>
+          )}
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-white tracking-tight mb-3">
-            {content.sectionHeadings.servicesHeading || 'WHAT WE DO'}
+            {headingText}
           </h2>
-          <p className="text-sm sm:text-base text-zinc-400 font-normal">
-            {content.sectionHeadings.servicesSubheading ||
-              'High-retention editing and content strategy built around growth.'}
-          </p>
+          {showSubheading && (
+            <p className="text-sm sm:text-base text-zinc-400 font-normal">
+              {subheadingText}
+            </p>
+          )}
         </div>
 
         {/* Services Cards */}
@@ -56,18 +75,20 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
                     <div className="absolute -top-3 left-6">
                       <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-blue-600 text-white shadow-md flex items-center gap-1">
                         <Sparkles className="w-3 h-3" />
-                        MAIN SPECIALTY
+                        <span>{highlightedBadge}</span>
                       </span>
                     </div>
                   )}
 
                   <div>
                     {/* Number label */}
-                    <div className="flex items-center justify-between mb-6">
-                      <span className="font-mono text-xs font-bold text-blue-400">
-                        {service.number || `0${index + 1}`}
-                      </span>
-                    </div>
+                    {showNumbers && (
+                      <div className="flex items-center justify-between mb-6">
+                        <span className="font-mono text-xs font-bold text-blue-400">
+                          {service.number || `0${index + 1}`}
+                        </span>
+                      </div>
+                    )}
 
                     {/* Title */}
                     <h3 className="text-xl sm:text-2xl font-display font-extrabold text-white mb-3 tracking-tight">
@@ -79,8 +100,8 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
                       {service.description}
                     </p>
 
-                    {/* Feature bullets if available */}
-                    {service.features && service.features.length > 0 && (
+                    {/* Feature bullets */}
+                    {showFeatureList && service.features && service.features.length > 0 && (
                       <ul className="space-y-2.5 mb-8 border-t border-white/5 pt-5">
                         {service.features.map((feature, fIdx) => (
                           <li key={fIdx} className="flex items-start gap-2.5 text-xs text-zinc-300 font-normal">
@@ -93,19 +114,21 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
                   </div>
 
                   {/* Service CTA */}
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => onSelectService(service.title)}
-                    className={`w-full py-3.5 px-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 group ${
-                      isHighlighted
-                        ? 'bg-blue-600 text-white hover:bg-blue-500 shadow-[0_0_20px_rgba(37,99,235,0.35)]'
-                        : 'bg-[#12121c] text-zinc-300 hover:text-white hover:bg-zinc-800 border border-white/10'
-                    }`}
-                  >
-                    <span>{service.ctaText || 'REQUEST THIS SERVICE →'}</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                  </motion.button>
+                  {showCta && (
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => onSelectService(service.title)}
+                      className={`w-full py-3.5 px-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 group ${
+                        isHighlighted
+                          ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30'
+                          : 'bg-[#12121c] hover:bg-[#1a1a28] text-white border border-white/10'
+                      }`}
+                    >
+                      <span>{service.ctaText || 'START EDITING PROJECT'}</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </motion.button>
+                  )}
                 </motion.div>
               );
             })}
