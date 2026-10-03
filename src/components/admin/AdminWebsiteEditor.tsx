@@ -32,6 +32,9 @@ import {
   Check,
   RefreshCw,
   HelpCircle,
+  Copy,
+  Share2,
+  MessageSquare,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -58,6 +61,8 @@ export const AdminWebsiteEditor: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
   const [uploadingAsset, setUploadingAsset] = useState<string | null>(null);
+  const [ogPreviewPlatform, setOgPreviewPlatform] = useState<'twitter' | 'whatsapp' | 'discord' | 'meta'>('twitter');
+  const [copiedOgUrl, setCopiedOgUrl] = useState(false);
 
   const logoInputRef = useRef<HTMLInputElement>(null);
   const faviconInputRef = useRef<HTMLInputElement>(null);
@@ -99,7 +104,27 @@ export const AdminWebsiteEditor: React.FC = () => {
     try {
       setUploadingAsset(targetPath);
       const res = await mediaService.uploadBrandAsset(file, folder);
-      handleChange(targetPath, res.url);
+
+      if (targetPath === 'brandingAssets.ogImage.url') {
+        setFormData((prev) => {
+          const next = JSON.parse(JSON.stringify(prev));
+          if (!next.brandingAssets) next.brandingAssets = {};
+          if (!next.brandingAssets.ogImage) next.brandingAssets.ogImage = {};
+          next.brandingAssets.ogImage.url = res.url;
+          next.brandingAssets.ogImage.width = res.width;
+          next.brandingAssets.ogImage.height = res.height;
+          next.brandingAssets.ogImage.type = res.type;
+
+          if (!next.seo) next.seo = {};
+          next.seo.ogImage = res.url;
+          next.seo.ogImageWidth = res.width;
+          next.seo.ogImageHeight = res.height;
+          next.seo.ogImageType = res.type;
+          return next;
+        });
+      } else {
+        handleChange(targetPath, res.url);
+      }
       setToastMessage({ type: 'success', text: `Uploaded ${file.name} to Supabase Storage.` });
     } catch (err: any) {
       setToastMessage({ type: 'error', text: err?.message || 'Upload failed.' });
@@ -144,7 +169,8 @@ export const AdminWebsiteEditor: React.FC = () => {
 
   // Reorder sections helper
   const moveSectionOrder = (index: number, direction: 'up' | 'down') => {
-    const currentOrder = [...(formData.sectionOrder || ['hero', 'system', 'portfolio', 'process', 'services', 'about', 'finalCta'])];
+    const rawOrder = formData.sectionOrder || ['hero', 'system', 'portfolio', 'process', 'services', 'faq', 'about', 'finalCta'];
+    const currentOrder = Array.from(new Set(rawOrder.map((s) => (s === 'team' ? 'about' : s))));
     const targetIndex = direction === 'up' ? index - 1 : index + 1;
     if (targetIndex < 0 || targetIndex >= currentOrder.length) return;
     const temp = currentOrder[index];
@@ -200,7 +226,8 @@ export const AdminWebsiteEditor: React.FC = () => {
     portfolio: 'Selected Work / Portfolio',
     process: 'Raw → Edit → Ready (Process)',
     services: 'Services Grid',
-    about: 'About & Team Philosophy',
+    faq: 'Frequently Asked Questions (FAQ)',
+    about: 'About & Team Section',
     finalCta: 'Final Call To Action',
   };
 
@@ -733,43 +760,51 @@ export const AdminWebsiteEditor: React.FC = () => {
               </div>
             </div>
 
-            {/* 3. FOOTER LOGO & SOCIAL SHARE OG IMAGE */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Footer Logo */}
-              <div className="p-6 rounded-2xl bg-[#0e0e18] border border-white/10 space-y-4">
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                  <h4 className="text-sm font-bold text-white">FOOTER LOGO</h4>
-                  <label className="text-xs text-zinc-400 flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={formData.brandingAssets?.footerLogo?.visible !== false}
-                      onChange={(e) => handleChange('brandingAssets.footerLogo.visible', e.target.checked)}
-                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
-                    />
-                    <span>Visible</span>
-                  </label>
+            {/* 3. FOOTER LOGO */}
+            <div className="p-6 rounded-2xl bg-[#0e0e18] border border-white/10 space-y-4">
+              <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                <div>
+                  <h4 className="text-sm font-bold text-white uppercase tracking-wider">FOOTER LOGO</h4>
+                  <p className="text-[11px] text-zinc-400">Controls the branding mark displayed in the website footer</p>
                 </div>
-
-                <div className="flex items-center justify-between p-3 rounded-xl bg-[#12121c] border border-white/5">
-                  <span className="text-xs text-white">Mirror Header Logo automatically</span>
+                <label className="text-xs text-zinc-400 flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={formData.brandingAssets?.footerLogo?.useHeaderLogo !== false}
-                    onChange={(e) => handleChange('brandingAssets.footerLogo.useHeaderLogo', e.target.checked)}
+                    checked={formData.brandingAssets?.footerLogo?.visible !== false}
+                    onChange={(e) => handleChange('brandingAssets.footerLogo.visible', e.target.checked)}
                     className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
                   />
-                </div>
+                  <span>Visible</span>
+                </label>
+              </div>
 
-                {formData.brandingAssets?.footerLogo?.useHeaderLogo === false && (
-                  <div className="space-y-3">
+              <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#12121c] border border-white/5">
+                <div>
+                  <span className="text-xs font-semibold text-white block">Mirror Header Logo Automatically</span>
+                  <span className="text-[11px] text-zinc-400">Keeps the footer logo in perfect sync with the header brand asset</span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={formData.brandingAssets?.footerLogo?.useHeaderLogo !== false}
+                  onChange={(e) => handleChange('brandingAssets.footerLogo.useHeaderLogo', e.target.checked)}
+                  className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                />
+              </div>
+
+              {formData.brandingAssets?.footerLogo?.useHeaderLogo === false && (
+                <div className="space-y-3 pt-2">
+                  <div>
+                    <label className="block text-[10px] font-mono text-zinc-400 uppercase mb-1">Custom Footer Logo Storage URL</label>
                     <input
                       type="text"
                       value={formData.brandingAssets?.footerLogo?.url || ''}
                       onChange={(e) => handleChange('brandingAssets.footerLogo.url', e.target.value)}
-                      placeholder="Custom footer logo URL"
+                      placeholder="https://...supabase.co/.../logos/custom-footer-logo.png"
                       className="w-full px-3 py-2 rounded-lg bg-black border border-white/10 text-white text-xs font-mono outline-none"
                     />
+                  </div>
 
+                  <div className="flex items-center gap-2">
                     <input
                       type="file"
                       ref={footerLogoInputRef}
@@ -780,48 +815,363 @@ export const AdminWebsiteEditor: React.FC = () => {
 
                     <button
                       type="button"
+                      disabled={uploadingAsset === 'brandingAssets.footerLogo.url'}
                       onClick={() => footerLogoInputRef.current?.click()}
-                      className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 cursor-pointer"
+                      className="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 cursor-pointer flex items-center gap-1.5"
                     >
-                      Upload Custom Footer Logo
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>Upload Custom Footer Logo</span>
                     </button>
                   </div>
-                )}
+                </div>
+              )}
+            </div>
+
+            {/* 4. UNIVERSAL SOCIAL SHARING / OPEN GRAPH (OG) IMAGE */}
+            <div className="p-6 rounded-2xl bg-[#0e0e18] border border-blue-500/20 shadow-xl space-y-6">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-400 font-mono text-[10px] font-bold uppercase tracking-wider border border-blue-500/30">
+                      SINGLE SOURCE OF TRUTH
+                    </span>
+                    <h4 className="text-sm font-bold text-white uppercase tracking-wider">
+                      UNIVERSAL SOCIAL SHARING / OG IMAGE
+                    </h4>
+                  </div>
+                  <p className="text-xs text-zinc-400 max-w-2xl leading-relaxed">
+                    This single image serves as the universal preview card whenever <span className="text-blue-400 font-mono">https://footazix.site/</span> is shared on <strong className="text-zinc-200">WhatsApp, X / Twitter, Discord, Slack, iMessage, LinkedIn, Telegram, and Facebook</strong>. It generates full OpenGraph and Twitter Card metadata.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    Supabase Storage Active
+                  </span>
+                </div>
               </div>
 
-              {/* Social Sharing / OpenGraph Image */}
-              <div className="p-6 rounded-2xl bg-[#0e0e18] border border-white/10 space-y-4">
-                <div className="border-b border-white/10 pb-3">
-                  <h4 className="text-sm font-bold text-white">SOCIAL SHARING IMAGE (OG)</h4>
-                  <p className="text-[11px] text-zinc-400">Preview image rendered on Twitter, iMessage, Discord, Slack</p>
+              {/* Main 2-Column Section: Left Mockup Preview, Right Image Controls */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                {/* Left Column: Live Platform Social Card Preview Mockup (7 cols) */}
+                <div className="lg:col-span-7 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                      <Share2 className="w-3.5 h-3.5 text-blue-400" />
+                      Live Social Card Preview
+                    </label>
+
+                    {/* Platform Selector Tabs */}
+                    <div className="flex items-center gap-1 bg-[#12121c] p-1 rounded-xl border border-white/10">
+                      <button
+                        type="button"
+                        onClick={() => setOgPreviewPlatform('twitter')}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                          ogPreviewPlatform === 'twitter'
+                            ? 'bg-blue-600 text-white shadow-sm'
+                            : 'text-zinc-400 hover:text-white'
+                        }`}
+                      >
+                        𝕏 / Twitter
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setOgPreviewPlatform('whatsapp')}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                          ogPreviewPlatform === 'whatsapp'
+                            ? 'bg-emerald-600 text-white shadow-sm'
+                            : 'text-zinc-400 hover:text-white'
+                        }`}
+                      >
+                        WhatsApp
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setOgPreviewPlatform('discord')}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                          ogPreviewPlatform === 'discord'
+                            ? 'bg-indigo-600 text-white shadow-sm'
+                            : 'text-zinc-400 hover:text-white'
+                        }`}
+                      >
+                        Discord
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setOgPreviewPlatform('meta')}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                          ogPreviewPlatform === 'meta'
+                            ? 'bg-zinc-700 text-white shadow-sm'
+                            : 'text-zinc-400 hover:text-white'
+                        }`}
+                      >
+                        Raw Meta
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Mockup Card Container */}
+                  <div className="p-4 rounded-2xl bg-black border border-white/10 relative overflow-hidden">
+                    {/* Twitter Card Mockup */}
+                    {ogPreviewPlatform === 'twitter' && (
+                      <div className="max-w-md mx-auto rounded-2xl overflow-hidden border border-white/15 bg-[#0b0e14] shadow-2xl">
+                        <div className="relative aspect-[1.91/1] w-full bg-zinc-950 overflow-hidden">
+                          <img
+                            src={formData.brandingAssets?.ogImage?.url || 'https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/branding/1790997433105_1001608268.png'}
+                            alt={formData.brandingAssets?.ogImage?.alt || 'OG Preview'}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = '/assets/branding/footazix-og-default.png';
+                            }}
+                          />
+                          <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/80 backdrop-blur text-[10px] font-mono text-zinc-300">
+                            footazix.site
+                          </span>
+                        </div>
+                        <div className="p-3.5 space-y-1">
+                          <span className="text-[11px] text-zinc-500 font-mono block">footazix.site</span>
+                          <h5 className="text-sm font-bold text-white line-clamp-1">
+                            {formData.seo?.ogTitle || formData.seo?.siteTitle || 'Footazix — Turn Raw Footage Into Content Worth Watching'}
+                          </h5>
+                          <p className="text-xs text-zinc-400 line-clamp-2 leading-relaxed">
+                            {formData.seo?.ogDescription || formData.seo?.metaDescription || 'Turning raw footage into content worth watching. High-retention video editing and creative growth.'}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* WhatsApp Mockup */}
+                    {ogPreviewPlatform === 'whatsapp' && (
+                      <div className="max-w-md mx-auto space-y-2">
+                        <div className="flex justify-end">
+                          <div className="max-w-sm rounded-2xl rounded-tr-none bg-[#0b3b2c] p-2.5 shadow-xl text-white space-y-2 border border-emerald-500/20">
+                            <div className="rounded-xl overflow-hidden border border-black/20 bg-black aspect-[1.91/1]">
+                              <img
+                                src={formData.brandingAssets?.ogImage?.url || 'https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/branding/1790997433105_1001608268.png'}
+                                alt="WhatsApp link preview"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="p-1">
+                              <h5 className="text-xs font-bold text-white line-clamp-1">
+                                {formData.seo?.ogTitle || formData.seo?.siteTitle || 'Footazix — Turn Raw Footage Into Content Worth Watching'}
+                              </h5>
+                              <p className="text-[11px] text-emerald-100/70 line-clamp-2 leading-relaxed">
+                                {formData.seo?.ogDescription || formData.seo?.metaDescription || 'Turning raw footage into content worth watching.'}
+                              </p>
+                              <span className="text-[10px] text-emerald-300 font-mono block mt-1">footazix.site</span>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-[9px] text-emerald-200/50">12:45 PM • Read</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Discord Mockup */}
+                    {ogPreviewPlatform === 'discord' && (
+                      <div className="max-w-md mx-auto rounded-xl bg-[#2b2d31] p-3.5 border-l-4 border-blue-500 space-y-2 shadow-xl">
+                        <span className="text-[11px] font-semibold text-blue-400 block font-mono">FOOTAZIX</span>
+                        <h5 className="text-xs font-bold text-white hover:underline cursor-pointer">
+                          {formData.seo?.ogTitle || formData.seo?.siteTitle || 'Footazix — Turn Raw Footage Into Content Worth Watching'}
+                        </h5>
+                        <p className="text-xs text-zinc-300 leading-relaxed line-clamp-2">
+                          {formData.seo?.ogDescription || formData.seo?.metaDescription || 'High-retention video editing and creative growth for modern creators.'}
+                        </p>
+                        <div className="rounded-lg overflow-hidden border border-black/30 aspect-[1.91/1] w-full">
+                          <img
+                            src={formData.brandingAssets?.ogImage?.url || 'https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/branding/1790997433105_1001608268.png'}
+                            alt="Discord preview"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Raw Meta Tags Inspector */}
+                    {ogPreviewPlatform === 'meta' && (
+                      <div className="font-mono text-[11px] bg-black/90 p-3.5 rounded-xl border border-white/10 text-zinc-300 space-y-1 overflow-x-auto max-h-56">
+                        <p className="text-blue-400 font-semibold mb-2">// Universal OpenGraph & Twitter Card Metadata</p>
+                        <p><span className="text-pink-400">&lt;meta</span> <span className="text-yellow-300">property</span>=<span className="text-emerald-300">"og:type"</span> <span className="text-yellow-300">content</span>=<span className="text-emerald-300">"website"</span> <span className="text-pink-400">/&gt;</span></p>
+                        <p><span className="text-pink-400">&lt;meta</span> <span className="text-yellow-300">property</span>=<span className="text-emerald-300">"og:url"</span> <span className="text-yellow-300">content</span>=<span className="text-emerald-300">"{formData.seo?.canonicalUrl || 'https://footazix.site'}"</span> <span className="text-pink-400">/&gt;</span></p>
+                        <p><span className="text-pink-400">&lt;meta</span> <span className="text-yellow-300">property</span>=<span className="text-emerald-300">"og:site_name"</span> <span className="text-yellow-300">content</span>=<span className="text-emerald-300">"{formData.brand?.name || 'FOOTAZIX'}"</span> <span className="text-pink-400">/&gt;</span></p>
+                        <p><span className="text-pink-400">&lt;meta</span> <span className="text-yellow-300">property</span>=<span className="text-emerald-300">"og:image"</span> <span className="text-yellow-300">content</span>=<span className="text-emerald-300">"{formData.brandingAssets?.ogImage?.url || ''}"</span> <span className="text-pink-400">/&gt;</span></p>
+                        <p><span className="text-pink-400">&lt;meta</span> <span className="text-yellow-300">property</span>=<span className="text-emerald-300">"og:image:width"</span> <span className="text-yellow-300">content</span>=<span className="text-emerald-300">"{formData.brandingAssets?.ogImage?.width || 1734}"</span> <span className="text-pink-400">/&gt;</span></p>
+                        <p><span className="text-pink-400">&lt;meta</span> <span className="text-yellow-300">property</span>=<span className="text-emerald-300">"og:image:height"</span> <span className="text-yellow-300">content</span>=<span className="text-emerald-300">"{formData.brandingAssets?.ogImage?.height || 907}"</span> <span className="text-pink-400">/&gt;</span></p>
+                        <p><span className="text-pink-400">&lt;meta</span> <span className="text-yellow-300">name</span>=<span className="text-emerald-300">"twitter:card"</span> <span className="text-yellow-300">content</span>=<span className="text-emerald-300">"summary_large_image"</span> <span className="text-pink-400">/&gt;</span></p>
+                        <p><span className="text-pink-400">&lt;meta</span> <span className="text-yellow-300">name</span>=<span className="text-emerald-300">"twitter:image"</span> <span className="text-yellow-300">content</span>=<span className="text-emerald-300">"{formData.brandingAssets?.ogImage?.url || ''}"</span> <span className="text-pink-400">/&gt;</span></p>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                <div>
-                  <input
-                    type="text"
-                    value={formData.brandingAssets?.ogImage?.url || ''}
-                    onChange={(e) => handleChange('brandingAssets.ogImage.url', e.target.value)}
-                    placeholder="/assets/vsl/vsl-poster.jpg"
-                    className="w-full px-3 py-2 rounded-lg bg-black border border-white/10 text-white text-xs font-mono outline-none"
-                  />
-                </div>
-
-                <div className="flex items-center gap-2">
+                {/* Right Column: Controls, Upload, Specs, Actions (5 cols) */}
+                <div className="lg:col-span-5 space-y-4">
+                  {/* File Upload Trigger */}
                   <input
                     type="file"
                     ref={ogImageInputRef}
-                    accept="image/*"
+                    accept="image/png,image/jpeg,image/webp"
                     className="hidden"
                     onChange={(e) => handleFileUpload(e, 'brandingAssets.ogImage.url', 'branding')}
                   />
 
-                  <button
-                    type="button"
-                    onClick={() => ogImageInputRef.current?.click()}
-                    className="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 cursor-pointer"
-                  >
-                    Upload OG Image
-                  </button>
+                  {/* Actions Bar */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      disabled={uploadingAsset === 'brandingAssets.ogImage.url'}
+                      onClick={() => ogImageInputRef.current?.click()}
+                      className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 transition-all cursor-pointer flex items-center gap-1.5 shadow-lg shadow-blue-600/20"
+                    >
+                      {uploadingAsset === 'brandingAssets.ogImage.url' ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <span>Uploading to Supabase...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>Upload / Replace OG Image</span>
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const url = formData.brandingAssets?.ogImage?.url || '';
+                        if (url) {
+                          navigator.clipboard.writeText(url);
+                          setCopiedOgUrl(true);
+                          setToastMessage({ type: 'success', text: 'Copied image URL to clipboard.' });
+                          setTimeout(() => setCopiedOgUrl(false), 2000);
+                        }
+                      }}
+                      className="px-3 py-2 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white bg-[#12121c] border border-white/10 transition-colors cursor-pointer flex items-center gap-1.5"
+                    >
+                      {copiedOgUrl ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedOgUrl ? 'Copied' : 'Copy URL'}</span>
+                    </button>
+
+                    {formData.brandingAssets?.ogImage?.url && (
+                      <a
+                        href={formData.brandingAssets.ogImage.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-3 py-2 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white bg-[#12121c] border border-white/10 transition-colors cursor-pointer flex items-center gap-1.5"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span>View Asset</span>
+                      </a>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const fallbackUrl = 'https://footazix.site/assets/branding/footazix-og-default.png';
+                        setFormData((prev) => {
+                          const next = JSON.parse(JSON.stringify(prev));
+                          if (!next.brandingAssets) next.brandingAssets = {};
+                          next.brandingAssets.ogImage = {
+                            url: fallbackUrl,
+                            alt: 'Footazix Content Growth Agency',
+                            width: 1200,
+                            height: 630,
+                            type: 'image/png',
+                          };
+                          if (!next.seo) next.seo = {};
+                          next.seo.ogImage = fallbackUrl;
+                          next.seo.ogImageAlt = 'Footazix Content Growth Agency';
+                          next.seo.ogImageWidth = 1200;
+                          next.seo.ogImageHeight = 630;
+                          next.seo.ogImageType = 'image/png';
+                          return next;
+                        });
+                        setToastMessage({ type: 'success', text: 'Reset OG image to default Footazix brand asset.' });
+                      }}
+                      className="px-3 py-2 rounded-xl text-xs font-medium text-zinc-400 hover:text-red-400 bg-[#12121c] border border-white/10 transition-colors cursor-pointer"
+                    >
+                      Reset to Default
+                    </button>
+                  </div>
+
+                  {/* Permanent Supabase Storage Public HTTPS URL Field */}
+                  <div className="space-y-1.5">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+                      Current Storage Public HTTPS URL
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.brandingAssets?.ogImage?.url || ''}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setFormData((prev) => {
+                          const next = JSON.parse(JSON.stringify(prev));
+                          if (!next.brandingAssets) next.brandingAssets = {};
+                          if (!next.brandingAssets.ogImage) next.brandingAssets.ogImage = {};
+                          next.brandingAssets.ogImage.url = val;
+                          if (!next.seo) next.seo = {};
+                          next.seo.ogImage = val;
+                          return next;
+                        });
+                      }}
+                      placeholder="https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/branding/..."
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black border border-white/10 text-white text-xs font-mono focus:border-blue-500 outline-none"
+                    />
+                  </div>
+
+                  {/* Alt Text Field */}
+                  <div className="space-y-1.5">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+                      Image Alt Text (og:image:alt & twitter:image:alt)
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.brandingAssets?.ogImage?.alt || ''}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setFormData((prev) => {
+                          const next = JSON.parse(JSON.stringify(prev));
+                          if (!next.brandingAssets) next.brandingAssets = {};
+                          if (!next.brandingAssets.ogImage) next.brandingAssets.ogImage = {};
+                          next.brandingAssets.ogImage.alt = val;
+                          if (!next.seo) next.seo = {};
+                          next.seo.ogImageAlt = val;
+                          return next;
+                        });
+                      }}
+                      placeholder="Footazix Content Growth Agency"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black border border-white/10 text-white text-xs focus:border-blue-500 outline-none"
+                    />
+                  </div>
+
+                  {/* Metadata Specs & Standards Card */}
+                  <div className="p-3.5 rounded-xl bg-[#12121c] border border-white/5 space-y-2 text-xs">
+                    <div className="flex items-center justify-between text-zinc-400">
+                      <span>Dimensions:</span>
+                      <span className="font-mono text-white font-semibold">
+                        {formData.brandingAssets?.ogImage?.width || 1734} × {formData.brandingAssets?.ogImage?.height || 907} px
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-zinc-400">
+                      <span>File Format:</span>
+                      <span className="font-mono text-white font-semibold">
+                        {formData.brandingAssets?.ogImage?.type || 'image/png'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-zinc-400">
+                      <span>Protocol:</span>
+                      <span className="font-mono text-emerald-400 font-semibold">Absolute HTTPS</span>
+                    </div>
+                    <div className="flex items-center justify-between text-zinc-400">
+                      <span>Twitter Format:</span>
+                      <span className="font-mono text-blue-400 font-semibold">summary_large_image</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -912,8 +1262,13 @@ export const AdminWebsiteEditor: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                {(formData.sectionOrder || ['hero', 'system', 'portfolio', 'process', 'services', 'about', 'finalCta']).map(
-                  (sectionId, index, array) => (
+                {Array.from(
+                  new Set(
+                    (formData.sectionOrder || ['hero', 'system', 'portfolio', 'process', 'services', 'faq', 'about', 'finalCta']).map(
+                      (s) => (s === 'team' ? 'about' : s)
+                    )
+                  )
+                ).map((sectionId, index, array) => (
                     <div
                       key={sectionId}
                       className="p-3.5 rounded-xl bg-[#12121c] border border-white/10 flex items-center justify-between"
@@ -2067,6 +2422,35 @@ export const AdminWebsiteEditor: React.FC = () => {
                   onChange={(e) => handleChange('seo.ogDescription', e.target.value)}
                   className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
                 />
+              </div>
+
+              {/* Linked Universal OG Image Preview */}
+              <div className="sm:col-span-2 p-4 rounded-xl bg-black border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-20 h-12 rounded-lg bg-zinc-900 border border-white/10 overflow-hidden shrink-0">
+                    <img
+                      src={formData.brandingAssets?.ogImage?.url || 'https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/branding/1790997433105_1001608268.png'}
+                      alt="OG Image Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-white uppercase tracking-wider">Universal OG Image</span>
+                      <span className="px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 text-[9px] font-mono font-bold">SINGLE SOURCE OF TRUTH</span>
+                    </div>
+                    <span className="text-[11px] text-zinc-400 block line-clamp-1 font-mono">
+                      {formData.brandingAssets?.ogImage?.url || 'Default Footazix Brand Card'}
+                    </span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('branding')}
+                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-blue-400 hover:text-white bg-blue-600/20 hover:bg-blue-600 border border-blue-500/30 transition-colors shrink-0 cursor-pointer"
+                >
+                  Manage Image in Branding →
+                </button>
               </div>
             </div>
           </div>

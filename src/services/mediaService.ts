@@ -55,6 +55,36 @@ function fileToDataUrl(file: File): Promise<string> {
   });
 }
 
+export function getImageDimensions(fileOrUrl: File | string): Promise<{ width: number; height: number }> {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined') {
+      resolve({ width: 1200, height: 630 });
+      return;
+    }
+    const img = new Image();
+    if (typeof fileOrUrl === 'string') {
+      img.onload = () => {
+        resolve({ width: img.naturalWidth || 1200, height: img.naturalHeight || 630 });
+      };
+      img.onerror = () => resolve({ width: 1200, height: 630 });
+      img.src = fileOrUrl;
+    } else {
+      const blobUrl = URL.createObjectURL(fileOrUrl);
+      img.onload = () => {
+        const w = img.naturalWidth || 1200;
+        const h = img.naturalHeight || 630;
+        URL.revokeObjectURL(blobUrl);
+        resolve({ width: w, height: h });
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(blobUrl);
+        resolve({ width: 1200, height: 630 });
+      };
+      img.src = blobUrl;
+    }
+  });
+}
+
 export const mediaService = {
   subscribe(listener: Listener): () => void {
     listeners.add(listener);
@@ -172,12 +202,16 @@ export const mediaService = {
   async uploadBrandAsset(
     file: File,
     folder: 'logos' | 'favicons' | 'branding' = 'branding'
-  ): Promise<{ url: string; name: string; size: string }> {
+  ): Promise<{ url: string; name: string; size: string; width: number; height: number; type: string }> {
     const asset = await this.uploadMedia(file, folder);
+    const { width, height } = await getImageDimensions(file);
     return {
       url: asset.url,
       name: asset.name,
       size: asset.size,
+      width,
+      height,
+      type: file.type || (asset.url.endsWith('.png') ? 'image/png' : 'image/jpeg'),
     };
   },
 

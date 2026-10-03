@@ -22,6 +22,7 @@ import {
   Inquiry,
   MediaAsset,
   AdminUser,
+  FAQ,
 } from '../types';
 import { contentService } from '../services/contentService';
 import { portfolioService } from '../services/portfolioService';
@@ -29,6 +30,7 @@ import { servicesService } from '../services/servicesService';
 import { teamService } from '../services/teamService';
 import { inquiryService } from '../services/inquiryService';
 import { mediaService } from '../services/mediaService';
+import { faqService } from '../services/faqService';
 import { authService } from '../services/authService';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { INITIAL_WEBSITE_CONTENT } from '../data/mockData';
@@ -58,6 +60,7 @@ interface AppContextValue {
   projects: Project[];
   services: Service[];
   team: TeamMember[];
+  faqs: FAQ[];
   inquiries: Inquiry[];
   media: MediaAsset[];
   isLoading: boolean;
@@ -68,6 +71,10 @@ interface AppContextValue {
   updateWebsiteContent: (partial: Partial<WebsiteContent>) => Promise<boolean>;
   resetWebsiteContent: () => Promise<boolean>;
   createInquiry: (data: Omit<Inquiry, 'id' | 'status' | 'createdAt'>) => Promise<boolean>;
+  createFAQ: (data: Omit<FAQ, 'id' | 'createdAt' | 'updatedAt'>) => Promise<FAQ | null>;
+  updateFAQ: (id: string, partial: Partial<FAQ>) => Promise<boolean>;
+  deleteFAQ: (id: string) => Promise<boolean>;
+  reorderFAQs: (orderedIds: string[]) => Promise<boolean>;
   refreshAll: () => Promise<void>;
 }
 
@@ -92,6 +99,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [projects, setProjects] = useState<Project[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [team, setTeam] = useState<TeamMember[]>([]);
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [media, setMedia] = useState<MediaAsset[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -162,11 +170,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const loadData = useCallback(async () => {
     try {
       setIsLoading(true);
-      const [c, p, s, t, i, m] = await Promise.all([
+      const [c, p, s, t, f, i, m] = await Promise.all([
         contentService.getWebsiteContent(),
         portfolioService.getProjects(),
         servicesService.getServices(),
         teamService.getTeam(),
+        faqService.getFAQs(),
         inquiryService.getInquiries(),
         mediaService.getMedia(),
       ]);
@@ -174,6 +183,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       setProjects(p);
       setServices(s);
       setTeam(t);
+      setFaqs(f);
       setInquiries(i);
       setMedia(m);
     } catch (err) {
@@ -191,6 +201,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const unsubProjects = portfolioService.subscribe((p) => setProjects(p));
     const unsubServices = servicesService.subscribe((s) => setServices(s));
     const unsubTeam = teamService.subscribe((t) => setTeam(t));
+    const unsubFaqs = faqService.subscribe((f) => setFaqs(f));
     const unsubInquiries = inquiryService.subscribe((i) => setInquiries(i));
     const unsubMedia = mediaService.subscribe((m) => setMedia(m));
 
@@ -199,6 +210,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       unsubProjects();
       unsubServices();
       unsubTeam();
+      unsubFaqs();
       unsubInquiries();
       unsubMedia();
     };
@@ -265,6 +277,43 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
+  const createFAQ = async (data: Omit<FAQ, 'id' | 'createdAt' | 'updatedAt'>) => {
+    try {
+      const created = await faqService.createFAQ(data);
+      return created;
+    } catch (err) {
+      console.error('Failed creating FAQ:', err);
+      return null;
+    }
+  };
+
+  const updateFAQ = async (id: string, partial: Partial<FAQ>) => {
+    try {
+      return await faqService.updateFAQ(id, partial);
+    } catch (err) {
+      console.error('Failed updating FAQ:', err);
+      return false;
+    }
+  };
+
+  const deleteFAQ = async (id: string) => {
+    try {
+      return await faqService.deleteFAQ(id);
+    } catch (err) {
+      console.error('Failed deleting FAQ:', err);
+      return false;
+    }
+  };
+
+  const reorderFAQs = async (orderedIds: string[]) => {
+    try {
+      return await faqService.reorderFAQs(orderedIds);
+    } catch (err) {
+      console.error('Failed reordering FAQs:', err);
+      return false;
+    }
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -283,6 +332,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         projects,
         services,
         team,
+        faqs,
         inquiries,
         media,
         isLoading,
@@ -291,6 +341,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         updateWebsiteContent,
         resetWebsiteContent,
         createInquiry,
+        createFAQ,
+        updateFAQ,
+        deleteFAQ,
+        reorderFAQs,
         refreshAll: loadData,
       }}
     >

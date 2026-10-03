@@ -7,6 +7,7 @@ import { FounderVSL } from './components/FounderVSL';
 import { SelectedWork } from './components/SelectedWork';
 import { RawToFinal } from './components/RawToFinal';
 import { Services } from './components/Services';
+import { FAQSection } from './components/FAQSection';
 import { About } from './components/About';
 import { FinalCTA } from './components/FinalCTA';
 import { ContactModal } from './components/ContactModal';
@@ -48,6 +49,7 @@ function MainWebsite() {
     portfolio: true,
     process: true,
     services: true,
+    faq: true,
     about: true,
     team: true,
     finalCta: true,
@@ -56,9 +58,12 @@ function MainWebsite() {
     startProjectModal: true,
   };
 
-  const order = content.sectionOrder && content.sectionOrder.length > 0
+  const rawOrder = content.sectionOrder && content.sectionOrder.length > 0
     ? content.sectionOrder
-    : ['hero', 'system', 'portfolio', 'process', 'services', 'about', 'finalCta'];
+    : ['hero', 'system', 'portfolio', 'process', 'services', 'faq', 'about', 'finalCta'];
+
+  // Normalize 'team' to 'about', then deduplicate to strictly prevent duplicate keys or duplicate section renders
+  const order = Array.from(new Set(rawOrder.map((s) => (s === 'team' ? 'about' : s))));
 
   const renderSection = (sectionId: string) => {
     switch (sectionId) {
@@ -99,6 +104,14 @@ function MainWebsite() {
           <Services
             key="services"
             onSelectService={(service) => openContactModal(service)}
+          />
+        ) : null;
+
+      case 'faq':
+        return visibility.faq !== false ? (
+          <FAQSection
+            key="faq"
+            onOpenContact={() => openContactModal('General Inquiry / FAQ')}
           />
         ) : null;
 

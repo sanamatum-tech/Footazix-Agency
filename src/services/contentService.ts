@@ -108,6 +108,37 @@ export const contentService = {
           ? deepMerge(current, extendedFromStorage)
           : current;
 
+        // Sanitize OG image: enforce single source of truth and purge legacy VSL poster / relative paths
+        const defaultOgUrl = 'https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/branding/1790997433105_1001608268.png';
+        let resolvedOgUrl = baseMerged.brandingAssets?.ogImage?.url;
+        if (!resolvedOgUrl || resolvedOgUrl.includes('vsl-poster.jpg') || resolvedOgUrl.startsWith('/')) {
+          resolvedOgUrl = (baseMerged.seo?.ogImage && !baseMerged.seo.ogImage.includes('vsl-poster.jpg') && !baseMerged.seo.ogImage.startsWith('/'))
+            ? baseMerged.seo.ogImage
+            : defaultOgUrl;
+        }
+
+        const resolvedOgAlt = baseMerged.brandingAssets?.ogImage?.alt || baseMerged.seo?.ogImageAlt || 'Footazix Content Growth Agency';
+        const resolvedOgWidth = baseMerged.brandingAssets?.ogImage?.width || 1734;
+        const resolvedOgHeight = baseMerged.brandingAssets?.ogImage?.height || 907;
+        const resolvedOgType = baseMerged.brandingAssets?.ogImage?.type || 'image/png';
+
+        if (baseMerged.brandingAssets) {
+          baseMerged.brandingAssets.ogImage = {
+            url: resolvedOgUrl,
+            alt: resolvedOgAlt,
+            width: resolvedOgWidth,
+            height: resolvedOgHeight,
+            type: resolvedOgType,
+          };
+        }
+        if (baseMerged.seo) {
+          baseMerged.seo.ogImage = resolvedOgUrl;
+          baseMerged.seo.ogImageAlt = resolvedOgAlt;
+          baseMerged.seo.ogImageWidth = resolvedOgWidth;
+          baseMerged.seo.ogImageHeight = resolvedOgHeight;
+          baseMerged.seo.ogImageType = resolvedOgType;
+        }
+
         const content: WebsiteContent = {
           ...baseMerged,
           brand: {
@@ -180,6 +211,24 @@ export const contentService = {
   async updateWebsiteContent(partial: Partial<WebsiteContent>): Promise<WebsiteContent> {
     const current = getStoredContent();
     const updated: WebsiteContent = deepMerge(current, partial);
+
+    // Keep brandingAssets.ogImage and seo.ogImage in 100% lockstep
+    if (partial.brandingAssets?.ogImage?.url) {
+      updated.seo.ogImage = partial.brandingAssets.ogImage.url;
+      if (partial.brandingAssets.ogImage.alt) updated.seo.ogImageAlt = partial.brandingAssets.ogImage.alt;
+      if (partial.brandingAssets.ogImage.width) updated.seo.ogImageWidth = partial.brandingAssets.ogImage.width;
+      if (partial.brandingAssets.ogImage.height) updated.seo.ogImageHeight = partial.brandingAssets.ogImage.height;
+      if (partial.brandingAssets.ogImage.type) updated.seo.ogImageType = partial.brandingAssets.ogImage.type;
+    } else if (partial.seo?.ogImage) {
+      updated.brandingAssets.ogImage = {
+        ...updated.brandingAssets.ogImage,
+        url: partial.seo.ogImage,
+        alt: partial.seo.ogImageAlt || updated.brandingAssets.ogImage.alt,
+        width: partial.seo.ogImageWidth || updated.brandingAssets.ogImage.width,
+        height: partial.seo.ogImageHeight || updated.brandingAssets.ogImage.height,
+        type: partial.seo.ogImageType || updated.brandingAssets.ogImage.type,
+      };
+    }
 
     // Save to local cache immediately
     saveStoredContent(updated);

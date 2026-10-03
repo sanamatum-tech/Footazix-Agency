@@ -30,6 +30,9 @@ export interface FooterLogoSettings {
 export interface OgImageSettings {
   url: string;
   alt: string;
+  width?: number;
+  height?: number;
+  type?: string;
 }
 
 export interface BrandingAssetsSettings {
@@ -190,6 +193,45 @@ export interface FooterSettings {
   tagline?: string;
 }
 
+export interface FAQ {
+  id: string;
+  question: string;
+  answer: string;
+  category: string;
+  order: number;
+  published: boolean;
+  visible: boolean;
+  featured?: boolean;
+  lastReviewedDate?: string;
+  relatedService?: string;
+  relatedProject?: string;
+  ctaText?: string;
+  ctaUrl?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface FAQSectionSettings {
+  badge?: string;
+  heading: string;
+  subheading?: string;
+  description?: string;
+  allowMultipleOpen?: boolean;
+  ctaText?: string;
+  ctaAction?: string;
+  ctaVisible?: boolean;
+  visible?: boolean;
+}
+
+export interface SocialLinkItem {
+  id: string;
+  platform: string;
+  label: string;
+  url: string;
+  visible: boolean;
+  order: number;
+}
+
 export interface SectionVisibilitySettings {
   header: boolean;
   hero: boolean;
@@ -197,12 +239,17 @@ export interface SectionVisibilitySettings {
   portfolio: boolean;
   process: boolean;
   services: boolean;
+  faq: boolean;
   about: boolean;
   team: boolean;
   finalCta: boolean;
   footer: boolean;
   instagram: boolean;
   startProjectModal: boolean;
+  heroBadge?: boolean;
+  heroDescription?: boolean;
+  heroSecondaryCta?: boolean;
+  faqCta?: boolean;
 }
 
 export interface SeoSettings {
@@ -211,6 +258,10 @@ export interface SeoSettings {
   ogTitle: string;
   ogDescription: string;
   ogImage: string;
+  ogImageAlt?: string;
+  ogImageWidth?: number;
+  ogImageHeight?: number;
+  ogImageType?: string;
   canonicalUrl: string;
   keywords: string;
 }
@@ -272,6 +323,8 @@ export interface WebsiteContent {
     finalCtaSupporting: string;
   };
   finalCta?: FinalCtaSettings;
+  faqSection?: FAQSectionSettings;
+  socialLinks?: SocialLinkItem[];
   footer: FooterSettings;
   sectionVisibility: SectionVisibilitySettings;
   sectionOrder: string[];
