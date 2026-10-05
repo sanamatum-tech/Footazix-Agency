@@ -1,42 +1,33 @@
 /**
- * FOOTAZIX — Inquiry Service
+ * FOOTAZIX — Production Inquiry Service
  * 
- * Interacts with Supabase `inquiries` table with Row Level Security.
- * - Anonymous / public visitors can INSERT new inquiries.
- * - Only authenticated admins can SELECT, UPDATE status, or DELETE inquiries.
+ * Interacts directly with the Supabase `inquiries` table with Row Level Security (RLS).
+ * - Anonymous / public visitors on ANY browser (Chrome, Safari, iOS, Instagram webview)
+ *   perform a direct HTTPS INSERT into `inquiries`.
+ * - Public visitors do NOT select / read back other people's inquiries (enforced by RLS).
+ * - Authenticated admins in /secureadmin perform SELECT, UPDATE status, UPDATE notes, and DELETE.
+ * - Zero dependency on localStorage, sessionStorage, cookies, or mock data for inquiry persistence.
  */
 
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { Inquiry, InquiryStatus } from '../types';
-import { INITIAL_INQUIRIES } from '../data/mockData';
-
-const STORAGE_KEY = 'footazix_inquiries';
 
 type Listener = (inquiries: Inquiry[]) => void;
 const listeners: Set<Listener> = new Set();
+let cachedInquiries: Inquiry[] = [];
 
-function getStoredInquiries(): Inquiry[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return INITIAL_INQUIRIES;
-    return JSON.parse(raw);
-  } catch (err) {
-    console.warn('Failed reading inquiries from localStorage:', err);
-    return INITIAL_INQUIRIES;
-  }
-}
-
-function saveStoredInquiries(inquiries: Inquiry[]): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(inquiries));
-    listeners.forEach((fn) => fn(inquiries));
-  } catch (err) {
-    console.error('Failed saving inquiries to localStorage:', err);
-  }
+function notifyListeners(items: Inquiry[]) {
+  cachedInquiries = items;
+  listeners.forEach((fn) => {
+    try {
+      fn(items);
+    } catch (err) {
+      console.error('Error in inquiry listener:', err);
+    }
+  });
 }
 
 function mapRowToInquiry(row: any): Inquiry {
-  // Handle services whether stored as PostgreSQL array or string
   let servicesArr: string[] = [];
   if (Array.isArray(row.service)) {
     servicesArr = row.service;
@@ -46,14 +37,14 @@ function mapRowToInquiry(row: any): Inquiry {
 
   return {
     id: row.id,
-    name: row.name,
-    email: row.email,
+    name: row.name || 'Anonymous',
+    email: row.email || '',
     phone: row.phone || undefined,
     company: row.company || undefined,
-    services: servicesArr,
+    services: servicesArr.length > 0 ? servicesArr : ['Video Editing'],
     details: row.project_details || '',
     budget: row.budget_range || undefined,
-    status: row.status || 'new',
+    status: (row.status as InquiryStatus) || 'new',
     notes: row.notes || undefined,
     createdAt: row.created_at
       ? row.created_at.replace('T', ' ').substring(0, 16)
@@ -64,180 +55,198 @@ function mapRowToInquiry(row: any): Inquiry {
 export const inquiryService = {
   subscribe(listener: Listener): () => void {
     listeners.add(listener);
+    // Immediately emit current in-memory cache to new subscriber
+    listener(cachedInquiries);
     return () => listeners.delete(listener);
   },
 
+  /**
+   * Get all inquiries from Supabase.
+   * Only accessible to authenticated admins via Supabase RLS.
+   */
   async getInquiries(): Promise<Inquiry[]> {
-    if (isSupabaseConfigured() && supabase) {
-      try {
-        const { data, error } = await supabase
-          .from('inquiries')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (!error && data) {
-          const mapped = data.map(mapRowToInquiry);
-          saveStoredInquiries(mapped);
-          return mapped;
-        } else if (error) {
-          console.warn('Supabase inquiry fetch message (expected for unauthenticated public):', error.message);
-        }
-      } catch (err) {
-        console.warn('Error fetching inquiries from Supabase, using cache:', err);
-      }
+    if (!isSupabaseConfigured() || !supabase) {
+      return cachedInquiries;
     }
 
-    return getStoredInquiries();
+    try {
+      const { data, error } = await supabase
+        .from('inquiries')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        // Expected for unauthenticated public visitors due to strict RLS
+        console.warn('Supabase inquiry fetch status (RLS enforced):', error.message);
+        return cachedInquiries;
+      }
+
+      if (data) {
+        const mapped = data.map(mapRowToInquiry);
+        notifyListeners(mapped);
+        return mapped;
+      }
+    } catch (err) {
+      console.error('Failed fetching inquiries from Supabase:', err);
+    }
+
+    return cachedInquiries;
   },
 
+  /**
+   * Submit a new inquiry from ANY public visitor or device.
+   * Direct HTTPS INSERT into Supabase `inquiries` table without relying on client sessions or cookies.
+   * 
+   * CRITICAL:
+   * Do NOT chain `.select()` here. Public visitors have RLS permission to INSERT,
+   * but NOT SELECT. Chaining `.select()` triggers a Postgres RLS violation and rolls back the INSERT!
+   */
   async createInquiry(
     data: Omit<Inquiry, 'id' | 'status' | 'createdAt'>
-  ): Promise<Inquiry> {
-    const inquiries = getStoredInquiries();
+  ): Promise<{ success: boolean }> {
+    // 1. Rigorous Data Validation
+    const name = data.name?.trim();
+    const email = data.email?.trim().toLowerCase();
+    const details = data.details?.trim();
+    const services = Array.isArray(data.services) && data.services.length > 0
+      ? data.services
+      : ['Video Editing'];
+    const budget = data.budget?.trim() || null;
+    const phone = data.phone?.trim() || null;
+    const company = data.company?.trim() || null;
 
-    if (isSupabaseConfigured() && supabase) {
-      try {
-        const { data: inserted, error } = await supabase
-          .from('inquiries')
-          .insert([
-            {
-              name: data.name,
-              email: data.email,
-              phone: data.phone || null,
-              company: data.company || null,
-              service: data.services || [],
-              project_details: data.details,
-              budget_range: data.budget || null,
-              status: 'new',
-            },
-          ])
-          .select()
-          .maybeSingle();
-
-        if (!error && inserted) {
-          const newInq = mapRowToInquiry(inserted);
-          const updated = [newInq, ...inquiries];
-          saveStoredInquiries(updated);
-          return newInq;
-        } else if (error) {
-          console.error('Supabase inquiry submission error:', error);
-          // If select failed due to RLS (public insert allowed, but public select disallowed),
-          // synthesize successful inquiry record:
-          const fallbackAfterInsert: Inquiry = {
-            ...data,
-            id: `inq-sub-${Date.now()}`,
-            status: 'new',
-            createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
-          };
-          const updated = [fallbackAfterInsert, ...inquiries];
-          saveStoredInquiries(updated);
-          return fallbackAfterInsert;
-        }
-      } catch (err) {
-        console.error('Failed submitting inquiry to Supabase:', err);
-      }
+    if (!name || name.length < 2) {
+      throw new Error('Please enter your full name (minimum 2 characters).');
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      throw new Error('Please enter a valid email address.');
+    }
+    if (phone && !/^[\d\s+\-().]{6,25}$/.test(phone)) {
+      throw new Error('Please enter a valid phone or WhatsApp number.');
+    }
+    if (!details || details.length < 5) {
+      throw new Error('Please share a few details about your project (minimum 5 characters).');
     }
 
-    const fallbackInquiry: Inquiry = {
-      ...data,
-      id: `inq-${Date.now()}`,
-      status: 'new',
-      createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
-    };
-    const updated = [fallbackInquiry, ...inquiries];
-    saveStoredInquiries(updated);
-    return fallbackInquiry;
+    if (!isSupabaseConfigured() || !supabase) {
+      throw new Error('Database connection is not configured. Please contact footazix@gmail.com.');
+    }
+
+    // 2. Direct HTTPS insert to Supabase 'inquiries' table
+    const { error, status } = await supabase
+      .from('inquiries')
+      .insert([
+        {
+          name,
+          email,
+          phone,
+          company,
+          service: services,
+          project_details: details,
+          budget_range: budget,
+          status: 'new',
+        },
+      ]);
+
+    if (error) {
+      console.error('Supabase inquiry insert error:', error);
+      throw new Error(error.message || 'Failed to submit inquiry to database. Please try again.');
+    }
+
+    if (status !== 201 && status !== 200) {
+      throw new Error(`Unexpected server response code (${status}). Please try again.`);
+    }
+
+    return { success: true };
   },
 
+  /**
+   * Update inquiry workflow status (Admin only)
+   */
   async updateInquiryStatus(id: string, status: InquiryStatus): Promise<Inquiry> {
-    const inquiries = getStoredInquiries();
-    const index = inquiries.findIndex((i) => i.id === id);
-
-    if (isSupabaseConfigured() && supabase) {
-      try {
-        const { data: updatedRow, error } = await supabase
-          .from('inquiries')
-          .update({
-            status,
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', id)
-          .select()
-          .single();
-
-        if (!error && updatedRow) {
-          const mapped = mapRowToInquiry(updatedRow);
-          if (index !== -1) {
-            inquiries[index] = mapped;
-          }
-          saveStoredInquiries([...inquiries]);
-          return mapped;
-        }
-      } catch (err) {
-        console.error('Failed updating inquiry status in Supabase:', err);
-      }
+    if (!isSupabaseConfigured() || !supabase) {
+      throw new Error('Supabase client is not available.');
     }
 
-    if (index === -1) throw new Error('Inquiry not found');
-    const updated = { ...inquiries[index], status };
-    inquiries[index] = updated;
-    saveStoredInquiries([...inquiries]);
-    return updated;
+    const { data: updatedRow, error } = await supabase
+      .from('inquiries')
+      .update({
+        status,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Failed updating inquiry status in Supabase:', error);
+      throw new Error(error.message);
+    }
+
+    const mapped = mapRowToInquiry(updatedRow);
+    const updated = cachedInquiries.map((item) => (item.id === id ? mapped : item));
+    notifyListeners(updated);
+    return mapped;
   },
 
+  /**
+   * Update internal admin notes on an inquiry (Admin only)
+   */
   async updateInquiryNotes(id: string, notes: string): Promise<Inquiry> {
-    const inquiries = getStoredInquiries();
-    const index = inquiries.findIndex((i) => i.id === id);
-
-    if (isSupabaseConfigured() && supabase) {
-      try {
-        const { data: updatedRow, error } = await supabase
-          .from('inquiries')
-          .update({
-            notes,
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', id)
-          .select()
-          .single();
-
-        if (!error && updatedRow) {
-          const mapped = mapRowToInquiry(updatedRow);
-          if (index !== -1) {
-            inquiries[index] = mapped;
-          }
-          saveStoredInquiries([...inquiries]);
-          return mapped;
-        }
-      } catch (err) {
-        console.error('Failed updating inquiry notes in Supabase:', err);
-      }
+    if (!isSupabaseConfigured() || !supabase) {
+      throw new Error('Supabase client is not available.');
     }
 
-    if (index === -1) throw new Error('Inquiry not found');
-    const updated = { ...inquiries[index], notes };
-    inquiries[index] = updated;
-    saveStoredInquiries([...inquiries]);
-    return updated;
+    const { data: updatedRow, error } = await supabase
+      .from('inquiries')
+      .update({
+        notes,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Failed updating inquiry notes in Supabase:', error);
+      throw new Error(error.message);
+    }
+
+    const mapped = mapRowToInquiry(updatedRow);
+    const updated = cachedInquiries.map((item) => (item.id === id ? mapped : item));
+    notifyListeners(updated);
+    return mapped;
   },
 
+  /**
+   * Delete an inquiry (Admin only)
+   */
   async deleteInquiry(id: string): Promise<boolean> {
-    if (isSupabaseConfigured() && supabase) {
-      try {
-        await supabase.from('inquiries').delete().eq('id', id);
-      } catch (err) {
-        console.error('Failed deleting inquiry in Supabase:', err);
-      }
+    if (!isSupabaseConfigured() || !supabase) {
+      throw new Error('Supabase client is not available.');
     }
 
-    const inquiries = getStoredInquiries();
-    const filtered = inquiries.filter((i) => i.id !== id);
-    saveStoredInquiries(filtered);
+    const { error } = await supabase
+      .from('inquiries')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Failed deleting inquiry in Supabase:', error);
+      throw new Error(error.message);
+    }
+
+    const updated = cachedInquiries.filter((item) => item.id !== id);
+    notifyListeners(updated);
     return true;
   },
 
+  /**
+   * Reset in-memory cache
+   */
   async resetInquiries(): Promise<Inquiry[]> {
-    saveStoredInquiries(INITIAL_INQUIRIES);
-    return INITIAL_INQUIRIES;
+    notifyListeners([]);
+    return [];
   },
 };

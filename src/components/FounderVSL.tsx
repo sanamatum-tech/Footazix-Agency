@@ -2,7 +2,11 @@ import React, { useState, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { Play, Pause, Volume2, VolumeX, Maximize, AlertCircle, ArrowRight } from 'lucide-react';
 
-export const FounderVSL: React.FC = () => {
+interface FounderVSLProps {
+  onOpenContact?: () => void;
+}
+
+export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
   const { content } = useApp();
   const vsl = content.vsl;
 
@@ -348,8 +352,12 @@ export const FounderVSL: React.FC = () => {
           <div className="text-center mt-8">
             <button
               onClick={() => {
-                const el = document.getElementById('work');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                if (onOpenContact) {
+                  onOpenContact();
+                } else {
+                  const el = document.getElementById('work');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }
               }}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20 cursor-pointer"
             >

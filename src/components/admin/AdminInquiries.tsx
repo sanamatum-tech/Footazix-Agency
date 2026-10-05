@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Inquiry, InquiryStatus } from '../../types';
 import { inquiryService } from '../../services/inquiryService';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import {
   Inbox,
   Search,
@@ -16,6 +17,7 @@ import {
   X,
   CheckCircle2,
   Save,
+  RefreshCw,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -36,6 +38,57 @@ export const AdminInquiries: React.FC = () => {
   const [notesText, setNotesText] = useState('');
   const [isDeletingId, setIsDeletingId] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleRefresh = useCallback(async (showNotification: boolean = false) => {
+    setIsRefreshing(true);
+    try {
+      await inquiryService.getInquiries();
+      if (showNotification) {
+        setToast('Inquiries refreshed from Supabase.');
+        setTimeout(() => setToast(null), 2000);
+      }
+    } catch {
+      if (showNotification) {
+        setToast('Could not refresh inquiries.');
+        setTimeout(() => setToast(null), 2500);
+      }
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, []);
+
+  // Fetch latest inquiries on component mount
+  useEffect(() => {
+    handleRefresh(false);
+  }, [handleRefresh]);
+
+  // Subscribe to real-time changes on the Supabase inquiries table
+  useEffect(() => {
+    const client = supabase;
+    if (!isSupabaseConfigured() || !client) return;
+
+    const channel = client
+      .channel('admin-inquiries-live-feed')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'inquiries' },
+        () => {
+          inquiryService.getInquiries();
+        }
+      )
+      .subscribe();
+
+    // Secondary background poll every 25 seconds
+    const interval = setInterval(() => {
+      inquiryService.getInquiries();
+    }, 25000);
+
+    return () => {
+      client.removeChannel(channel);
+      clearInterval(interval);
+    };
+  }, []);
 
   const filtered = inquiries.filter((inq) => {
     const matchesFilter = selectedFilter === 'ALL' || inq.status === selectedFilter;
@@ -112,12 +165,25 @@ export const AdminInquiries: React.FC = () => {
           </p>
         </div>
 
-        {toast && (
-          <span className="text-xs text-blue-400 font-medium animate-in fade-in flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>{toast}</span>
-          </span>
-        )}
+        <div className="flex items-center gap-3">
+          {toast && (
+            <span className="text-xs text-blue-400 font-medium animate-in fade-in flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>{toast}</span>
+            </span>
+          )}
+
+          <button
+            type="button"
+            onClick={() => handleRefresh(true)}
+            disabled={isRefreshing}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-zinc-300 bg-[#12121c] hover:bg-[#1a1a29] border border-white/10 hover:text-white transition-colors cursor-pointer disabled:opacity-50"
+            title="Fetch latest client submissions from Supabase"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 text-blue-400 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <span>{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Filter and Search Bar */}

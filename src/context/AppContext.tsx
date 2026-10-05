@@ -166,6 +166,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return () => unsubAuth();
   }, []);
 
+  // Whenever currentUser is authenticated or restored, immediately fetch inquiries from Supabase
+  useEffect(() => {
+    if (currentUser) {
+      inquiryService.getInquiries().then((inqs) => {
+        if (inqs) setInquiries(inqs);
+      });
+    }
+  }, [currentUser]);
+
   // Initial load from Supabase / data layer
   const loadData = useCallback(async () => {
     try {
@@ -221,6 +230,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const res = await authService.login(email, password, remember);
     if (res.success && res.user) {
       setCurrentUser(res.user);
+      try {
+        const inqs = await inquiryService.getInquiries();
+        setInquiries(inqs);
+      } catch (err) {
+        console.warn('Error fetching inquiries after login:', err);
+      }
       return { success: true };
     }
     return { success: false, error: res.error || 'Invalid credentials' };
@@ -229,6 +244,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const logout = async () => {
     await authService.logout();
     setCurrentUser(null);
+    setInquiries([]);
   };
 
   // Content actions
@@ -270,10 +286,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const createInquiry = async (data: Omit<Inquiry, 'id' | 'status' | 'createdAt'>) => {
     try {
       await inquiryService.createInquiry(data);
+      if (currentUser) {
+        inquiryService.getInquiries().then((fresh) => setInquiries(fresh));
+      }
       return true;
-    } catch (err) {
-      console.error('Failed creating inquiry:', err);
-      return false;
+    } catch (err: any) {
+      console.error('Failed creating inquiry in Supabase:', err);
+      throw err;
     }
   };
 

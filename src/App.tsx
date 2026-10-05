@@ -79,7 +79,10 @@ function MainWebsite() {
       case 'system':
       case 'vsl':
         return visibility.system !== false ? (
-          <FounderVSL key="system" />
+          <FounderVSL
+            key="system"
+            onOpenContact={() => openContactModal('System Reel / Strategy')}
+          />
         ) : null;
 
       case 'portfolio':
@@ -96,7 +99,10 @@ function MainWebsite() {
       case 'process':
       case 'rawToReady':
         return visibility.process !== false ? (
-          <RawToFinal key="process" />
+          <RawToFinal
+            key="process"
+            onOpenContact={() => openContactModal('Raw to Ready Pipeline')}
+          />
         ) : null;
 
       case 'services':

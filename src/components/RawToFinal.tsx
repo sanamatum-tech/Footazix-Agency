@@ -3,7 +3,11 @@ import { useApp } from '../context/AppContext';
 import { ArrowRight, Film, Scissors, CheckCircle2 } from 'lucide-react';
 import { motion } from 'motion/react';
 
-export const RawToFinal: React.FC = () => {
+interface RawToFinalProps {
+  onOpenContact?: () => void;
+}
+
+export const RawToFinal: React.FC<RawToFinalProps> = ({ onOpenContact }) => {
   const { content } = useApp();
   const rawToReady = content.rawToReady;
 
@@ -116,8 +120,12 @@ export const RawToFinal: React.FC = () => {
           <div className="text-center mt-12">
             <button
               onClick={() => {
-                const el = document.getElementById('work') || document.querySelector('header');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                if (onOpenContact) {
+                  onOpenContact();
+                } else {
+                  const el = document.getElementById('work') || document.querySelector('header');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }
               }}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20 cursor-pointer"
             >

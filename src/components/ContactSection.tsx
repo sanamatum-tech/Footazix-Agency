@@ -83,17 +83,36 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
 
-    if (!name.trim()) {
-      setErrorMessage('Please enter your name.');
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedDetails = details.trim();
+    const trimmedPhone = phone.trim();
+
+    if (!trimmedName || trimmedName.length < 2) {
+      setErrorMessage('Please enter your full name (minimum 2 characters).');
       return;
     }
-    if (!email.trim() || !email.includes('@')) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
       setErrorMessage('Please enter a valid email address.');
       return;
     }
-    if (!details.trim()) {
-      setErrorMessage('Please share a few details about your project or raw footage.');
+    if (trimmedPhone && !/^[\d\s+\-().]{6,25}$/.test(trimmedPhone)) {
+      setErrorMessage('Please enter a valid phone or WhatsApp number.');
+      return;
+    }
+    if (!selectedServices || selectedServices.length === 0) {
+      setErrorMessage('Please select at least one service needed.');
+      return;
+    }
+    if (!trimmedDetails || trimmedDetails.length < 5) {
+      setErrorMessage('Please share a few details about your project or raw footage (minimum 5 characters).');
+      return;
+    }
+    if (!budget) {
+      setErrorMessage('Please select an estimated budget scope.');
       return;
     }
 
@@ -101,19 +120,25 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
     setIsSubmitting(true);
 
     try {
-      await createInquiry({
-        name: name.trim(),
-        email: email.trim(),
-        phone: phone.trim() || undefined,
+      const ok = await createInquiry({
+        name: trimmedName,
+        email: trimmedEmail,
+        phone: trimmedPhone || undefined,
         company: company.trim() || undefined,
         services: selectedServices,
-        details: details.trim(),
+        details: trimmedDetails,
         budget,
       });
 
-      setIsSubmitted(true);
-    } catch {
-      setErrorMessage('Something went wrong. Please try again.');
+      if (ok) {
+        setIsSubmitted(true);
+      } else {
+        setErrorMessage('Failed to save inquiry to database. Please try again.');
+      }
+    } catch (err: any) {
+      setErrorMessage(
+        err?.message || 'Database error occurred while submitting your inquiry. Please try again.'
+      );
     } finally {
       setIsSubmitting(false);
     }

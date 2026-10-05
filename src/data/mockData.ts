@@ -472,34 +472,7 @@ export const INITIAL_TEAM: TeamMember[] = [
   },
 ];
 
-export const INITIAL_INQUIRIES: Inquiry[] = [
-  {
-    id: 'inq-01',
-    name: 'Alex Rivera',
-    email: 'alex.rivera@creatorstudio.io',
-    phone: '+1 (555) 234-5678',
-    company: 'Rivera Media',
-    services: ['Video Editing', 'Reels / Shorts'],
-    details: 'Need 12 high-retention vertical reels per month from our raw podcast recordings. Looking for hook testing and kinetic subtitles.',
-    budget: 'Standard monthly production',
-    status: 'new',
-    createdAt: '2026-09-28',
-    notes: 'Requested sample retention hook turnaround.',
-  },
-  {
-    id: 'inq-02',
-    name: 'Elena Rostova',
-    email: 'elena@modernbrand.co',
-    phone: '+44 20 7946 0912',
-    company: 'Vanguard Fitness',
-    services: ['Content & Scripting', 'YouTube Editing'],
-    details: 'Launching an educational YouTube series with weekly episodic drops. Raw 4K footage delivered via cloud drive.',
-    budget: 'High-volume / Priority growth retainer',
-    status: 'contacted',
-    createdAt: '2026-09-26',
-    notes: 'Sent pricing deck and onboarding link.',
-  },
-];
+export const INITIAL_INQUIRIES: Inquiry[] = [];
 
 export const INITIAL_MEDIA: MediaAsset[] = [
   {
