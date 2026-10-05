@@ -15,30 +15,37 @@ const STORAGE_KEY = 'footazix_faqs';
 
 type Listener = (faqs: FAQ[]) => void;
 const listeners: Set<Listener> = new Set();
+let memoryCache: FAQ[] | null = null;
 
 function getStoredFAQs(): FAQ[] {
+  if (memoryCache && memoryCache.length > 0) {
+    return memoryCache;
+  }
   try {
-    if (typeof window === 'undefined' || !window.localStorage) {
-      return INITIAL_FAQS;
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        memoryCache = JSON.parse(raw);
+        return memoryCache!;
+      }
     }
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return INITIAL_FAQS;
-    return JSON.parse(raw);
   } catch (err) {
     console.warn('Failed reading FAQs from localStorage:', err);
-    return INITIAL_FAQS;
   }
+  memoryCache = INITIAL_FAQS;
+  return INITIAL_FAQS;
 }
 
 function saveStoredFAQs(faqs: FAQ[]): void {
+  memoryCache = faqs;
   try {
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(faqs));
     }
-    listeners.forEach((fn) => fn(faqs));
   } catch (err) {
     console.error('Failed saving FAQs to localStorage:', err);
   }
+  listeners.forEach((fn) => fn(faqs));
 }
 
 function mapRowToFAQ(row: any): FAQ {
@@ -83,22 +90,53 @@ export const faqService = {
           return mapped;
         }
 
-        // If the table doesn't exist or is empty yet, check Supabase Storage config
+        // If the table doesn't exist or is empty yet, check Supabase Storage config with cache-busting
         try {
-          const { data: fileData, error: fileError } = await supabase.storage
-            .from(SUPABASE_STORAGE_BUCKET)
-            .download('config/extended_cms_content.json');
-
-          if (!fileError && fileData) {
-            const text = await fileData.text();
-            const parsed = JSON.parse(text);
+          const publicUrl = `${supabase.storage.from(SUPABASE_STORAGE_BUCKET).getPublicUrl('config/extended_cms_content.json').data.publicUrl}?t=${Date.now()}`;
+          const res = await fetch(publicUrl, {
+            cache: 'no-store',
+            headers: {
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              Pragma: 'no-cache',
+            },
+          });
+          if (res.ok) {
+            const parsed = await res.json();
             if (Array.isArray(parsed.faqs) && parsed.faqs.length > 0) {
               saveStoredFAQs(parsed.faqs);
               return parsed.faqs;
             }
+          } else {
+            const { data: fileData, error: fileError } = await supabase.storage
+              .from(SUPABASE_STORAGE_BUCKET)
+              .download('config/extended_cms_content.json');
+
+            if (!fileError && fileData) {
+              const text = await fileData.text();
+              const parsed = JSON.parse(text);
+              if (Array.isArray(parsed.faqs) && parsed.faqs.length > 0) {
+                saveStoredFAQs(parsed.faqs);
+                return parsed.faqs;
+              }
+            }
           }
         } catch {
-          // Non-blocking storage fallback
+          try {
+            const { data: fileData, error: fileError } = await supabase.storage
+              .from(SUPABASE_STORAGE_BUCKET)
+              .download('config/extended_cms_content.json');
+
+            if (!fileError && fileData) {
+              const text = await fileData.text();
+              const parsed = JSON.parse(text);
+              if (Array.isArray(parsed.faqs) && parsed.faqs.length > 0) {
+                saveStoredFAQs(parsed.faqs);
+                return parsed.faqs;
+              }
+            }
+          } catch {
+            // Non-blocking storage fallback
+          }
         }
       } catch (err) {
         console.warn('Supabase faqs query fallback:', err);
@@ -292,7 +330,7 @@ export const faqService = {
         .upload('config/extended_cms_content.json', blob, {
           upsert: true,
           contentType: 'application/json',
-          cacheControl: '60',
+          cacheControl: '0',
         });
     } catch {
       // Non-blocking

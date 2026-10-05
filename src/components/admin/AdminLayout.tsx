@@ -7,6 +7,7 @@ import { AdminVSLEditor } from './AdminVSLEditor';
 import { AdminPortfolio } from './AdminPortfolio';
 import { AdminServices } from './AdminServices';
 import { AdminTeam } from './AdminTeam';
+import { AdminFAQ } from './AdminFAQ';
 import { AdminInquiries } from './AdminInquiries';
 import { AdminMediaLibrary } from './AdminMediaLibrary';
 import { AdminSettings } from './AdminSettings';
@@ -19,6 +20,7 @@ import {
   FolderKanban,
   BriefcaseBusiness,
   UsersRound,
+  HelpCircle,
   Inbox,
   Images,
   Settings2,
@@ -43,6 +45,7 @@ export type AdminSection =
   | 'portfolio'
   | 'services'
   | 'team'
+  | 'faq'
   | 'inquiries'
   | 'media'
   | 'settings';
@@ -87,6 +90,7 @@ export const AdminLayout: React.FC = () => {
         { id: 'portfolio', label: 'Portfolio', icon: FolderKanban },
         { id: 'services', label: 'Services', icon: BriefcaseBusiness },
         { id: 'team', label: 'Team', icon: UsersRound },
+        { id: 'faq', label: 'FAQ', icon: HelpCircle },
         { id: 'media', label: 'Media', icon: Images },
       ],
     },
@@ -112,6 +116,7 @@ export const AdminLayout: React.FC = () => {
     portfolio: { title: 'Portfolio Management', breadcrumb: 'Content / Portfolio' },
     services: { title: 'Services Management', breadcrumb: 'Content / Services' },
     team: { title: 'Team Members', breadcrumb: 'Content / Team' },
+    faq: { title: 'FAQ Management', breadcrumb: 'Content / FAQ' },
     inquiries: { title: 'Client Inquiries', breadcrumb: 'Business / Inquiries' },
     media: { title: 'Media Library', breadcrumb: 'Content / Media' },
     settings: { title: 'Studio Settings', breadcrumb: 'System / Settings' },
@@ -133,6 +138,8 @@ export const AdminLayout: React.FC = () => {
         return <AdminServices />;
       case 'team':
         return <AdminTeam />;
+      case 'faq':
+        return <AdminFAQ />;
       case 'inquiries':
         return <AdminInquiries />;
       case 'media':

@@ -186,7 +186,7 @@ export const DynamicHead: React.FC = () => {
         '@type': 'ProfessionalService',
         name: siteName,
         url: canonicalUrl,
-        logo: content.brandingAssets?.headerLogo?.url || 'https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/logos/1790995633725_1001608262.png',
+        logo: content.brandingAssets?.headerLogo?.url || undefined,
         image: ogImgUrl,
         description: metaDescription,
         sameAs: [content.brand?.instagram || 'https://www.instagram.com/footazix'],

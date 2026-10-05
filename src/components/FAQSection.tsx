@@ -12,18 +12,28 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onOpenContact }) => {
   const { content, faqs } = useApp();
   const faqConfig = content.faqSection;
 
-  // Filter only published and visible FAQs
-  const publicFaqs = faqs.filter((f) => f.published && f.visible);
+  // Filter only published and visible FAQs, sorted by display order
+  const publicFaqs = React.useMemo(() => {
+    return faqs
+      .filter((f) => f.published !== false && f.visible !== false)
+      .sort((a, b) => (a.order || 0) - (b.order || 0));
+  }, [faqs]);
 
   // Categories
-  const categories = ['ALL', ...Array.from(new Set(publicFaqs.map((f) => f.category.toUpperCase())))];
+  const categories = React.useMemo(() => {
+    const raw = Array.from(new Set(publicFaqs.map((f) => f.category || 'General')));
+    return ['ALL', ...raw];
+  }, [publicFaqs]);
+
   const [selectedCategory, setSelectedCategory] = useState('ALL');
 
   // Filtered FAQs by category
-  const filteredFaqs =
-    selectedCategory === 'ALL'
-      ? publicFaqs
-      : publicFaqs.filter((f) => f.category.toUpperCase() === selectedCategory);
+  const filteredFaqs = React.useMemo(() => {
+    if (selectedCategory === 'ALL') return publicFaqs;
+    return publicFaqs.filter(
+      (f) => (f.category || 'General').toLowerCase() === selectedCategory.toLowerCase()
+    );
+  }, [publicFaqs, selectedCategory]);
 
   // Accordion state
   const allowMultiple = faqConfig?.allowMultipleOpen || false;

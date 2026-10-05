@@ -45,11 +45,23 @@ export const FootazixLogo: React.FC<FootazixLogoProps> = ({
   const footerConfig = isFooter ? content.brandingAssets?.footerLogo : undefined;
 
   // Single authoritative source: CMS Branding -> Supabase Storage
-  const resolvedUrl =
-    customUrl ||
-    (isFooter && !footerConfig?.useHeaderLogo && footerConfig?.url
-      ? footerConfig.url
-      : content.brandingAssets?.headerLogo?.url);
+  let rawUrl = isFooter
+    ? (!footerConfig?.useHeaderLogo && footerConfig?.url ? footerConfig.url : content.brandingAssets?.headerLogo?.url)
+    : content.brandingAssets?.headerLogo?.url;
+
+  if (customUrl) {
+    rawUrl = customUrl;
+  }
+
+  // Strictly block any obsolete legacy logo asset (e.g. 1790995570940 or /assets/logo/)
+  const isObsoleteLogo = Boolean(
+    rawUrl &&
+    (rawUrl.includes('1790995570940') ||
+      rawUrl.includes('/assets/logo/') ||
+      rawUrl.startsWith('/assets/'))
+  );
+
+  const resolvedUrl = isObsoleteLogo ? '' : (rawUrl || '');
 
   const resolvedAlt =
     alt ||

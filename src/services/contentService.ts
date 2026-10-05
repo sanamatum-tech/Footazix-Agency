@@ -29,17 +29,19 @@ function getStoredContent(): WebsiteContent {
     if (!raw) return INITIAL_WEBSITE_CONTENT;
     const parsed = JSON.parse(raw);
     
-    // Purge any stale legacy logo paths from cached local storage
+    // Purge any stale legacy logo paths or obsolete logo IDs from cached local storage
     if (
       parsed.brandingAssets?.headerLogo?.url &&
-      (parsed.brandingAssets.headerLogo.url.includes('footazix-logo') ||
+      (parsed.brandingAssets.headerLogo.url.includes('1790995570940') ||
+        parsed.brandingAssets.headerLogo.url.includes('/assets/logo/') ||
         parsed.brandingAssets.headerLogo.url.startsWith('/assets/'))
     ) {
       parsed.brandingAssets.headerLogo.url = '';
     }
     if (
       parsed.brandingAssets?.footerLogo?.url &&
-      (parsed.brandingAssets.footerLogo.url.includes('footazix-logo') ||
+      (parsed.brandingAssets.footerLogo.url.includes('1790995570940') ||
+        parsed.brandingAssets.footerLogo.url.includes('/assets/logo/') ||
         parsed.brandingAssets.footerLogo.url.startsWith('/assets/'))
     ) {
       parsed.brandingAssets.footerLogo.url = '';
@@ -120,19 +122,42 @@ export const contentService = {
           supabase.from('about_content').select('*').eq('id', 'default').maybeSingle(),
         ]);
 
-        // Attempt reading extended configuration from Supabase storage
+        // Attempt reading authoritative extended configuration from Supabase storage with cache-busting
         let extendedFromStorage: Partial<WebsiteContent> | null = null;
         try {
-          const { data: fileData, error: fileError } = await supabase.storage
-            .from(SUPABASE_STORAGE_BUCKET)
-            .download('config/extended_cms_content.json');
+          const publicConfigUrl = `${supabase.storage.from(SUPABASE_STORAGE_BUCKET).getPublicUrl('config/extended_cms_content.json').data.publicUrl}?t=${Date.now()}`;
+          const res = await fetch(publicConfigUrl, {
+            cache: 'no-store',
+            headers: {
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              Pragma: 'no-cache',
+            },
+          });
+          if (res.ok) {
+            extendedFromStorage = await res.json();
+          } else {
+            const { data: fileData, error: fileError } = await supabase.storage
+              .from(SUPABASE_STORAGE_BUCKET)
+              .download('config/extended_cms_content.json');
 
-          if (!fileError && fileData) {
-            const text = await fileData.text();
-            extendedFromStorage = JSON.parse(text);
+            if (!fileError && fileData) {
+              const text = await fileData.text();
+              extendedFromStorage = JSON.parse(text);
+            }
           }
         } catch {
-          // Storage file may not exist yet on fresh installations
+          try {
+            const { data: fileData, error: fileError } = await supabase.storage
+              .from(SUPABASE_STORAGE_BUCKET)
+              .download('config/extended_cms_content.json');
+
+            if (!fileError && fileData) {
+              const text = await fileData.text();
+              extendedFromStorage = JSON.parse(text);
+            }
+          } catch {
+            // Storage file may not exist yet on fresh installations
+          }
         }
 
         const baseMerged = extendedFromStorage
@@ -162,20 +187,22 @@ export const contentService = {
             type: resolvedOgType,
           };
         }
-        // Sanitize Header & Footer Logos: purge any legacy bundled assets or relative paths
+        // Sanitize Header & Footer Logos: purge obsolete asset (1790995570940) or legacy relative paths
         if (baseMerged.brandingAssets) {
           if (
             baseMerged.brandingAssets.headerLogo?.url &&
-            (baseMerged.brandingAssets.headerLogo.url.includes('/assets/logo/') ||
-              baseMerged.brandingAssets.headerLogo.url.includes('footazix-logo'))
+            (baseMerged.brandingAssets.headerLogo.url.includes('1790995570940') ||
+              baseMerged.brandingAssets.headerLogo.url.includes('/assets/logo/') ||
+              baseMerged.brandingAssets.headerLogo.url.startsWith('/assets/'))
           ) {
             baseMerged.brandingAssets.headerLogo.url = '';
           }
 
           if (
             baseMerged.brandingAssets.footerLogo?.url &&
-            (baseMerged.brandingAssets.footerLogo.url.includes('/assets/logo/') ||
-              baseMerged.brandingAssets.footerLogo.url.includes('footazix-logo'))
+            (baseMerged.brandingAssets.footerLogo.url.includes('1790995570940') ||
+              baseMerged.brandingAssets.footerLogo.url.includes('/assets/logo/') ||
+              baseMerged.brandingAssets.footerLogo.url.startsWith('/assets/'))
           ) {
             baseMerged.brandingAssets.footerLogo.url = baseMerged.brandingAssets.headerLogo?.url || '';
           }
@@ -376,7 +403,7 @@ return activeContentFetchPromise;
               .upload('config/extended_cms_content.json', jsonBlob, {
                 upsert: true,
                 contentType: 'application/json',
-                cacheControl: '60',
+                cacheControl: '0',
               })
           );
         } catch (storageErr) {
