@@ -9,7 +9,7 @@ interface FAQSectionProps {
 }
 
 export const FAQSection: React.FC<FAQSectionProps> = ({ onOpenContact }) => {
-  const { content, faqs } = useApp();
+  const { content, faqs, isLoading } = useApp();
   const faqConfig = content.faqSection;
 
   // Filter only published and visible FAQs, sorted by display order
@@ -38,10 +38,19 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onOpenContact }) => {
   // Accordion state
   const allowMultiple = faqConfig?.allowMultipleOpen || false;
   const [openIds, setOpenIds] = useState<string[]>(() => {
-    // Default open the first featured or first item
     const first = publicFaqs.find((f) => f.featured) || publicFaqs[0];
     return first ? [first.id] : [];
   });
+
+  // Automatically keep first or featured item open when FAQs load
+  React.useEffect(() => {
+    if (publicFaqs.length > 0 && openIds.length === 0) {
+      const first = publicFaqs.find((f) => f.featured) || publicFaqs[0];
+      if (first) {
+        setOpenIds([first.id]);
+      }
+    }
+  }, [publicFaqs]);
 
   const toggleFAQ = (id: string) => {
     if (allowMultiple) {
@@ -52,10 +61,6 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onOpenContact }) => {
       setOpenIds((prev) => (prev.includes(id) ? [] : [id]));
     }
   };
-
-  if (publicFaqs.length === 0) {
-    return null;
-  }
 
   const badgeText = faqConfig?.badge || 'QUESTIONS & ANSWERS';
   const headingText = faqConfig?.heading || 'FREQUENTLY ASKED QUESTIONS';
@@ -115,8 +120,48 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onOpenContact }) => {
           )}
         </div>
 
+        {/* Loading State */}
+        {isLoading && publicFaqs.length === 0 && (
+          <div className="space-y-3.5 max-w-3xl mx-auto animate-pulse">
+            {[1, 2, 3, 4].map((n) => (
+              <div
+                key={n}
+                className="rounded-2xl border border-white/5 bg-[#090910] p-5 sm:p-6 space-y-2.5"
+              >
+                <div className="h-3 w-16 bg-blue-500/20 rounded" />
+                <div className="h-5 w-3/4 bg-white/10 rounded" />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && publicFaqs.length === 0 && (
+          <div className="max-w-2xl mx-auto p-8 sm:p-10 rounded-2xl bg-[#090910] border border-white/10 text-center space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center mx-auto text-blue-400">
+              <HelpCircle className="w-6 h-6" />
+            </div>
+            <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
+              No Frequently Asked Questions Published Yet
+            </h3>
+            <p className="text-xs sm:text-sm text-zinc-400 max-w-md mx-auto leading-relaxed">
+              Have a specific question about our video editing pipelines, turnaround times, or creative strategy? Reach out to our team directly.
+            </p>
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={onOpenContact}
+                className="px-6 py-3 rounded-xl text-xs font-bold font-mono uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-all shadow-lg shadow-blue-600/20 cursor-pointer active:scale-95 inline-flex items-center gap-2"
+              >
+                <span>REACH OUT TO OUR TEAM →</span>
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Accordion List */}
-        <div className="space-y-3.5 max-w-3xl mx-auto">
+        {filteredFaqs.length > 0 ? (
+          <div className="space-y-3.5 max-w-3xl mx-auto">
           {filteredFaqs.map((faq, index) => {
             const isOpen = openIds.includes(faq.id);
             const buttonId = `faq-btn-${faq.id}`;
@@ -206,6 +251,13 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onOpenContact }) => {
             );
           })}
         </div>
+        ) : (
+          publicFaqs.length > 0 && (
+            <div className="text-center py-12 text-zinc-400 text-sm font-mono border border-white/5 rounded-2xl bg-[#090910] max-w-xl mx-auto">
+              No questions found in category &ldquo;{selectedCategory}&rdquo;.
+            </div>
+          )
+        )}
 
         {/* Section Bottom CTA Banner */}
         {showCta && (

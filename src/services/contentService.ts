@@ -278,6 +278,26 @@ export const contentService = {
           },
         };
 
+        // Guarantee sectionVisibility.faq is enabled by default
+        if (content.sectionVisibility && content.sectionVisibility.faq === undefined) {
+          content.sectionVisibility.faq = true;
+        }
+
+        // Guarantee sectionOrder contains 'faq' after services and before finalCta
+        if (content.sectionOrder && !content.sectionOrder.includes('faq')) {
+          const sIdx = content.sectionOrder.indexOf('services');
+          if (sIdx !== -1) {
+            content.sectionOrder.splice(sIdx + 1, 0, 'faq');
+          } else {
+            const ctaIdx = content.sectionOrder.indexOf('finalCta');
+            if (ctaIdx !== -1) {
+              content.sectionOrder.splice(ctaIdx, 0, 'faq');
+            } else {
+              content.sectionOrder.push('faq');
+            }
+          }
+        }
+
         saveStoredContent(content);
         return content;
       } catch (err) {
@@ -314,6 +334,26 @@ return activeContentFetchPromise;
         height: partial.seo.ogImageHeight || updated.brandingAssets.ogImage.height,
         type: partial.seo.ogImageType || updated.brandingAssets.ogImage.type,
       };
+    }
+
+    // Guarantee sectionVisibility.faq is enabled by default
+    if (updated.sectionVisibility && updated.sectionVisibility.faq === undefined) {
+      updated.sectionVisibility.faq = true;
+    }
+
+    // Guarantee sectionOrder contains 'faq'
+    if (updated.sectionOrder && !updated.sectionOrder.includes('faq')) {
+      const sIdx = updated.sectionOrder.indexOf('services');
+      if (sIdx !== -1) {
+        updated.sectionOrder.splice(sIdx + 1, 0, 'faq');
+      } else {
+        const ctaIdx = updated.sectionOrder.indexOf('finalCta');
+        if (ctaIdx !== -1) {
+          updated.sectionOrder.splice(ctaIdx, 0, 'faq');
+        } else {
+          updated.sectionOrder.push('faq');
+        }
+      }
     }
 
     // Save to local cache immediately
@@ -394,7 +434,25 @@ return activeContentFetchPromise;
 
         // 5. Store extended CMS snapshot into Supabase Storage
         try {
-          const jsonBlob = new Blob([JSON.stringify(updated, null, 2)], {
+          const payloadToUpload: any = { ...updated };
+          if (!payloadToUpload.faqs) {
+            try {
+              const { data: fileData } = await supabase.storage
+                .from(SUPABASE_STORAGE_BUCKET)
+                .download('config/extended_cms_content.json');
+              if (fileData) {
+                const text = await fileData.text();
+                const parsedExisting = JSON.parse(text);
+                if (Array.isArray(parsedExisting.faqs)) {
+                  payloadToUpload.faqs = parsedExisting.faqs;
+                }
+              }
+            } catch {
+              // Non-blocking
+            }
+          }
+
+          const jsonBlob = new Blob([JSON.stringify(payloadToUpload, null, 2)], {
             type: 'application/json',
           });
           promises.push(

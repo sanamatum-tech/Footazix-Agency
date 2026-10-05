@@ -42,7 +42,7 @@ function MainWebsite() {
     openContactModal();
   };
 
-  const visibility = content.sectionVisibility || {
+  const rawVisibility = content.sectionVisibility || {
     header: true,
     hero: true,
     system: true,
@@ -58,12 +58,33 @@ function MainWebsite() {
     startProjectModal: true,
   };
 
+  const visibility = {
+    ...rawVisibility,
+    faq: rawVisibility.faq !== false,
+  };
+
   const rawOrder = content.sectionOrder && content.sectionOrder.length > 0
     ? content.sectionOrder
     : ['hero', 'system', 'portfolio', 'process', 'services', 'faq', 'about', 'finalCta'];
 
   // Normalize 'team' to 'about', then deduplicate to strictly prevent duplicate keys or duplicate section renders
-  const order = Array.from(new Set(rawOrder.map((s) => (s === 'team' ? 'about' : s))));
+  const normalizedOrder = Array.from(new Set(rawOrder.map((s) => (s === 'team' ? 'about' : s))));
+  
+  // Guarantee FAQ is present in the homepage layout in the intended position (after Services and before Final CTA)
+  const order = [...normalizedOrder];
+  if (!order.includes('faq')) {
+    const servicesIndex = order.indexOf('services');
+    if (servicesIndex !== -1) {
+      order.splice(servicesIndex + 1, 0, 'faq');
+    } else {
+      const finalCtaIndex = order.indexOf('finalCta');
+      if (finalCtaIndex !== -1) {
+        order.splice(finalCtaIndex, 0, 'faq');
+      } else {
+        order.push('faq');
+      }
+    }
+  }
 
   const renderSection = (sectionId: string) => {
     switch (sectionId) {

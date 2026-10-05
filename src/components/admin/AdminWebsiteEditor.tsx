@@ -171,6 +171,11 @@ export const AdminWebsiteEditor: React.FC = () => {
   const moveSectionOrder = (index: number, direction: 'up' | 'down') => {
     const rawOrder = formData.sectionOrder || ['hero', 'system', 'portfolio', 'process', 'services', 'faq', 'about', 'finalCta'];
     const currentOrder = Array.from(new Set(rawOrder.map((s) => (s === 'team' ? 'about' : s))));
+    if (!currentOrder.includes('faq')) {
+      const sIdx = currentOrder.indexOf('services');
+      if (sIdx !== -1) currentOrder.splice(sIdx + 1, 0, 'faq');
+      else currentOrder.push('faq');
+    }
     const targetIndex = direction === 'up' ? index - 1 : index + 1;
     if (targetIndex < 0 || targetIndex >= currentOrder.length) return;
     const temp = currentOrder[index];
@@ -1211,6 +1216,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   { key: 'portfolio', label: 'Selected Work / Portfolio', desc: 'Published project gallery with category filters and preview modals.' },
                   { key: 'process', label: 'Raw → Edit → Ready (Process)', desc: 'Three-stage content transformation pipeline strip.' },
                   { key: 'services', label: 'Services Grid', desc: 'Three core service offerings with feature breakdowns and call-to-actions.' },
+                  { key: 'faq', label: 'Frequently Asked Questions (FAQ)', desc: 'Interactive accordion FAQ section answering common questions.' },
                   { key: 'about', label: 'About & Team Section', desc: 'Creative philosophy and active team member cards.' },
                   { key: 'finalCta', label: 'Final Call To Action', desc: 'High-conversion bottom upgrade banner and project prompt.' },
                   { key: 'footer', label: 'Website Footer', desc: 'Bottom brand summary, copyright, legal links, and owner lock.' },
@@ -1267,13 +1273,20 @@ export const AdminWebsiteEditor: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                {Array.from(
-                  new Set(
-                    (formData.sectionOrder || ['hero', 'system', 'portfolio', 'process', 'services', 'faq', 'about', 'finalCta']).map(
-                      (s) => (s === 'team' ? 'about' : s)
+                {(() => {
+                  const rawList = Array.from(
+                    new Set(
+                      (formData.sectionOrder || ['hero', 'system', 'portfolio', 'process', 'services', 'faq', 'about', 'finalCta']).map(
+                        (s) => (s === 'team' ? 'about' : s)
+                      )
                     )
-                  )
-                ).map((sectionId, index, array) => (
+                  );
+                  if (!rawList.includes('faq')) {
+                    const sIdx = rawList.indexOf('services');
+                    if (sIdx !== -1) rawList.splice(sIdx + 1, 0, 'faq');
+                    else rawList.push('faq');
+                  }
+                  return rawList.map((sectionId, index, array) => (
                     <div
                       key={sectionId}
                       className="p-3.5 rounded-xl bg-[#12121c] border border-white/10 flex items-center justify-between"
@@ -1308,8 +1321,8 @@ export const AdminWebsiteEditor: React.FC = () => {
                         </button>
                       </div>
                     </div>
-                  )
-                )}
+                  ));
+                })()}
               </div>
             </div>
           </div>
