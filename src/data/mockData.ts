@@ -30,21 +30,21 @@ export const INITIAL_WEBSITE_CONTENT: WebsiteContent = {
   },
   brandingAssets: {
     headerLogo: {
-      url: '/assets/logo/footazix-logo.png',
+      url: '',
       alt: 'Footazix Creative Agency',
-      desktopWidth: 155,
-      mobileWidth: 125,
+      desktopWidth: 130,
+      mobileWidth: 100,
       visible: true,
     },
     favicon: {
-      url: '/favicon.svg',
+      url: '/favicon.png',
       appleTouchIconUrl: '/apple-touch-icon.png',
       visible: true,
     },
     footerLogo: {
       useHeaderLogo: true,
-      url: '/assets/logo/footazix-logo.png',
-      desktopWidth: 145,
+      url: '',
+      desktopWidth: 130,
       visible: true,
     },
     ogImage: {
@@ -475,15 +475,6 @@ export const INITIAL_TEAM: TeamMember[] = [
 export const INITIAL_INQUIRIES: Inquiry[] = [];
 
 export const INITIAL_MEDIA: MediaAsset[] = [
-  {
-    id: 'med-01',
-    name: 'footazix-logo.png',
-    url: '/assets/logo/footazix-logo.png',
-    category: 'logos',
-    type: 'logo',
-    size: '180 KB',
-    uploadedAt: '2026-10-01',
-  },
   {
     id: 'med-02',
     name: 'vsl-poster.jpg',

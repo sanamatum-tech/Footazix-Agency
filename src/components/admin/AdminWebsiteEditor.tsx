@@ -506,13 +506,17 @@ export const AdminWebsiteEditor: React.FC = () => {
                       <EyeOff className="w-4 h-4" />
                       <span>Logo is currently hidden</span>
                     </div>
+                  ) : !formData.brandingAssets?.headerLogo?.url ? (
+                    <div className="text-xs text-zinc-500 flex items-center gap-1.5">
+                      <span>No logo uploaded yet</span>
+                    </div>
                   ) : (
                     <img
-                      src={formData.brandingAssets?.headerLogo?.url || '/assets/logo/footazix-logo.png'}
+                      src={formData.brandingAssets.headerLogo.url}
                       alt={formData.brandingAssets?.headerLogo?.alt || 'Footazix Logo'}
                       className="max-h-14 object-contain transition-all"
                       style={{
-                        width: `${formData.brandingAssets?.headerLogo?.desktopWidth || 155}px`,
+                        width: `${formData.brandingAssets?.headerLogo?.desktopWidth || 130}px`,
                       }}
                     />
                   )}
@@ -527,7 +531,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="text"
                       value={formData.brandingAssets?.headerLogo?.url || ''}
                       onChange={(e) => handleChange('brandingAssets.headerLogo.url', e.target.value)}
-                      placeholder="/assets/logo/footazix-logo.png"
+                      placeholder="https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/logos/..."
                       className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs font-mono focus:border-blue-500 outline-none"
                     />
                   </div>
@@ -560,18 +564,18 @@ export const AdminWebsiteEditor: React.FC = () => {
                       )}
                     </button>
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        handleChange('brandingAssets.headerLogo.url', '/assets/logo/footazix-logo.png');
-                        handleChange('brandingAssets.headerLogo.desktopWidth', 155);
-                        handleChange('brandingAssets.headerLogo.mobileWidth', 125);
-                        setToastMessage({ type: 'success', text: 'Reset logo to default official asset.' });
-                      }}
-                      className="px-3.5 py-2 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white bg-[#12121c] border border-white/10 transition-colors cursor-pointer"
-                    >
-                      Reset to Official Asset
-                    </button>
+                    {formData.brandingAssets?.headerLogo?.url && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleChange('brandingAssets.headerLogo.url', '');
+                          setToastMessage({ type: 'success', text: 'Logo URL cleared.' });
+                        }}
+                        className="px-3.5 py-2 rounded-xl text-xs font-semibold text-zinc-400 hover:text-red-400 bg-[#12121c] border border-white/10 transition-colors cursor-pointer"
+                      >
+                        Remove Logo
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -643,14 +647,14 @@ export const AdminWebsiteEditor: React.FC = () => {
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-xl bg-black border border-white/10 flex items-center justify-center p-2 shrink-0">
                       <img
-                        src={formData.brandingAssets?.favicon?.url || '/favicon.svg'}
+                        src={formData.brandingAssets?.favicon?.url || '/favicon.png'}
                         alt="Favicon preview"
                         className="w-7 h-7 object-contain"
                       />
                     </div>
                     <div>
                       <h5 className="text-xs font-bold text-white uppercase tracking-wider">Browser Favicon</h5>
-                      <span className="text-[11px] text-zinc-400">Supports .ico, .svg, .png, .webp</span>
+                      <span className="text-[11px] text-zinc-400">Supports .ico, .png, .svg, .webp</span>
                     </div>
                   </div>
 
@@ -662,6 +666,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="text"
                       value={formData.brandingAssets?.favicon?.url || ''}
                       onChange={(e) => handleChange('brandingAssets.favicon.url', e.target.value)}
+                      placeholder="https://...supabase.co/.../favicons/..."
                       className="w-full px-3 py-2 rounded-lg bg-black border border-white/10 text-white text-xs font-mono focus:border-blue-500 outline-none"
                     />
                   </div>
@@ -688,8 +693,8 @@ export const AdminWebsiteEditor: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => {
-                        handleChange('brandingAssets.favicon.url', '/favicon.svg');
-                        setToastMessage({ type: 'success', text: 'Reset favicon to default.' });
+                        handleChange('brandingAssets.favicon.url', '/favicon.png');
+                        setToastMessage({ type: 'success', text: 'Reset favicon to official asset.' });
                       }}
                       className="px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white bg-black border border-white/10 transition-colors cursor-pointer"
                     >

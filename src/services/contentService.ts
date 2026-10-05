@@ -28,6 +28,29 @@ function getStoredContent(): WebsiteContent {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return INITIAL_WEBSITE_CONTENT;
     const parsed = JSON.parse(raw);
+    
+    // Purge any stale legacy logo paths from cached local storage
+    if (
+      parsed.brandingAssets?.headerLogo?.url &&
+      (parsed.brandingAssets.headerLogo.url.includes('footazix-logo') ||
+        parsed.brandingAssets.headerLogo.url.startsWith('/assets/'))
+    ) {
+      parsed.brandingAssets.headerLogo.url = '';
+    }
+    if (
+      parsed.brandingAssets?.footerLogo?.url &&
+      (parsed.brandingAssets.footerLogo.url.includes('footazix-logo') ||
+        parsed.brandingAssets.footerLogo.url.startsWith('/assets/'))
+    ) {
+      parsed.brandingAssets.footerLogo.url = '';
+    }
+    if (
+      parsed.brandingAssets?.favicon?.url &&
+      parsed.brandingAssets.favicon.url.includes('favicon.svg')
+    ) {
+      parsed.brandingAssets.favicon.url = '/favicon.png';
+    }
+
     return deepMerge(INITIAL_WEBSITE_CONTENT, parsed);
   } catch (err) {
     console.warn('Failed reading website content from localStorage:', err);
@@ -66,6 +89,8 @@ function deepMerge(target: any, source: any): any {
   return output;
 }
 
+let activeContentFetchPromise: Promise<WebsiteContent> | null = null;
+
 export const contentService = {
   subscribe(listener: Listener): () => void {
     listeners.add(listener);
@@ -73,16 +98,22 @@ export const contentService = {
   },
 
   async getWebsiteContent(): Promise<WebsiteContent> {
-    const current = getStoredContent();
+    if (activeContentFetchPromise) {
+      return activeContentFetchPromise;
+    }
 
-    if (isSupabaseConfigured() && supabase) {
+    activeContentFetchPromise = (async () => {
       try {
-        const [
-          { data: siteSettings },
-          { data: heroContent },
-          { data: vslSettings },
-          { data: aboutContent },
-        ] = await Promise.all([
+        const current = getStoredContent();
+
+        if (isSupabaseConfigured() && supabase) {
+          try {
+            const [
+              { data: siteSettings },
+              { data: heroContent },
+              { data: vslSettings },
+              { data: aboutContent },
+            ] = await Promise.all([
           supabase.from('site_settings').select('*').eq('id', 'default').maybeSingle(),
           supabase.from('hero_content').select('*').eq('id', 'default').maybeSingle(),
           supabase.from('vsl_settings').select('*').eq('id', 'default').maybeSingle(),
@@ -131,12 +162,34 @@ export const contentService = {
             type: resolvedOgType,
           };
         }
-        if (baseMerged.seo) {
-          baseMerged.seo.ogImage = resolvedOgUrl;
-          baseMerged.seo.ogImageAlt = resolvedOgAlt;
-          baseMerged.seo.ogImageWidth = resolvedOgWidth;
-          baseMerged.seo.ogImageHeight = resolvedOgHeight;
-          baseMerged.seo.ogImageType = resolvedOgType;
+        // Sanitize Header & Footer Logos: purge any legacy bundled assets or relative paths
+        if (baseMerged.brandingAssets) {
+          if (
+            baseMerged.brandingAssets.headerLogo?.url &&
+            (baseMerged.brandingAssets.headerLogo.url.includes('/assets/logo/') ||
+              baseMerged.brandingAssets.headerLogo.url.includes('footazix-logo'))
+          ) {
+            baseMerged.brandingAssets.headerLogo.url = '';
+          }
+
+          if (
+            baseMerged.brandingAssets.footerLogo?.url &&
+            (baseMerged.brandingAssets.footerLogo.url.includes('/assets/logo/') ||
+              baseMerged.brandingAssets.footerLogo.url.includes('footazix-logo'))
+          ) {
+            baseMerged.brandingAssets.footerLogo.url = baseMerged.brandingAssets.headerLogo?.url || '';
+          }
+
+          if (baseMerged.brandingAssets.footerLogo?.useHeaderLogo) {
+            baseMerged.brandingAssets.footerLogo.url = baseMerged.brandingAssets.headerLogo?.url || '';
+          }
+
+          if (
+            baseMerged.brandingAssets.favicon?.url &&
+            baseMerged.brandingAssets.favicon.url.includes('favicon.svg')
+          ) {
+            baseMerged.brandingAssets.favicon.url = '/favicon.png';
+          }
         }
 
         const content: WebsiteContent = {
@@ -206,7 +259,13 @@ export const contentService = {
     }
 
     return current;
-  },
+  } finally {
+    activeContentFetchPromise = null;
+  }
+})();
+
+return activeContentFetchPromise;
+},
 
   async updateWebsiteContent(partial: Partial<WebsiteContent>): Promise<WebsiteContent> {
     const current = getStoredContent();

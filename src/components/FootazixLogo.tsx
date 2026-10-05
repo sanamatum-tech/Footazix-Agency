@@ -14,8 +14,11 @@ interface FootazixLogoProps {
 /**
  * Official Footazix Brand Logo Component
  * 
- * Dynamically resolves to the CMS-configured header or footer logo
- * uploaded to Supabase Storage, with fallback to official bundled assets.
+ * Strictly uses the authoritative CMS-configured logo uploaded via Supabase Storage.
+ * Zero hardcoded fallbacks or legacy bundled assets.
+ * 
+ * If CMS branding has not loaded yet, maintains a stable reserved footprint
+ * without rendering any incorrect or placeholder logo.
  */
 export const FootazixLogo: React.FC<FootazixLogoProps> = ({
   className = '',
@@ -41,34 +44,33 @@ export const FootazixLogo: React.FC<FootazixLogoProps> = ({
 
   const footerConfig = isFooter ? content.brandingAssets?.footerLogo : undefined;
 
-  // Determine source URL
+  // Single authoritative source: CMS Branding -> Supabase Storage
   const resolvedUrl =
     customUrl ||
     (isFooter && !footerConfig?.useHeaderLogo && footerConfig?.url
       ? footerConfig.url
-      : content.brandingAssets?.headerLogo?.url) ||
-    '/assets/logo/footazix-logo.png';
+      : content.brandingAssets?.headerLogo?.url);
 
   const resolvedAlt =
     alt ||
     content.brandingAssets?.headerLogo?.alt ||
     `${content.brand?.name || 'Footazix'} Creative Agency`;
 
-  const dWidth = desktopWidth || logoConfig?.desktopWidth || (isFooter ? 145 : 155);
-  const mWidth = mobileWidth || (logoConfig as any)?.mobileWidth || 125;
+  const dWidth = desktopWidth || logoConfig?.desktopWidth || (isFooter ? 130 : 130);
+  const mWidth = mobileWidth || (logoConfig as any)?.mobileWidth || 100;
 
-  if (variant === 'mark') {
+  // If CMS branding has not loaded yet, keep area visually stable without painting any wrong logo
+  if (!resolvedUrl) {
     return (
-      <picture className="inline-block shrink-0 select-none">
-        <source srcSet="/assets/logo/footazix-mark.svg" type="image/svg+xml" />
-        <img
-          src="/assets/logo/footazix-mark.png"
-          alt={resolvedAlt}
-          className={`${className} select-none object-contain`}
-          draggable={false}
-          loading="eager"
-        />
-      </picture>
+      <div
+        className={`inline-block shrink-0 select-none ${className}`}
+        style={{
+          width: `${dWidth}px`,
+          height: '2rem',
+          maxWidth: '100%',
+        }}
+        aria-hidden="true"
+      />
     );
   }
 
@@ -85,7 +87,7 @@ export const FootazixLogo: React.FC<FootazixLogoProps> = ({
         alt={resolvedAlt}
         draggable={false}
         loading="eager"
-        className="w-auto h-auto object-contain select-none max-h-12"
+        className="w-auto h-auto object-contain select-none max-h-12 footazix-logo-img"
         style={{
           width: `${dWidth}px`,
           maxWidth: '100%',
