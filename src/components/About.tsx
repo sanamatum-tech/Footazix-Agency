@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { ExternalLink, Mail, ArrowRight } from 'lucide-react';
+import { ExternalLink, Mail } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export const About: React.FC = () => {
@@ -13,7 +13,6 @@ export const About: React.FC = () => {
   const showPhotos = aboutConfig?.showPhotos !== false;
   const showSocialLinks = aboutConfig?.showSocialLinks !== false;
   const showEmails = aboutConfig?.showEmails !== false;
-  const showButton = Boolean(aboutConfig?.showButton && aboutConfig?.buttonText);
 
   const badgeText = aboutConfig?.badge || 'TEAM & PHILOSOPHY';
   const headingText =
@@ -22,9 +21,6 @@ export const About: React.FC = () => {
     aboutConfig?.copy ||
     content.sectionHeadings?.teamCopy ||
     'Footazix is a creator-focused content growth agency helping creators, brands and businesses turn raw footage into stronger content.';
-  const supportingText = aboutConfig?.subheading;
-  const buttonText = aboutConfig?.buttonText;
-  const buttonUrl = aboutConfig?.buttonUrl || '#work';
   const socialButtonText = aboutConfig?.socialButtonText || 'Profile';
   const emptyText =
     aboutConfig?.emptyText || 'No team members published yet. Add team members in the Admin CMS.';
@@ -46,22 +42,6 @@ export const About: React.FC = () => {
           <p className="text-base sm:text-lg text-zinc-300 font-normal leading-relaxed">
             {copyText}
           </p>
-          {supportingText && (
-            <p className="text-xs sm:text-sm text-zinc-400 mt-3 font-normal leading-relaxed">
-              {supportingText}
-            </p>
-          )}
-          {showButton && buttonText && (
-            <div className="mt-6">
-              <a
-                href={buttonUrl}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/30"
-              >
-                <span>{buttonText}</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </a>
-            </div>
-          )}
         </div>
 
         {/* Dynamic Team Members Grid */}

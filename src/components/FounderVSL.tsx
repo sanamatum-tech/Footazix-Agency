@@ -341,7 +341,7 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
                 {vsl.fallbackMessage || 'VIDEO UNAVAILABLE'}
               </p>
               <p className="text-xs text-zinc-400 max-w-sm">
-                {vsl.fallbackSubtext || 'The Footazix system reel is currently being updated.'}
+                The Footazix system reel is currently being updated.
               </p>
             </div>
           )}

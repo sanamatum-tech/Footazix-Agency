@@ -35,54 +35,34 @@ import {
   Copy,
   Share2,
   MessageSquare,
-  Info,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { AdminTeam } from './AdminTeam';
 
 type EditorTab =
+  | 'overview'
+  | 'branding'
+  | 'visibility'
   | 'header'
   | 'hero'
   | 'vsl'
   | 'portfolio'
-  | 'process'
-  | 'services'
-  | 'faq'
   | 'about'
+  | 'services'
   | 'team'
   | 'cta'
   | 'footer'
   | 'legal'
-  | 'seo'
-  | 'visibility'
-  | 'branding'
-  | 'overview';
+  | 'seo';
 
 export const AdminWebsiteEditor: React.FC = () => {
-  const {
-    content,
-    updateWebsiteContent,
-    resetWebsiteContent,
-    saveStatus,
-    navigateToPublic,
-    faqs,
-    createFAQ,
-    updateFAQ,
-    deleteFAQ,
-  } = useApp();
+  const { content, updateWebsiteContent, resetWebsiteContent, saveStatus, navigateToPublic } = useApp();
   const [formData, setFormData] = useState<WebsiteContent>(content);
-  const [activeTab, setActiveTab] = useState<EditorTab>('header');
+  const [activeTab, setActiveTab] = useState<EditorTab>('overview');
   const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
   const [uploadingAsset, setUploadingAsset] = useState<string | null>(null);
   const [ogPreviewPlatform, setOgPreviewPlatform] = useState<'twitter' | 'whatsapp' | 'discord' | 'meta'>('twitter');
   const [copiedOgUrl, setCopiedOgUrl] = useState(false);
-
-  // Quick FAQ creation state
-  const [newFaqQuestion, setNewFaqQuestion] = useState('');
-  const [newFaqAnswer, setNewFaqAnswer] = useState('');
-  const [newFaqCategory, setNewFaqCategory] = useState('General');
-  const [isAddingFaq, setIsAddingFaq] = useState(false);
 
   const logoInputRef = useRef<HTMLInputElement>(null);
   const faviconInputRef = useRef<HTMLInputElement>(null);
@@ -91,33 +71,7 @@ export const AdminWebsiteEditor: React.FC = () => {
   const ogImageInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (content) {
-      const enriched = JSON.parse(JSON.stringify(content));
-      if (!enriched.footer) enriched.footer = {};
-      if (!enriched.footer.navItems || enriched.footer.navItems.length === 0) {
-        enriched.footer.navItems = [
-          { id: 'fn-work', label: enriched.footer.navWork || 'Work', href: '#work', visible: true, order: 1 },
-          { id: 'fn-system', label: enriched.footer.navSystem || 'System', href: '#system', visible: true, order: 2 },
-          { id: 'fn-services', label: enriched.footer.navServices || 'Services', href: '#services', visible: true, order: 3 },
-          { id: 'fn-about', label: enriched.footer.navAbout || 'About', href: '#about', visible: true, order: 4 },
-          { id: 'fn-faq', label: 'FAQ', href: '#faq', visible: true, order: 5 },
-        ];
-      }
-      if (!enriched.footer.socialLinks || enriched.footer.socialLinks.length === 0) {
-        enriched.footer.socialLinks = [
-          { id: 'fs-ig', platform: 'Instagram', label: enriched.footer.instagramText || 'Instagram', url: enriched.brand?.instagram || 'https://www.instagram.com/footazix', visible: true, order: 1 },
-          { id: 'fs-yt', platform: 'YouTube', label: 'YouTube', url: 'https://youtube.com/@footazix', visible: true, order: 2 },
-          { id: 'fs-x', platform: 'X', label: 'X / Twitter', url: 'https://x.com/footazix', visible: true, order: 3 },
-        ];
-      }
-      if (!enriched.footer.legalLinks || enriched.footer.legalLinks.length === 0) {
-        enriched.footer.legalLinks = [
-          { id: 'fl-terms', label: enriched.footer.termsLabel || 'Terms & Conditions', href: 'terms', visible: true, order: 1 },
-          { id: 'fl-privacy', label: enriched.footer.privacyLabel || 'Privacy Policy', href: 'privacy', visible: true, order: 2 },
-        ];
-      }
-      setFormData(enriched);
-    }
+    setFormData(content);
   }, [content]);
 
   // Check if there are unsaved changes
@@ -254,159 +208,21 @@ export const AdminWebsiteEditor: React.FC = () => {
     handleChange('header.navItems', updated);
   };
 
-  const handleMoveNavItem = (index: number, direction: 'up' | 'down') => {
-    const currentItems = [...(formData.header?.navItems || [])];
-    const targetIndex = direction === 'up' ? index - 1 : index + 1;
-    if (targetIndex < 0 || targetIndex >= currentItems.length) return;
-    const temp = currentItems[index];
-    currentItems[index] = currentItems[targetIndex];
-    currentItems[targetIndex] = temp;
-    const reordered = currentItems.map((item, idx) => ({ ...item, order: idx + 1 }));
-    handleChange('header.navItems', reordered);
-  };
-
-  // Dedicated Footer Navigation helpers
-  const handleAddFooterNavItem = () => {
-    const current = formData.footer?.navItems || [];
-    const newItem = {
-      id: `fn-${Date.now()}`,
-      label: 'New Link',
-      href: '#',
-      visible: true,
-      order: current.length + 1,
-    };
-    handleChange('footer.navItems', [...current, newItem]);
-  };
-
-  const handleRemoveFooterNavItem = (id: string) => {
-    const current = formData.footer?.navItems || [];
-    handleChange('footer.navItems', current.filter((i) => i.id !== id));
-  };
-
-  const handleUpdateFooterNavItem = (id: string, field: string, val: any) => {
-    const current = formData.footer?.navItems || [];
-    handleChange('footer.navItems', current.map((item) => (item.id === id ? { ...item, [field]: val } : item)));
-  };
-
-  const handleMoveFooterNavItem = (index: number, direction: 'up' | 'down') => {
-    const current = [...(formData.footer?.navItems || [])];
-    const targetIndex = direction === 'up' ? index - 1 : index + 1;
-    if (targetIndex < 0 || targetIndex >= current.length) return;
-    const temp = current[index];
-    current[index] = current[targetIndex];
-    current[targetIndex] = temp;
-    const reordered = current.map((item, idx) => ({ ...item, order: idx + 1 }));
-    handleChange('footer.navItems', reordered);
-  };
-
-  // Dedicated Footer Social helpers
-  const handleAddFooterSocialItem = () => {
-    const current = formData.footer?.socialLinks || [];
-    const newItem = {
-      id: `fs-${Date.now()}`,
-      platform: 'Instagram',
-      label: 'Instagram',
-      url: 'https://instagram.com/footazix',
-      visible: true,
-      order: current.length + 1,
-    };
-    handleChange('footer.socialLinks', [...current, newItem]);
-  };
-
-  const handleRemoveFooterSocialItem = (id: string) => {
-    const current = formData.footer?.socialLinks || [];
-    handleChange('footer.socialLinks', current.filter((i) => i.id !== id));
-  };
-
-  const handleUpdateFooterSocialItem = (id: string, field: string, val: any) => {
-    const current = formData.footer?.socialLinks || [];
-    handleChange('footer.socialLinks', current.map((item) => (item.id === id ? { ...item, [field]: val } : item)));
-  };
-
-  const handleMoveFooterSocialItem = (index: number, direction: 'up' | 'down') => {
-    const current = [...(formData.footer?.socialLinks || [])];
-    const targetIndex = direction === 'up' ? index - 1 : index + 1;
-    if (targetIndex < 0 || targetIndex >= current.length) return;
-    const temp = current[index];
-    current[index] = current[targetIndex];
-    current[targetIndex] = temp;
-    const reordered = current.map((item, idx) => ({ ...item, order: idx + 1 }));
-    handleChange('footer.socialLinks', reordered);
-  };
-
-  // Dedicated Footer Legal helpers
-  const handleAddFooterLegalItem = () => {
-    const current = formData.footer?.legalLinks || [];
-    const newItem = {
-      id: `fl-${Date.now()}`,
-      label: 'New Policy',
-      href: 'terms',
-      visible: true,
-      order: current.length + 1,
-    };
-    handleChange('footer.legalLinks', [...current, newItem]);
-  };
-
-  const handleRemoveFooterLegalItem = (id: string) => {
-    const current = formData.footer?.legalLinks || [];
-    handleChange('footer.legalLinks', current.filter((i) => i.id !== id));
-  };
-
-  const handleUpdateFooterLegalItem = (id: string, field: string, val: any) => {
-    const current = formData.footer?.legalLinks || [];
-    handleChange('footer.legalLinks', current.map((item) => (item.id === id ? { ...item, [field]: val } : item)));
-  };
-
-  const handleMoveFooterLegalItem = (index: number, direction: 'up' | 'down') => {
-    const current = [...(formData.footer?.legalLinks || [])];
-    const targetIndex = direction === 'up' ? index - 1 : index + 1;
-    if (targetIndex < 0 || targetIndex >= current.length) return;
-    const temp = current[index];
-    current[index] = current[targetIndex];
-    current[targetIndex] = temp;
-    const reordered = current.map((item, idx) => ({ ...item, order: idx + 1 }));
-    handleChange('footer.legalLinks', reordered);
-  };
-
-  // FAQ inline management
-  const handleCreateInlineFaq = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newFaqQuestion.trim() || !newFaqAnswer.trim()) return;
-    try {
-      await createFAQ({
-        question: newFaqQuestion.trim(),
-        answer: newFaqAnswer.trim(),
-        category: newFaqCategory.trim() || 'General',
-        order: faqs.length + 1,
-        published: true,
-        visible: true,
-      });
-      setNewFaqQuestion('');
-      setNewFaqAnswer('');
-      setIsAddingFaq(false);
-      setToastMessage({ type: 'success', text: 'New FAQ added successfully.' });
-    } catch {
-      setToastMessage({ type: 'error', text: 'Failed to create FAQ.' });
-    }
-  };
-
   const tabs: { id: EditorTab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-    { id: 'header', label: 'Header', icon: PanelTop },
+    { id: 'overview', label: 'Overview', icon: Globe2 },
+    { id: 'branding', label: 'Branding & Assets', icon: ImageIcon },
+    { id: 'visibility', label: 'Visibility & Order', icon: Eye },
+    { id: 'header', label: 'Header & Nav', icon: PanelTop },
     { id: 'hero', label: 'Hero', icon: Sparkles },
-    { id: 'vsl', label: 'System', icon: PlaySquare },
-    { id: 'portfolio', label: 'Work', icon: FolderKanban },
-    { id: 'process', label: 'Process', icon: Layers },
+    { id: 'vsl', label: 'System (VSL)', icon: PlaySquare },
+    { id: 'portfolio', label: 'Portfolio', icon: FolderKanban },
+    { id: 'about', label: 'Process', icon: Layers },
     { id: 'services', label: 'Services', icon: BriefcaseBusiness },
-    { id: 'faq', label: 'FAQ', icon: HelpCircle },
-    { id: 'about', label: 'About', icon: Info },
-    { id: 'team', label: 'Team', icon: UsersRound },
+    { id: 'team', label: 'About & Team', icon: UsersRound },
     { id: 'cta', label: 'Final CTA', icon: Flame },
     { id: 'footer', label: 'Footer', icon: PanelBottom },
-    { id: 'legal', label: 'Legal', icon: ShieldCheck },
-    { id: 'seo', label: 'SEO', icon: Search },
-    { id: 'visibility', label: 'Visibility & Order', icon: Eye },
-    { id: 'branding', label: 'Branding & Assets', icon: ImageIcon },
-    { id: 'overview', label: 'Overview', icon: Globe2 },
+    { id: 'legal', label: 'Legal Pages', icon: ShieldCheck },
+    { id: 'seo', label: 'SEO & Metadata', icon: Search },
   ];
 
   const sectionLabels: Record<string, string> = {
@@ -1554,45 +1370,6 @@ export const AdminWebsiteEditor: React.FC = () => {
                   className="w-5 h-5 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
                 />
               </div>
-
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
-                  Mobile Menu Title / Kicker
-                </label>
-                <input
-                  type="text"
-                  value={formData.header?.mobileMenuTitle || ''}
-                  onChange={(e) => handleChange('header.mobileMenuTitle', e.target.value)}
-                  placeholder="e.g. NAVIGATION"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
-                  Mobile Menu CTA Button Text (Optional)
-                </label>
-                <input
-                  type="text"
-                  value={formData.header?.mobileMenuCta || ''}
-                  onChange={(e) => handleChange('header.mobileMenuCta', e.target.value)}
-                  placeholder="Leave empty to use main button text"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
-                />
-              </div>
-
-              <div className="sm:col-span-2">
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
-                  Header / Mobile Supporting Note
-                </label>
-                <input
-                  type="text"
-                  value={formData.header?.supportingText || ''}
-                  onChange={(e) => handleChange('header.supportingText', e.target.value)}
-                  placeholder="Optional supporting note or hours shown in drawer..."
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
-                />
-              </div>
             </div>
 
             {/* Navigation Items List */}
@@ -1822,32 +1599,6 @@ export const AdminWebsiteEditor: React.FC = () => {
                   className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
                 />
               </div>
-
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
-                  Eyebrow Text (Above Headline)
-                </label>
-                <input
-                  type="text"
-                  value={formData.hero.eyebrow || ''}
-                  onChange={(e) => handleChange('hero.eyebrow', e.target.value)}
-                  placeholder="Optional kicker above headline"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
-                  Supporting Note Under Buttons
-                </label>
-                <input
-                  type="text"
-                  value={formData.hero.smallSupportingText || ''}
-                  onChange={(e) => handleChange('hero.smallSupportingText', e.target.value)}
-                  placeholder="Optional small text below CTA buttons"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono text-zinc-300"
-                />
-              </div>
             </div>
           </div>
         )}
@@ -1929,41 +1680,6 @@ export const AdminWebsiteEditor: React.FC = () => {
                   value={formData.vsl.fallbackMessage || 'VIDEO UNAVAILABLE'}
                   onChange={(e) => handleChange('vsl.fallbackMessage', e.target.value)}
                   className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
-                  Fallback Subtext Note
-                </label>
-                <input
-                  type="text"
-                  value={formData.vsl.fallbackSubtext || 'The Footazix system reel is currently being updated.'}
-                  onChange={(e) => handleChange('vsl.fallbackSubtext', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
-                />
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
-                    System CTA Button Text
-                  </label>
-                  <label className="text-xs text-zinc-400 flex items-center gap-1.5 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={Boolean(formData.vsl.showCta)}
-                      onChange={(e) => handleChange('vsl.showCta', e.target.checked)}
-                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
-                    />
-                    <span>Show</span>
-                  </label>
-                </div>
-                <input
-                  type="text"
-                  value={formData.vsl.ctaText || 'WATCH THE SYSTEM'}
-                  onChange={(e) => handleChange('vsl.ctaText', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-bold"
                 />
               </div>
 
@@ -2075,18 +1791,6 @@ export const AdminWebsiteEditor: React.FC = () => {
                 />
               </div>
 
-              <div className="sm:col-span-2">
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
-                  Empty State Supporting Description
-                </label>
-                <input
-                  type="text"
-                  value={formData.portfolio?.emptyDesc || 'Check other categories or explore all published work.'}
-                  onChange={(e) => handleChange('portfolio.emptyDesc', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
-                />
-              </div>
-
               <div className="sm:col-span-2 flex items-center justify-between p-4 rounded-xl bg-[#12121c] border border-white/10">
                 <div>
                   <span className="text-xs font-bold uppercase tracking-wider text-white block">
@@ -2110,7 +1814,7 @@ export const AdminWebsiteEditor: React.FC = () => {
         {/* ========================================================================= */}
         {/* TAB 7: PROCESS (RAW TO READY) */}
         {/* ========================================================================= */}
-        {activeTab === 'process' && (
+        {activeTab === 'about' && (
           <div className="space-y-6">
             <div className="border-b border-white/10 pb-4">
               <h3 className="text-base font-bold text-white uppercase tracking-wider mb-1">
@@ -2322,341 +2026,16 @@ export const AdminWebsiteEditor: React.FC = () => {
         )}
 
         {/* ========================================================================= */}
-        {/* TAB: FAQ */}
+        {/* TAB 9: ABOUT & TEAM */}
         {/* ========================================================================= */}
-        {activeTab === 'faq' && (
-          <div className="space-y-6">
-            <div className="border-b border-white/10 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <h3 className="text-base font-bold text-white uppercase tracking-wider mb-1 flex items-center gap-2">
-                  <span>FAQ Section & Content CMS</span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 font-bold">
-                    {faqs.length} ITEMS
-                  </span>
-                </h3>
-                <p className="text-xs text-zinc-400">
-                  Manage FAQ section header, category filters, and live customer questions & answers.
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => setIsAddingFaq(!isAddingFaq)}
-                  className="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 transition-colors flex items-center gap-1.5 cursor-pointer shadow-md"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Add Question</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Section Configuration */}
-            <div className="p-5 rounded-2xl bg-[#0b0b14] border border-white/10 space-y-4">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-2">
-                <span>Section Header & Settings</span>
-              </h4>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
-                    Section Badge Label
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.faqSection?.badge || 'QUESTIONS & ANSWERS'}
-                    onChange={(e) => handleChange('faqSection.badge', e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
-                    Section Heading Text
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.faqSection?.heading || 'FREQUENTLY ASKED QUESTIONS'}
-                    onChange={(e) => handleChange('faqSection.heading', e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-bold"
-                  />
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
-                    Section Subheading / Description
-                  </label>
-                  <textarea
-                    rows={2}
-                    value={formData.faqSection?.subheading || formData.faqSection?.description || ''}
-                    onChange={(e) => {
-                      handleChange('faqSection.subheading', e.target.value);
-                      handleChange('faqSection.description', e.target.value);
-                    }}
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none resize-none"
-                  />
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
-                      Bottom CTA Button Text
-                    </label>
-                    <label className="text-xs text-zinc-400 flex items-center gap-1.5 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.faqSection?.ctaVisible !== false}
-                        onChange={(e) => handleChange('faqSection.ctaVisible', e.target.checked)}
-                        className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
-                      />
-                      <span>Show</span>
-                    </label>
-                  </div>
-                  <input
-                    type="text"
-                    value={formData.faqSection?.ctaText || 'HAVE A CUSTOM QUESTION? REACH OUT →'}
-                    onChange={(e) => handleChange('faqSection.ctaText', e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
-                  />
-                </div>
-
-                <div className="flex flex-col justify-end">
-                  <div className="p-3.5 rounded-xl bg-[#12121c] border border-white/10 flex items-center justify-between">
-                    <div>
-                      <span className="text-xs font-semibold text-white block">Multiple Open Accordions</span>
-                      <span className="text-[11px] text-zinc-400 block">Allow visitors to open more than one item</span>
-                    </div>
-                    <input
-                      type="checkbox"
-                      checked={Boolean(formData.faqSection?.allowMultipleOpen)}
-                      onChange={(e) => handleChange('faqSection.allowMultipleOpen', e.target.checked)}
-                      className="w-5 h-5 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Inline Add FAQ Modal/Form */}
-            {isAddingFaq && (
-              <div className="p-5 rounded-2xl bg-[#0e0e1a] border border-blue-500/40 space-y-4 shadow-xl">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-blue-400 flex items-center gap-2">
-                    <Plus className="w-4 h-4" />
-                    <span>Create New FAQ Item</span>
-                  </h4>
-                  <button
-                    type="button"
-                    onClick={() => setIsAddingFaq(false)}
-                    className="text-xs text-zinc-400 hover:text-white cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="sm:col-span-2">
-                    <label className="block text-[10px] font-mono uppercase text-zinc-400 mb-1">Question</label>
-                    <input
-                      type="text"
-                      value={newFaqQuestion}
-                      onChange={(e) => setNewFaqQuestion(e.target.value)}
-                      placeholder="e.g. What is the turnaround time for a reel edit?"
-                      className="w-full px-3 py-2 rounded-xl bg-black border border-white/15 text-white text-xs outline-none focus:border-blue-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-mono uppercase text-zinc-400 mb-1">Category</label>
-                    <input
-                      type="text"
-                      value={newFaqCategory}
-                      onChange={(e) => setNewFaqCategory(e.target.value)}
-                      placeholder="e.g. Turnaround, Workflow, Pricing"
-                      className="w-full px-3 py-2 rounded-xl bg-black border border-white/15 text-white text-xs outline-none focus:border-blue-500"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-3">
-                    <label className="block text-[10px] font-mono uppercase text-zinc-400 mb-1">Answer</label>
-                    <textarea
-                      rows={3}
-                      value={newFaqAnswer}
-                      onChange={(e) => setNewFaqAnswer(e.target.value)}
-                      placeholder="Clear, authoritative answer explaining the process or terms..."
-                      className="w-full px-3 py-2 rounded-xl bg-black border border-white/15 text-white text-xs outline-none focus:border-blue-500 resize-none font-sans"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex justify-end gap-2 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsAddingFaq(false)}
-                    className="px-3 py-1.5 rounded-lg text-xs text-zinc-400 hover:text-white bg-white/5 cursor-pointer"
-                  >
-                    Discard
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleCreateInlineFaq}
-                    disabled={!newFaqQuestion.trim() || !newFaqAnswer.trim()}
-                    className="px-4 py-1.5 rounded-lg text-xs font-bold uppercase text-white bg-blue-600 hover:bg-blue-500 disabled:opacity-40 cursor-pointer shadow-md"
-                  >
-                    Save FAQ
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* List of Questions & Answers */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-white">
-                  Active Questions & Answers ({faqs.length})
-                </h4>
-                <p className="text-[11px] text-zinc-400">
-                  Published items appear instantly on the public website accordion.
-                </p>
-              </div>
-
-              {faqs.length === 0 ? (
-                <div className="p-8 rounded-2xl bg-[#090910] border border-white/10 text-center space-y-2">
-                  <p className="text-xs text-zinc-400">No FAQs created yet.</p>
-                  <button
-                    type="button"
-                    onClick={() => setIsAddingFaq(true)}
-                    className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 cursor-pointer"
-                  >
-                    Create Your First FAQ
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {faqs
-                    .sort((a, b) => (a.order || 0) - (b.order || 0))
-                    .map((faq, index) => (
-                      <div
-                        key={faq.id}
-                        className="p-4 sm:p-5 rounded-2xl bg-[#090910] border border-white/10 space-y-3 hover:border-white/20 transition-all"
-                      >
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono text-xs font-bold text-blue-400">
-                              #{index + 1}
-                            </span>
-                            <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-blue-500/10 text-blue-400 border border-blue-500/20 font-semibold">
-                              {faq.category || 'General'}
-                            </span>
-                            {faq.featured && (
-                              <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-blue-600 text-white font-bold">
-                                Featured
-                              </span>
-                            )}
-                          </div>
-
-                          <div className="flex items-center gap-2">
-                            <button
-                              type="button"
-                              onClick={async () => {
-                                await updateFAQ(faq.id, { published: !faq.published });
-                              }}
-                              className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold uppercase cursor-pointer border ${
-                                faq.published !== false
-                                  ? 'bg-blue-600/15 text-blue-400 border-blue-500/30'
-                                  : 'bg-zinc-800 text-zinc-400 border-white/10'
-                              }`}
-                              title="Toggle Published Status"
-                            >
-                              {faq.published !== false ? 'Published' : 'Draft'}
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={async () => {
-                                await updateFAQ(faq.id, { visible: !faq.visible });
-                              }}
-                              className="p-1 rounded-lg text-zinc-400 hover:text-white bg-[#12121c] border border-white/10 cursor-pointer"
-                              title={faq.visible !== false ? 'Visible on site' : 'Hidden from site'}
-                            >
-                              {faq.visible !== false ? (
-                                <Eye className="w-3.5 h-3.5 text-blue-400" />
-                              ) : (
-                                <EyeOff className="w-3.5 h-3.5 text-zinc-500" />
-                              )}
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={async () => {
-                                await updateFAQ(faq.id, { featured: !faq.featured });
-                              }}
-                              className={`p-1 rounded-lg border cursor-pointer ${
-                                faq.featured
-                                  ? 'bg-blue-600/20 text-blue-400 border-blue-500/40'
-                                  : 'bg-[#12121c] text-zinc-400 border-white/10 hover:text-white'
-                              }`}
-                              title="Toggle Featured"
-                            >
-                              <Sparkles className="w-3.5 h-3.5" />
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={async () => {
-                                if (window.confirm('Delete this FAQ question?')) {
-                                  await deleteFAQ(faq.id);
-                                  setToastMessage({ type: 'success', text: 'FAQ deleted.' });
-                                }
-                              }}
-                              className="p-1 rounded-lg text-zinc-400 hover:text-red-400 bg-[#12121c] border border-white/10 cursor-pointer"
-                              title="Delete Question"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <input
-                            type="text"
-                            value={faq.question}
-                            onChange={async (e) => {
-                              await updateFAQ(faq.id, { question: e.target.value });
-                            }}
-                            className="w-full px-3 py-2 rounded-xl bg-black border border-white/10 text-white text-xs font-bold outline-none focus:border-blue-500"
-                            placeholder="Question"
-                          />
-                          <textarea
-                            rows={2}
-                            value={faq.answer}
-                            onChange={async (e) => {
-                              await updateFAQ(faq.id, { answer: e.target.value });
-                            }}
-                            className="w-full px-3 py-2 rounded-xl bg-black border border-white/10 text-white text-xs outline-none focus:border-blue-500 resize-none font-sans"
-                            placeholder="Answer"
-                          />
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* ========================================================================= */}
-        {/* TAB 8: ABOUT */}
-        {/* ========================================================================= */}
-        {activeTab === 'about' && (
+        {activeTab === 'team' && (
           <div className="space-y-6">
             <div className="border-b border-white/10 pb-4">
-              <h3 className="text-base font-bold text-white uppercase tracking-wider mb-1 flex items-center gap-2">
-                <Info className="w-5 h-5 text-blue-400" />
-                <span>About Section CMS</span>
+              <h3 className="text-base font-bold text-white uppercase tracking-wider mb-1">
+                About & Team Section CMS
               </h3>
               <p className="text-xs text-zinc-400">
-                Configure philosophy copy, section badges, action buttons, and element visibility.
+                Configure team philosophy text, button labels, and element visibility.
               </p>
             </div>
 
@@ -2679,7 +2058,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  value={formData.aboutContent?.heading || formData.sectionHeadings?.teamHeading || 'BUILT AROUND CONTENT.'}
+                  value={formData.sectionHeadings?.teamHeading || 'BUILT AROUND CONTENT.'}
                   onChange={(e) => {
                     handleChange('sectionHeadings.teamHeading', e.target.value);
                     handleChange('aboutContent.heading', e.target.value);
@@ -2690,11 +2069,11 @@ export const AdminWebsiteEditor: React.FC = () => {
 
               <div className="sm:col-span-2">
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
-                  Philosophy / Description Copy
+                  Philosophy / Copy Text
                 </label>
                 <textarea
                   rows={3}
-                  value={formData.aboutContent?.copy || formData.sectionHeadings?.teamCopy || ''}
+                  value={formData.sectionHeadings?.teamCopy || ''}
                   onChange={(e) => {
                     handleChange('sectionHeadings.teamCopy', e.target.value);
                     handleChange('aboutContent.copy', e.target.value);
@@ -2703,59 +2082,9 @@ export const AdminWebsiteEditor: React.FC = () => {
                 />
               </div>
 
-              <div className="sm:col-span-2">
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
-                  Supporting Text
-                </label>
-                <input
-                  type="text"
-                  value={formData.aboutContent?.subheading || ''}
-                  onChange={(e) => handleChange('aboutContent.subheading', e.target.value)}
-                  placeholder="Optional supporting narrative or manifesto..."
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
-                />
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
-                    Action Button Text
-                  </label>
-                  <label className="text-xs text-zinc-400 flex items-center gap-1.5 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={Boolean(formData.aboutContent?.showButton)}
-                      onChange={(e) => handleChange('aboutContent.showButton', e.target.checked)}
-                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
-                    />
-                    <span>Show</span>
-                  </label>
-                </div>
-                <input
-                  type="text"
-                  value={formData.aboutContent?.buttonText || ''}
-                  onChange={(e) => handleChange('aboutContent.buttonText', e.target.value)}
-                  placeholder="e.g. WORK WITH US"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
-                />
-              </div>
-
               <div>
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
-                  Button Action URL
-                </label>
-                <input
-                  type="text"
-                  value={formData.aboutContent?.buttonUrl || '#work'}
-                  onChange={(e) => handleChange('aboutContent.buttonUrl', e.target.value)}
-                  placeholder="#work or external link"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
-                  Social Link Button Text
+                  Social Button Text
                 </label>
                 <input
                   type="text"
@@ -2777,67 +2106,6 @@ export const AdminWebsiteEditor: React.FC = () => {
                 />
               </div>
             </div>
-
-            {/* Visibility Toggles */}
-            <div className="pt-4 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <label className="flex items-center gap-2 p-3 rounded-xl bg-[#12121c] border border-white/10 text-xs text-zinc-300 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={formData.aboutContent?.showBadge !== false}
-                  onChange={(e) => handleChange('aboutContent.showBadge', e.target.checked)}
-                  className="w-4 h-4 rounded bg-zinc-900 text-blue-600"
-                />
-                <span>Show Badge</span>
-              </label>
-
-              <label className="flex items-center gap-2 p-3 rounded-xl bg-[#12121c] border border-white/10 text-xs text-zinc-300 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={formData.aboutContent?.showPhotos !== false}
-                  onChange={(e) => handleChange('aboutContent.showPhotos', e.target.checked)}
-                  className="w-4 h-4 rounded bg-zinc-900 text-blue-600"
-                />
-                <span>Show Photos</span>
-              </label>
-
-              <label className="flex items-center gap-2 p-3 rounded-xl bg-[#12121c] border border-white/10 text-xs text-zinc-300 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={formData.aboutContent?.showSocialLinks !== false}
-                  onChange={(e) => handleChange('aboutContent.showSocialLinks', e.target.checked)}
-                  className="w-4 h-4 rounded bg-zinc-900 text-blue-600"
-                />
-                <span>Show Social Links</span>
-              </label>
-
-              <label className="flex items-center gap-2 p-3 rounded-xl bg-[#12121c] border border-white/10 text-xs text-zinc-300 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={formData.aboutContent?.showEmails !== false}
-                  onChange={(e) => handleChange('aboutContent.showEmails', e.target.checked)}
-                  className="w-4 h-4 rounded bg-zinc-900 text-blue-600"
-                />
-                <span>Show Emails</span>
-              </label>
-            </div>
-          </div>
-        )}
-
-        {/* ========================================================================= */}
-        {/* TAB 9: TEAM */}
-        {/* ========================================================================= */}
-        {activeTab === 'team' && (
-          <div className="space-y-6">
-            <div className="border-b border-white/10 pb-4">
-              <h3 className="text-base font-bold text-white uppercase tracking-wider mb-1 flex items-center gap-2">
-                <UsersRound className="w-5 h-5 text-blue-400" />
-                <span>Team Members Management</span>
-              </h3>
-              <p className="text-xs text-zinc-400">
-                Add, edit, reorder, and control visibility for team members shown in the About section.
-              </p>
-            </div>
-            <AdminTeam />
           </div>
         )}
 
@@ -2950,476 +2218,79 @@ export const AdminWebsiteEditor: React.FC = () => {
         {/* ========================================================================= */}
         {/* TAB 11: FOOTER */}
         {/* ========================================================================= */}
-        {/* ========================================================================= */}
-        {/* TAB 11: FOOTER (DEDICATED ADVANCED FOOTER EDITOR) */}
-        {/* ========================================================================= */}
         {activeTab === 'footer' && (
-          <div className="space-y-8">
+          <div className="space-y-6">
             <div className="border-b border-white/10 pb-4">
-              <h3 className="text-base font-bold text-white uppercase tracking-wider mb-1 flex items-center gap-2">
-                <PanelBottom className="w-5 h-5 text-blue-400" />
-                <span>Dedicated Footer Editor</span>
+              <h3 className="text-base font-bold text-white uppercase tracking-wider mb-1">
+                Footer CMS
               </h3>
               <p className="text-xs text-zinc-400">
-                Full CMS control over every footer element: navigation links, social platforms, contact CTA, legal links, copyright, and visibility.
+                Manage copyright line, navigation link labels, legal links, and social labels.
               </p>
             </div>
 
-            {/* 1. BRAND & DESCRIPTION */}
-            <div className="p-5 rounded-2xl bg-[#0b0b14] border border-white/10 space-y-4">
-              <div className="flex items-center justify-between border-b border-white/5 pb-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-white">
-                  1. Brand Tagline & Footer Logo
-                </h4>
-                <label className="text-xs text-zinc-400 flex items-center gap-1.5 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.footer?.showDescription !== false}
-                    onChange={(e) => handleChange('footer.showDescription', e.target.checked)}
-                    className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
-                  />
-                  <span>Show Tagline</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="sm:col-span-2">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                  Brand Supporting Line / Tagline
                 </label>
+                <input
+                  type="text"
+                  value={formData.footer?.description || formData.footer?.tagline || ''}
+                  onChange={(e) => {
+                    handleChange('footer.description', e.target.value);
+                    handleChange('footer.tagline', e.target.value);
+                  }}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
+                />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="sm:col-span-2">
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
-                    Brand Tagline / Supporting Note
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.footer?.description || formData.footer?.tagline || ''}
-                    onChange={(e) => {
-                      handleChange('footer.description', e.target.value);
-                      handleChange('footer.tagline', e.target.value);
-                    }}
-                    placeholder="Turning raw footage into content worth watching."
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#12121c] border border-white/10 sm:col-span-2">
-                  <div>
-                    <span className="text-xs font-semibold text-white block">Footer Logo Visibility</span>
-                    <span className="text-[11px] text-zinc-400 block">Controls display of the Footazix brand wordmark in the footer</span>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={formData.brandingAssets?.footerLogo?.visible !== false}
-                    onChange={(e) => handleChange('brandingAssets.footerLogo.visible', e.target.checked)}
-                    className="w-5 h-5 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* 2. NAVIGATION LINKS */}
-            <div className="p-5 rounded-2xl bg-[#0b0b14] border border-white/10 space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/5 pb-3">
-                <div>
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-white">
-                    2. Footer Navigation Links
-                  </h4>
-                  <p className="text-[11px] text-zinc-400">
-                    Add, edit, reorder, or toggle individual navigation links.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleAddFooterNavItem}
-                  className="px-3 py-1.5 rounded-xl text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 transition-colors flex items-center gap-1.5 cursor-pointer shadow-md self-start sm:self-auto"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Add Nav Link</span>
-                </button>
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                  Copyright Notice
+                </label>
+                <input
+                  type="text"
+                  value={formData.footer.copyrightText}
+                  onChange={(e) => handleChange('footer.copyrightText', e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
+                />
               </div>
 
-              <div className="space-y-3">
-                {(formData.footer?.navItems || []).map((item, idx) => (
-                  <div
-                    key={item.id || idx}
-                    className="p-3.5 rounded-xl bg-[#12121c] border border-white/10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3"
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono text-zinc-500 font-bold w-5">{idx + 1}.</span>
-                      <input
-                        type="text"
-                        value={item.label}
-                        onChange={(e) => handleUpdateFooterNavItem(item.id, 'label', e.target.value)}
-                        placeholder="Link Label"
-                        className="px-3 py-1.5 rounded-lg bg-black border border-white/10 text-white text-xs font-semibold focus:border-blue-500 outline-none w-32"
-                      />
-                      <input
-                        type="text"
-                        value={item.href}
-                        onChange={(e) => handleUpdateFooterNavItem(item.id, 'href', e.target.value)}
-                        placeholder="#work or URL"
-                        className="px-3 py-1.5 rounded-lg bg-black border border-white/10 text-zinc-300 font-mono text-xs focus:border-blue-500 outline-none flex-grow sm:w-48"
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-end gap-1.5 self-end sm:self-auto">
-                      <button
-                        type="button"
-                        onClick={() => handleUpdateFooterNavItem(item.id, 'visible', !item.visible)}
-                        className={`p-1.5 rounded-lg border cursor-pointer ${
-                          item.visible !== false
-                            ? 'bg-blue-600/15 text-blue-400 border-blue-500/30'
-                            : 'bg-zinc-800 text-zinc-500 border-white/10'
-                        }`}
-                        title={item.visible !== false ? 'Visible on site' : 'Hidden'}
-                      >
-                        {item.visible !== false ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => handleMoveFooterNavItem(idx, 'up')}
-                        disabled={idx === 0}
-                        className="p-1.5 rounded-lg text-zinc-400 hover:text-white bg-black/40 border border-white/10 disabled:opacity-30 cursor-pointer"
-                        title="Move Up"
-                      >
-                        <ArrowUp className="w-3.5 h-3.5" />
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => handleMoveFooterNavItem(idx, 'down')}
-                        disabled={idx === (formData.footer?.navItems || []).length - 1}
-                        className="p-1.5 rounded-lg text-zinc-400 hover:text-white bg-black/40 border border-white/10 disabled:opacity-30 cursor-pointer"
-                        title="Move Down"
-                      >
-                        <ArrowDown className="w-3.5 h-3.5" />
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveFooterNavItem(item.id)}
-                        className="p-1.5 rounded-lg text-zinc-400 hover:text-red-400 bg-black/40 border border-white/10 cursor-pointer"
-                        title="Delete Link"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* 3. SOCIAL LINKS */}
-            <div className="p-5 rounded-2xl bg-[#0b0b14] border border-white/10 space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/5 pb-3">
-                <div>
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-white">
-                    3. Social Media Links
-                  </h4>
-                  <p className="text-[11px] text-zinc-400">
-                    Connect your agency's official profiles (Instagram, YouTube, X, LinkedIn).
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleAddFooterSocialItem}
-                  className="px-3 py-1.5 rounded-xl text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 transition-colors flex items-center gap-1.5 cursor-pointer shadow-md self-start sm:self-auto"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Add Social Link</span>
-                </button>
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                  Back to Top Button Text
+                </label>
+                <input
+                  type="text"
+                  value={formData.footer?.backToTopText || 'Back to top'}
+                  onChange={(e) => handleChange('footer.backToTopText', e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                />
               </div>
 
-              <div className="space-y-3">
-                {(formData.footer?.socialLinks || []).map((item, idx) => (
-                  <div
-                    key={item.id || idx}
-                    className="p-3.5 rounded-xl bg-[#12121c] border border-white/10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3"
-                  >
-                    <div className="flex flex-wrap items-center gap-2">
-                      <select
-                        value={item.platform}
-                        onChange={(e) => handleUpdateFooterSocialItem(item.id, 'platform', e.target.value)}
-                        className="px-2.5 py-1.5 rounded-lg bg-black border border-white/10 text-white text-xs outline-none cursor-pointer"
-                      >
-                        <option value="Instagram">Instagram</option>
-                        <option value="YouTube">YouTube</option>
-                        <option value="X">X / Twitter</option>
-                        <option value="LinkedIn">LinkedIn</option>
-                        <option value="TikTok">TikTok</option>
-                        <option value="Discord">Discord</option>
-                        <option value="Other">Other</option>
-                      </select>
-
-                      <input
-                        type="text"
-                        value={item.label}
-                        onChange={(e) => handleUpdateFooterSocialItem(item.id, 'label', e.target.value)}
-                        placeholder="Label"
-                        className="px-3 py-1.5 rounded-lg bg-black border border-white/10 text-white text-xs font-semibold focus:border-blue-500 outline-none w-28"
-                      />
-
-                      <input
-                        type="text"
-                        value={item.url}
-                        onChange={(e) => handleUpdateFooterSocialItem(item.id, 'url', e.target.value)}
-                        placeholder="https://..."
-                        className="px-3 py-1.5 rounded-lg bg-black border border-white/10 text-zinc-300 font-mono text-xs focus:border-blue-500 outline-none flex-grow sm:w-56"
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-end gap-1.5 self-end sm:self-auto">
-                      <button
-                        type="button"
-                        onClick={() => handleUpdateFooterSocialItem(item.id, 'visible', !item.visible)}
-                        className={`p-1.5 rounded-lg border cursor-pointer ${
-                          item.visible !== false
-                            ? 'bg-blue-600/15 text-blue-400 border-blue-500/30'
-                            : 'bg-zinc-800 text-zinc-500 border-white/10'
-                        }`}
-                        title={item.visible !== false ? 'Visible' : 'Hidden'}
-                      >
-                        {item.visible !== false ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => handleMoveFooterSocialItem(idx, 'up')}
-                        disabled={idx === 0}
-                        className="p-1.5 rounded-lg text-zinc-400 hover:text-white bg-black/40 border border-white/10 disabled:opacity-30 cursor-pointer"
-                        title="Move Up"
-                      >
-                        <ArrowUp className="w-3.5 h-3.5" />
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => handleMoveFooterSocialItem(idx, 'down')}
-                        disabled={idx === (formData.footer?.socialLinks || []).length - 1}
-                        className="p-1.5 rounded-lg text-zinc-400 hover:text-white bg-black/40 border border-white/10 disabled:opacity-30 cursor-pointer"
-                        title="Move Down"
-                      >
-                        <ArrowDown className="w-3.5 h-3.5" />
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveFooterSocialItem(item.id)}
-                        className="p-1.5 rounded-lg text-zinc-400 hover:text-red-400 bg-black/40 border border-white/10 cursor-pointer"
-                        title="Delete Social Link"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* 4. ACTIONS & CTA */}
-            <div className="p-5 rounded-2xl bg-[#0b0b14] border border-white/10 space-y-4">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-white border-b border-white/5 pb-3">
-                4. Contact & Project Action Buttons
-              </h4>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
-                      Contact Button Label
-                    </label>
-                    <label className="text-xs text-zinc-400 flex items-center gap-1.5 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.footer?.showContact !== false}
-                        onChange={(e) => handleChange('footer.showContact', e.target.checked)}
-                        className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
-                      />
-                      <span>Show</span>
-                    </label>
-                  </div>
-                  <input
-                    type="text"
-                    value={formData.footer?.contactText || 'Contact'}
-                    onChange={(e) => handleChange('footer.contactText', e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
-                  />
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
-                      Prominent Footer CTA Button
-                    </label>
-                    <label className="text-xs text-zinc-400 flex items-center gap-1.5 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={Boolean(formData.footer?.showCta)}
-                        onChange={(e) => handleChange('footer.showCta', e.target.checked)}
-                        className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
-                      />
-                      <span>Show</span>
-                    </label>
-                  </div>
-                  <input
-                    type="text"
-                    value={formData.footer?.ctaText || 'START A PROJECT →'}
-                    onChange={(e) => handleChange('footer.ctaText', e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-bold text-blue-400"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* 5. COPYRIGHT & BACK TO TOP */}
-            <div className="p-5 rounded-2xl bg-[#0b0b14] border border-white/10 space-y-4">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-white border-b border-white/5 pb-3">
-                5. Copyright & Utility Controls
-              </h4>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
-                      Copyright Notice Text
-                    </label>
-                    <label className="text-xs text-zinc-400 flex items-center gap-1.5 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.footer?.showCopyright !== false}
-                        onChange={(e) => handleChange('footer.showCopyright', e.target.checked)}
-                        className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
-                      />
-                      <span>Show</span>
-                    </label>
-                  </div>
-                  <input
-                    type="text"
-                    value={formData.footer.copyrightText}
-                    onChange={(e) => handleChange('footer.copyrightText', e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
-                  />
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
-                      Back to Top Button Text
-                    </label>
-                    <label className="text-xs text-zinc-400 flex items-center gap-1.5 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.footer?.showBackToTop !== false}
-                        onChange={(e) => handleChange('footer.showBackToTop', e.target.checked)}
-                        className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
-                      />
-                      <span>Show</span>
-                    </label>
-                  </div>
-                  <input
-                    type="text"
-                    value={formData.footer?.backToTopText || 'Back to top'}
-                    onChange={(e) => handleChange('footer.backToTopText', e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* 6. LEGAL LINKS */}
-            <div className="p-5 rounded-2xl bg-[#0b0b14] border border-white/10 space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/5 pb-3">
-                <div className="flex items-center gap-3">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-white">
-                    6. Legal Links & Compliance
-                  </h4>
-                  <label className="text-xs text-zinc-400 flex items-center gap-1.5 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={formData.footer?.showLegal !== false}
-                      onChange={(e) => handleChange('footer.showLegal', e.target.checked)}
-                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
-                    />
-                    <span>Show Legal Section</span>
-                  </label>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleAddFooterLegalItem}
-                  className="px-3 py-1.5 rounded-xl text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 transition-colors flex items-center gap-1.5 cursor-pointer shadow-md self-start sm:self-auto"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Add Legal Link</span>
-                </button>
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                  Terms & Conditions Label
+                </label>
+                <input
+                  type="text"
+                  value={formData.footer?.termsLabel || 'Terms & Conditions'}
+                  onChange={(e) => handleChange('footer.termsLabel', e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                />
               </div>
 
-              <div className="space-y-3">
-                {(formData.footer?.legalLinks || []).map((item, idx) => (
-                  <div
-                    key={item.id || idx}
-                    className="p-3.5 rounded-xl bg-[#12121c] border border-white/10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3"
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono text-zinc-500 font-bold w-5">{idx + 1}.</span>
-                      <input
-                        type="text"
-                        value={item.label}
-                        onChange={(e) => handleUpdateFooterLegalItem(item.id, 'label', e.target.value)}
-                        placeholder="e.g. Terms & Conditions"
-                        className="px-3 py-1.5 rounded-lg bg-black border border-white/10 text-white text-xs font-semibold focus:border-blue-500 outline-none w-44"
-                      />
-                      <input
-                        type="text"
-                        value={item.href}
-                        onChange={(e) => handleUpdateFooterLegalItem(item.id, 'href', e.target.value)}
-                        placeholder="terms or privacy or URL"
-                        className="px-3 py-1.5 rounded-lg bg-black border border-white/10 text-zinc-300 font-mono text-xs focus:border-blue-500 outline-none flex-grow sm:w-44"
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-end gap-1.5 self-end sm:self-auto">
-                      <button
-                        type="button"
-                        onClick={() => handleUpdateFooterLegalItem(item.id, 'visible', !item.visible)}
-                        className={`p-1.5 rounded-lg border cursor-pointer ${
-                          item.visible !== false
-                            ? 'bg-blue-600/15 text-blue-400 border-blue-500/30'
-                            : 'bg-zinc-800 text-zinc-500 border-white/10'
-                        }`}
-                        title={item.visible !== false ? 'Visible' : 'Hidden'}
-                      >
-                        {item.visible !== false ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => handleMoveFooterLegalItem(idx, 'up')}
-                        disabled={idx === 0}
-                        className="p-1.5 rounded-lg text-zinc-400 hover:text-white bg-black/40 border border-white/10 disabled:opacity-30 cursor-pointer"
-                        title="Move Up"
-                      >
-                        <ArrowUp className="w-3.5 h-3.5" />
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => handleMoveFooterLegalItem(idx, 'down')}
-                        disabled={idx === (formData.footer?.legalLinks || []).length - 1}
-                        className="p-1.5 rounded-lg text-zinc-400 hover:text-white bg-black/40 border border-white/10 disabled:opacity-30 cursor-pointer"
-                        title="Move Down"
-                      >
-                        <ArrowDown className="w-3.5 h-3.5" />
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveFooterLegalItem(item.id)}
-                        className="p-1.5 rounded-lg text-zinc-400 hover:text-red-400 bg-black/40 border border-white/10 cursor-pointer"
-                        title="Delete Legal Link"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                  Privacy Policy Label
+                </label>
+                <input
+                  type="text"
+                  value={formData.footer?.privacyLabel || 'Privacy Policy'}
+                  onChange={(e) => handleChange('footer.privacyLabel', e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                />
               </div>
             </div>
           </div>
