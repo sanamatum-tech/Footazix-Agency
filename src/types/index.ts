@@ -64,6 +64,9 @@ export interface HeaderSettings {
   showServicesLink?: boolean;
   showAboutLink?: boolean;
   navItems?: NavItemConfig[];
+  mobileMenuTitle?: string;
+  mobileMenuCta?: string;
+  supportingText?: string;
 }
 
 export interface HeroSettings {
@@ -96,7 +99,9 @@ export interface VSLSettings {
   captionUrl?: string;
   published: boolean;
   fallbackMessage?: string;
+  fallbackSubtext?: string;
   ctaText?: string;
+  ctaAction?: string;
   showCta?: boolean;
 }
 
@@ -142,6 +147,7 @@ export interface ServicesSectionSettings {
   showFeatureList?: boolean;
   showCta?: boolean;
   showNumbers?: boolean;
+  ctaText?: string;
 }
 
 export interface AboutSectionSettings {
@@ -153,6 +159,9 @@ export interface AboutSectionSettings {
   socialButtonText?: string;
   emailButtonText?: string;
   emptyText?: string;
+  buttonText?: string;
+  buttonUrl?: string;
+  showButton?: boolean;
   showPhotos?: boolean;
   showSocialLinks?: boolean;
   showEmails?: boolean;
@@ -170,27 +179,65 @@ export interface FinalCtaSettings {
   showSecondaryCta?: boolean;
 }
 
+export interface FooterNavItem {
+  id: string;
+  label: string;
+  href: string;
+  visible: boolean;
+  order: number;
+}
+
+export interface FooterSocialItem {
+  id: string;
+  platform: string;
+  label: string;
+  url: string;
+  visible: boolean;
+  order: number;
+}
+
+export interface FooterLegalItem {
+  id: string;
+  label: string;
+  href: string;
+  visible: boolean;
+  order: number;
+}
+
 export interface FooterSettings {
   description?: string;
   showDescription?: boolean;
+  tagline?: string;
   navSectionTitle?: string;
+  navGroupTitle?: string;
+  navItems?: FooterNavItem[];
   navWork?: string;
   navSystem?: string;
   navServices?: string;
   navAbout?: string;
   contactText?: string;
+  showContact?: boolean;
+  contactAction?: string;
+  ctaText?: string;
+  ctaSubtext?: string;
+  showCta?: boolean;
   socialSectionTitle?: string;
+  socialGroupTitle?: string;
+  socialLinks?: FooterSocialItem[];
   instagramText?: string;
   showInstagram?: boolean;
   copyrightText: string;
   showCopyright?: boolean;
   legalSectionTitle?: string;
+  legalGroupTitle?: string;
+  legalLinks?: FooterLegalItem[];
   termsLabel?: string;
+  termsUrl?: string;
   privacyLabel?: string;
+  privacyUrl?: string;
   showLegal?: boolean;
   backToTopText?: string;
   showBackToTop?: boolean;
-  tagline?: string;
 }
 
 export interface FAQ {

@@ -471,6 +471,7 @@ return activeContentFetchPromise;
         await Promise.all(promises);
       } catch (err) {
         console.error('Failed to sync website content to Supabase:', err);
+        throw err;
       }
     }
 
