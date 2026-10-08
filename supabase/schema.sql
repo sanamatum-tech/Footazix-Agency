@@ -221,9 +221,13 @@ CREATE TABLE IF NOT EXISTS public.projects (
   description TEXT NOT NULL,
   cover_image TEXT NOT NULL,
   video_url TEXT,
+  project_url TEXT,
   client_name TEXT,
   display_order INTEGER NOT NULL DEFAULT 1,
   status TEXT NOT NULL DEFAULT 'published' CHECK (status IN ('published', 'draft')),
+  visible BOOLEAN NOT NULL DEFAULT true,
+  video_aspect_ratio TEXT NOT NULL DEFAULT '16:9',
+  thumbnail_aspect_ratio TEXT NOT NULL DEFAULT '16:9',
   created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
 );
@@ -234,14 +238,19 @@ DROP POLICY IF EXISTS "Public can view published projects" ON public.projects;
 CREATE POLICY "Public can view published projects"
   ON public.projects FOR SELECT
   TO anon, authenticated
-  USING (status = 'published' OR public.is_admin());
+  USING (
+    (status = 'published' AND COALESCE(visible, true) = true)
+    OR auth.role() = 'authenticated'
+    OR public.is_admin()
+  );
 
 DROP POLICY IF EXISTS "Admins can manage projects" ON public.projects;
-CREATE POLICY "Admins can manage projects"
+DROP POLICY IF EXISTS "CMS can manage projects" ON public.projects;
+CREATE POLICY "CMS can manage projects"
   ON public.projects FOR ALL
-  TO authenticated
-  USING (public.is_admin())
-  WITH CHECK (public.is_admin());
+  TO anon, authenticated
+  USING (true)
+  WITH CHECK (true);
 
 -- ==============================================================================
 -- 8. SERVICES TABLE
