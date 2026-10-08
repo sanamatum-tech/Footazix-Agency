@@ -16,7 +16,10 @@ export const Hero: React.FC<HeroProps> = ({ onWorkWithUs, onWatchVSL }) => {
   const showBadge = hero.showBadge !== false && Boolean(hero.badgeText);
   const showSupportingLine = hero.showSupportingLine !== false && Boolean(hero.supportingLine);
   const showDescription = hero.showDescription !== false && Boolean(hero.description);
-  const showPrimaryCta = hero.showPrimaryCta !== false && Boolean(hero.primaryCta);
+  const showPrimaryCta =
+    hero.showPrimaryCta !== false &&
+    content.sectionVisibility?.startProjectModal !== false &&
+    Boolean(hero.primaryCta);
   const showSecondaryCta = hero.showSecondaryCta !== false && Boolean(hero.secondaryCta);
 
   return (

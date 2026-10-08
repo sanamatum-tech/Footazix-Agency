@@ -32,6 +32,7 @@ export const AdminMediaLibrary: React.FC = () => {
   const [statusMessage, setStatusMessage] = useState('');
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
   const [previewAsset, setPreviewAsset] = useState<MediaAsset | null>(null);
+  const [previewMonochrome, setPreviewMonochrome] = useState<boolean>(false);
   const [isDeletingId, setIsDeletingId] = useState<string | null>(null);
 
   const filteredMedia = media.filter((m) => {
@@ -358,12 +359,30 @@ export const AdminMediaLibrary: React.FC = () => {
                   {previewAsset.category} · {previewAsset.size}
                 </span>
               </div>
-              <button
-                onClick={() => setPreviewAsset(null)}
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-white bg-[#12121c]"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                {previewAsset.type !== 'video' && (
+                  <button
+                    type="button"
+                    onClick={() => setPreviewMonochrome(!previewMonochrome)}
+                    className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold uppercase cursor-pointer transition-colors ${
+                      previewMonochrome
+                        ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                        : 'bg-zinc-850 text-zinc-300 hover:text-white border border-white/10'
+                    }`}
+                  >
+                    {previewMonochrome ? 'Mono: ON' : 'Mono: OFF (Full Color)'}
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    setPreviewAsset(null);
+                    setPreviewMonochrome(false);
+                  }}
+                  className="p-1.5 rounded-lg text-zinc-400 hover:text-white bg-[#12121c] cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
             <div className="rounded-xl overflow-hidden bg-black flex items-center justify-center max-h-[60vh]">
@@ -373,7 +392,9 @@ export const AdminMediaLibrary: React.FC = () => {
                 <img
                   src={previewAsset.url}
                   alt={previewAsset.name}
-                  className="max-w-full max-h-[50vh] object-contain"
+                  className={`max-w-full max-h-[50vh] object-contain transition-all duration-300 ${
+                    previewMonochrome ? 'grayscale contrast-110' : ''
+                  }`}
                 />
               )}
             </div>

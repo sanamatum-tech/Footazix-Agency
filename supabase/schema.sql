@@ -163,6 +163,7 @@ CREATE TABLE IF NOT EXISTS public.vsl_settings (
   poster_url TEXT NOT NULL DEFAULT '/assets/vsl/vsl-poster.jpg',
   caption_url TEXT,
   published BOOLEAN NOT NULL DEFAULT true,
+  aspect_ratio VARCHAR(20) DEFAULT '16:9',
   updated_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

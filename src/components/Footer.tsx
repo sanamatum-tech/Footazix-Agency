@@ -2,6 +2,7 @@ import React from 'react';
 import { useApp } from '../context/AppContext';
 import { FootazixLogo } from './FootazixLogo';
 import { LockKeyhole, ExternalLink, ArrowUp, ArrowRight } from 'lucide-react';
+import { FooterNavItem, FooterSocialLinkItem, FooterLegalLinkItem } from '../types';
 
 interface FooterProps {
   onOpenContact: () => void;
@@ -64,11 +65,11 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
     `© ${new Date().getFullYear()} ${content.brand?.name || 'Footazix'}. ${content.brand?.domain || 'footazix.site'}. All rights reserved.`;
 
   // Dynamic Navigation Items with fallback to legacy props
-  const navItems = React.useMemo(() => {
+  const navItems = React.useMemo<FooterNavItem[]>(() => {
     if (footerConfig?.navItems && footerConfig.navItems.length > 0) {
-      return footerConfig.navItems
-        .filter((item) => item.visible !== false)
-        .sort((a, b) => (a.order || 0) - (b.order || 0));
+      return [...footerConfig.navItems]
+        .filter((item: FooterNavItem) => item.visible !== false)
+        .sort((a: FooterNavItem, b: FooterNavItem) => (a.order || 0) - (b.order || 0));
     }
     return [
       { id: 'work', label: footerConfig?.navWork || 'Work', href: '#work', visible: true, order: 1 },
@@ -80,13 +81,13 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
   }, [footerConfig]);
 
   // Dynamic Social Links with fallback
-  const socialLinks = React.useMemo(() => {
+  const socialLinks = React.useMemo<FooterSocialLinkItem[]>(() => {
     if (footerConfig?.socialLinks && footerConfig.socialLinks.length > 0) {
-      return footerConfig.socialLinks
-        .filter((item) => item.visible !== false)
-        .sort((a, b) => (a.order || 0) - (b.order || 0));
+      return [...footerConfig.socialLinks]
+        .filter((item: FooterSocialLinkItem) => item.visible !== false)
+        .sort((a: FooterSocialLinkItem, b: FooterSocialLinkItem) => (a.order || 0) - (b.order || 0));
     }
-    const list = [];
+    const list: FooterSocialLinkItem[] = [];
     if (
       content.sectionVisibility?.instagram !== false &&
       content.brand?.showInstagramButton !== false &&
@@ -106,11 +107,11 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
   }, [footerConfig, content.brand, content.sectionVisibility]);
 
   // Dynamic Legal Links with fallback
-  const legalLinks = React.useMemo(() => {
+  const legalLinks = React.useMemo<FooterLegalLinkItem[]>(() => {
     if (footerConfig?.legalLinks && footerConfig.legalLinks.length > 0) {
-      return footerConfig.legalLinks
-        .filter((item) => item.visible !== false)
-        .sort((a, b) => (a.order || 0) - (b.order || 0));
+      return [...footerConfig.legalLinks]
+        .filter((item: FooterLegalLinkItem) => item.visible !== false)
+        .sort((a: FooterLegalLinkItem, b: FooterLegalLinkItem) => (a.order || 0) - (b.order || 0));
     }
     return [
       {

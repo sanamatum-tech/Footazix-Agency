@@ -22,7 +22,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
     content.header?.showLogo !== false &&
     content.brandingAssets?.headerLogo?.visible !== false;
 
-  const showCta = content.header?.showCta !== false;
+  const showCta =
+    content.header?.showCta !== false &&
+    content.sectionVisibility?.startProjectModal !== false;
   const ctaText = content.header?.ctaText || 'Build with Footazix';
 
   useEffect(() => {
@@ -191,14 +193,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
             transition={{ duration: 0.25 }}
             className="md:hidden border-b border-white/10 bg-[#050508]/98 backdrop-blur-xl overflow-hidden px-6 py-6 space-y-4"
           >
-            {content.header?.mobileMenuTitle && (
-              <div className="pb-2 border-b border-white/5">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-blue-400">
-                  {content.header.mobileMenuTitle}
-                </span>
-              </div>
-            )}
-
             <div className="flex flex-col space-y-3 text-sm font-semibold uppercase tracking-wider text-zinc-300">
               {navLinks.map((link) => (
                 <button
@@ -220,7 +214,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                   }}
                   className="w-full py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-all duration-200 shadow-[0_0_16px_rgba(37,99,235,0.35)] flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <span>{content.header?.mobileMenuCta || ctaText}</span>
+                  <span>{ctaText}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               )}
@@ -235,12 +229,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                   <Instagram className="w-3.5 h-3.5 text-blue-400" />
                   <span>Instagram</span>
                 </a>
-              )}
-
-              {content.header?.supportingText && (
-                <p className="text-center text-[11px] text-zinc-500 pt-1 font-mono">
-                  {content.header.supportingText}
-                </p>
               )}
             </div>
           </motion.div>

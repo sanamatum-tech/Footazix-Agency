@@ -31,6 +31,7 @@ export const AdminTeam: React.FC = () => {
   const [socialLink, setSocialLink] = useState('');
   const [email, setEmail] = useState('');
   const [visible, setVisible] = useState(true);
+  const [monochrome, setMonochrome] = useState(false);
 
   const openAdd = () => {
     setEditingMember(null);
@@ -41,6 +42,7 @@ export const AdminTeam: React.FC = () => {
     setSocialLink('');
     setEmail('footazix@gmail.com');
     setVisible(true);
+    setMonochrome(false);
     setIsModalOpen(true);
   };
 
@@ -53,6 +55,7 @@ export const AdminTeam: React.FC = () => {
     setSocialLink(m.socialLink || '');
     setEmail(m.email || '');
     setVisible(m.visible !== false);
+    setMonochrome(Boolean(m.monochrome));
     setIsModalOpen(true);
   };
 
@@ -74,6 +77,7 @@ export const AdminTeam: React.FC = () => {
         socialLink: socialLink.trim() || undefined,
         email: email.trim() || undefined,
         visible,
+        monochrome,
       });
       setStatusMessage('Team member updated.');
     } else {
@@ -85,6 +89,7 @@ export const AdminTeam: React.FC = () => {
         socialLink: socialLink.trim() || undefined,
         email: email.trim() || undefined,
         visible,
+        monochrome,
         displayOrder: team.length + 1,
       });
       setStatusMessage('Team member added.');
@@ -206,18 +211,29 @@ export const AdminTeam: React.FC = () => {
                   <img
                     src={member.photo}
                     alt={member.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ${
+                      member.monochrome ? 'grayscale contrast-110' : ''
+                    }`}
                   />
                 </div>
 
                 {/* Info */}
                 <div className="min-w-0 space-y-0.5">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h3 className="text-sm font-bold text-white truncate">
                       {member.name}
                     </h3>
                     <span className="text-[10px] font-mono text-blue-400 font-semibold px-2 py-0.5 rounded bg-blue-950/60 border border-blue-500/30">
                       {member.role}
+                    </span>
+                    <span
+                      className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
+                        member.monochrome
+                          ? 'bg-amber-950/60 text-amber-300 border border-amber-500/30'
+                          : 'bg-emerald-950/60 text-emerald-300 border border-emerald-500/30'
+                      }`}
+                    >
+                      {member.monochrome ? 'Monochrome' : 'Full Color'}
                     </span>
                   </div>
                   <p className="text-xs text-zinc-400 line-clamp-1 max-w-xl">
@@ -354,17 +370,86 @@ export const AdminTeam: React.FC = () => {
                 />
               </div>
 
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
-                  Photo URL
-                </label>
-                <input
-                  type="text"
-                  placeholder="/assets/founder.jpg"
-                  value={photo}
-                  onChange={(e) => setPhoto(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs font-mono outline-none focus:border-blue-500"
-                />
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                    Photo URL
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="/assets/founder.jpg"
+                    value={photo}
+                    onChange={(e) => setPhoto(e.target.value)}
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs font-mono outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                {/* Team Member Photo Color Mode Toggle */}
+                <div className="p-3.5 rounded-xl bg-[#0d0d16] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold uppercase tracking-wider text-white">
+                        Photo Color Mode
+                      </span>
+                      <span
+                        className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
+                          monochrome
+                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                            : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                        }`}
+                      >
+                        {monochrome ? 'Monochrome (ON)' : 'Full Color (OFF)'}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-zinc-400 mt-0.5">
+                      OFF = original full-color image · ON = professional monochrome/grayscale effect
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setMonochrome(false)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-all cursor-pointer ${
+                        !monochrome
+                          ? 'bg-blue-600 text-white shadow-[0_0_12px_rgba(37,99,235,0.4)]'
+                          : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                      }`}
+                    >
+                      Full Color (OFF)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMonochrome(true)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-all cursor-pointer ${
+                        monochrome
+                          ? 'bg-zinc-200 text-zinc-950 font-extrabold shadow-sm'
+                          : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                      }`}
+                    >
+                      Monochrome (ON)
+                    </button>
+                  </div>
+                </div>
+
+                {/* Live Photo Preview */}
+                {photo && (
+                  <div className="flex items-center gap-3 p-2.5 rounded-xl bg-[#090910] border border-white/5">
+                    <div className="w-12 h-12 rounded-xl overflow-hidden bg-black shrink-0 border border-white/10">
+                      <img
+                        src={photo}
+                        alt="Photo preview"
+                        className={`w-full h-full object-cover ${monochrome ? 'grayscale contrast-110' : ''}`}
+                      />
+                    </div>
+                    <div className="text-xs">
+                      <span className="text-white font-semibold block">Live Preview</span>
+                      <span className="text-zinc-400 text-[11px] font-mono">
+                        {monochrome ? 'Monochrome effect applied' : 'Full color (original)'}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

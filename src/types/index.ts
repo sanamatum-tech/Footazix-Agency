@@ -98,6 +98,9 @@ export interface VSLSettings {
   fallbackMessage?: string;
   ctaText?: string;
   showCta?: boolean;
+  aspectRatio?: AspectRatioType;
+  posterMonochrome?: boolean;
+  monochrome?: boolean;
 }
 
 export interface RawToReadyStep {
@@ -130,6 +133,7 @@ export interface PortfolioSettings {
   emptyTitle?: string;
   emptyDesc?: string;
   cardCtaText?: string;
+  monochrome?: boolean;
 }
 
 export interface ServicesSectionSettings {
@@ -156,6 +160,7 @@ export interface AboutSectionSettings {
   showPhotos?: boolean;
   showSocialLinks?: boolean;
   showEmails?: boolean;
+  monochrome?: boolean;
 }
 
 export interface FinalCtaSettings {
@@ -170,6 +175,31 @@ export interface FinalCtaSettings {
   showSecondaryCta?: boolean;
 }
 
+export interface FooterNavItem {
+  id?: string;
+  label: string;
+  href: string;
+  visible?: boolean;
+  order?: number;
+}
+
+export interface FooterSocialLinkItem {
+  id?: string;
+  platform?: string;
+  label: string;
+  url: string;
+  visible?: boolean;
+  order?: number;
+}
+
+export interface FooterLegalLinkItem {
+  id?: string;
+  label: string;
+  href: string;
+  visible?: boolean;
+  order?: number;
+}
+
 export interface FooterSettings {
   description?: string;
   showDescription?: boolean;
@@ -179,6 +209,9 @@ export interface FooterSettings {
   navServices?: string;
   navAbout?: string;
   contactText?: string;
+  showContact?: boolean;
+  ctaText?: string;
+  showCta?: boolean;
   socialSectionTitle?: string;
   instagramText?: string;
   showInstagram?: boolean;
@@ -191,6 +224,9 @@ export interface FooterSettings {
   backToTopText?: string;
   showBackToTop?: boolean;
   tagline?: string;
+  navItems?: FooterNavItem[];
+  socialLinks?: FooterSocialLinkItem[];
+  legalLinks?: FooterLegalLinkItem[];
 }
 
 export interface FAQ {
@@ -337,7 +373,7 @@ export interface WebsiteContent {
 }
 
 export type ProjectCategory = 'Reels' | 'Shorts' | 'YouTube' | 'Brand' | 'Motion' | 'Other';
-export type AspectRatioType = '16:9' | '9:16' | '1:1' | '4:5' | '4:3' | 'auto';
+export type AspectRatioType = '16:9' | '9:16' | '1:1' | '4:5' | '4:3' | 'auto' | 'original';
 
 export interface Project {
   id: string;
@@ -354,6 +390,7 @@ export interface Project {
   videoAspectRatio?: AspectRatioType;
   thumbnailAspectRatio?: AspectRatioType;
   featured?: boolean;
+  monochrome?: boolean;
   createdAt?: string;
 }
 
@@ -379,6 +416,7 @@ export interface TeamMember {
   email?: string;
   displayOrder: number;
   visible: boolean;
+  monochrome?: boolean;
 }
 
 export type InquiryStatus = 'new' | 'contacted' | 'in_progress' | 'completed' | 'archived';

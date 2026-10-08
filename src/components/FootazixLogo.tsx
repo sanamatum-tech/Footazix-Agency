@@ -71,18 +71,14 @@ export const FootazixLogo: React.FC<FootazixLogoProps> = ({
   const dWidth = desktopWidth || logoConfig?.desktopWidth || (isFooter ? 130 : 130);
   const mWidth = mobileWidth || (logoConfig as any)?.mobileWidth || 100;
 
-  // If CMS branding has not loaded yet, keep area visually stable without painting any wrong logo
+  // If no logo image URL is configured or logo was removed, display typographic brand wordmark
   if (!resolvedUrl) {
     return (
-      <div
-        className={`inline-block shrink-0 select-none ${className}`}
-        style={{
-          width: `${dWidth}px`,
-          height: '2rem',
-          maxWidth: '100%',
-        }}
-        aria-hidden="true"
-      />
+      <span
+        className={`font-mono font-extrabold tracking-wider text-sm sm:text-base text-white hover:text-blue-400 transition-colors uppercase ${className}`}
+      >
+        {content.brand?.name || 'FOOTAZIX'}
+      </span>
     );
   }
 

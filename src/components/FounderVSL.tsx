@@ -24,6 +24,47 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
   const showBadge = vsl.showBadge !== false && Boolean(vsl.label);
   const showHeading = vsl.showHeading !== false && Boolean(vsl.heading);
   const showDescription = vsl.showDescription !== false && Boolean(vsl.description);
+  const isMonochrome = Boolean(vsl.posterMonochrome || vsl.monochrome);
+
+  // Dynamic aspect ratio calculation
+  const getVslRatioConfig = (ratio?: string) => {
+    switch (ratio) {
+      case '9:16':
+        return {
+          wrapperClass: 'max-w-[360px] sm:max-w-[400px] mx-auto',
+          aspectClass: 'aspect-[9/16]',
+        };
+      case '1:1':
+        return {
+          wrapperClass: 'max-w-[540px] mx-auto',
+          aspectClass: 'aspect-square',
+        };
+      case '4:5':
+        return {
+          wrapperClass: 'max-w-[480px] mx-auto',
+          aspectClass: 'aspect-[4/5]',
+        };
+      case '4:3':
+        return {
+          wrapperClass: 'max-w-3xl mx-auto',
+          aspectClass: 'aspect-[4/3]',
+        };
+      case 'auto':
+      case 'original':
+        return {
+          wrapperClass: 'max-w-4xl mx-auto',
+          aspectClass: 'aspect-auto min-h-[360px] sm:min-h-[460px]',
+        };
+      case '16:9':
+      default:
+        return {
+          wrapperClass: 'max-w-5xl mx-auto',
+          aspectClass: 'aspect-video',
+        };
+    }
+  };
+
+  const { wrapperClass, aspectClass } = getVslRatioConfig(vsl.aspectRatio);
 
   // Helper to parse YouTube embed URL
   const getYouTubeEmbedUrl = (url: string) => {
@@ -153,10 +194,11 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
         </div>
 
         {/* Video Player Container */}
-        <div
-          ref={containerRef}
-          className="relative w-full aspect-video rounded-2xl sm:rounded-3xl overflow-hidden bg-black border border-white/10 shadow-2xl group"
-        >
+        <div className={`w-full ${wrapperClass}`}>
+          <div
+            ref={containerRef}
+            className={`relative w-full ${aspectClass} rounded-2xl sm:rounded-3xl overflow-hidden bg-black border border-white/10 shadow-2xl group transition-all duration-300`}
+          >
           {/* 1. YouTube Source */}
           {vsl.videoSource === 'youtube' && vsl.videoUrl ? (
             isPlaying ? (
@@ -175,7 +217,7 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
                 <img
                   src={vsl.posterUrl || '/assets/vsl/vsl-poster.jpg'}
                   alt={vsl.heading}
-                  className="w-full h-full object-cover grayscale contrast-110 group-hover:scale-[1.02] transition-transform duration-500"
+                  className={`w-full h-full object-cover ${isMonochrome ? 'grayscale contrast-110' : ''} group-hover:scale-[1.02] transition-all duration-500`}
                 />
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                   <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-blue-600/90 text-white flex items-center justify-center pl-1 glow-blue-sm group-hover:scale-110 transition-transform">
@@ -204,7 +246,7 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
                 <img
                   src={vsl.posterUrl || '/assets/vsl/vsl-poster.jpg'}
                   alt={vsl.heading}
-                  className="w-full h-full object-cover grayscale contrast-110 group-hover:scale-[1.02] transition-transform duration-500"
+                  className={`w-full h-full object-cover ${isMonochrome ? 'grayscale contrast-110' : ''} group-hover:scale-[1.02] transition-all duration-500`}
                 />
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                   <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-blue-600/90 text-white flex items-center justify-center pl-1 glow-blue-sm group-hover:scale-110 transition-transform">
@@ -222,7 +264,7 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
                 ref={videoRef}
                 src={vsl.videoUrl || '/assets/vsl/footazix-vsl.mp4'}
                 poster={vsl.posterUrl || '/assets/vsl/vsl-poster.jpg'}
-                className="w-full h-full object-cover"
+                className={`w-full h-full object-cover ${!isPlaying && isMonochrome ? 'grayscale contrast-110' : ''}`}
                 playsInline
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedMetadata={handleLoadedMetadata}
@@ -341,11 +383,12 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
                 {vsl.fallbackMessage || 'VIDEO UNAVAILABLE'}
               </p>
               <p className="text-xs text-zinc-400 max-w-sm">
-                {vsl.fallbackSubtext || 'The Footazix system reel is currently being updated.'}
+                The Footazix system reel is currently being updated.
               </p>
             </div>
           )}
         </div>
+      </div>
 
         {/* Optional Section CTA */}
         {vsl.showCta && vsl.ctaText && (

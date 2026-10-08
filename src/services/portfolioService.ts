@@ -54,6 +54,7 @@ function extractMetadata(description?: string): {
   thumbnailAspectRatio?: AspectRatioType;
   visible?: boolean;
   projectUrl?: string;
+  monochrome?: boolean;
 } {
   if (!description) return { cleanDescription: '' };
   const match = description.match(METADATA_REGEX);
@@ -67,6 +68,7 @@ function extractMetadata(description?: string): {
       thumbnailAspectRatio: parsed.thumb,
       visible: parsed.vis,
       projectUrl: parsed.url,
+      monochrome: parsed.mono !== undefined ? Boolean(parsed.mono) : undefined,
     };
   } catch {
     return { cleanDescription: description };
@@ -80,6 +82,7 @@ function injectMetadata(
     thumbnailAspectRatio?: AspectRatioType;
     visible?: boolean;
     projectUrl?: string;
+    monochrome?: boolean;
   }
 ): string {
   const clean = (description || '').replace(METADATA_REGEX, '').trim();
@@ -88,6 +91,7 @@ function injectMetadata(
   if (meta.thumbnailAspectRatio) metaObj.thumb = meta.thumbnailAspectRatio;
   if (meta.visible !== undefined) metaObj.vis = meta.visible;
   if (meta.projectUrl) metaObj.url = meta.projectUrl;
+  if (meta.monochrome !== undefined) metaObj.mono = meta.monochrome;
   return `${clean} <!--aspect:${JSON.stringify(metaObj)}-->`;
 }
 
@@ -117,6 +121,7 @@ function mapRowToProject(row: any): Project {
     visible: row.visible !== undefined ? Boolean(row.visible) : (meta.visible !== undefined ? Boolean(meta.visible) : true),
     videoAspectRatio: (row.video_aspect_ratio || meta.videoAspectRatio || defaultRatio) as AspectRatioType,
     thumbnailAspectRatio: (row.thumbnail_aspect_ratio || meta.thumbnailAspectRatio || defaultRatio) as AspectRatioType,
+    monochrome: row.monochrome !== undefined ? Boolean(row.monochrome) : (meta.monochrome !== undefined ? Boolean(meta.monochrome) : false),
     createdAt: row.created_at ? row.created_at.split('T')[0] : undefined,
   };
 }
@@ -298,6 +303,7 @@ export const portfolioService = {
         thumbnailAspectRatio: tRatio,
         visible: isVisible,
         projectUrl: data.projectUrl,
+        monochrome: data.monochrome !== undefined ? Boolean(data.monochrome) : false,
       });
 
       const insertPayload: Record<string, any> = {
@@ -442,6 +448,7 @@ export const portfolioService = {
     const mergedVisible = updates.visible !== undefined ? updates.visible : (existing?.visible !== false);
     const mergedVRatio = updates.videoAspectRatio !== undefined ? updates.videoAspectRatio : existing?.videoAspectRatio;
     const mergedTRatio = updates.thumbnailAspectRatio !== undefined ? updates.thumbnailAspectRatio : existing?.thumbnailAspectRatio;
+    const mergedMonochrome = updates.monochrome !== undefined ? updates.monochrome : (existing?.monochrome ?? false);
 
     if (isSupabaseConfigured() && supabase) {
       const caps = await getCapabilities();
@@ -451,6 +458,7 @@ export const portfolioService = {
         thumbnailAspectRatio: mergedTRatio,
         visible: mergedVisible,
         projectUrl: mergedProjectUrl,
+        monochrome: mergedMonochrome,
       });
 
       const updatePayload: Record<string, any> = {

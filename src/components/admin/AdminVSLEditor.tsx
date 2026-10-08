@@ -159,6 +159,45 @@ export const AdminVSLEditor: React.FC = () => {
           </div>
         </div>
 
+        {/* Aspect Ratio Selector */}
+        <div>
+          <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-2">
+            Player Aspect Ratio
+          </label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+            {[
+              { id: '16:9', label: '16:9', desc: 'Landscape' },
+              { id: '9:16', label: '9:16', desc: 'Vertical' },
+              { id: '1:1', label: '1:1', desc: 'Square' },
+              { id: '4:5', label: '4:5', desc: 'Portrait' },
+              { id: '4:3', label: '4:3', desc: 'Classic' },
+              { id: 'auto', label: 'Auto', desc: 'Original' },
+            ].map((ratio) => {
+              const isSelected = (vslData.aspectRatio || '16:9') === ratio.id;
+              return (
+                <button
+                  key={ratio.id}
+                  type="button"
+                  onClick={() => setVslData((prev) => ({ ...prev, aspectRatio: ratio.id as any }))}
+                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
+                    isSelected
+                      ? 'bg-blue-600/20 border-blue-500 text-white shadow-[0_0_12px_rgba(37,99,235,0.25)]'
+                      : 'bg-[#12121c] border-white/10 text-zinc-400 hover:text-white hover:border-white/20'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono font-bold text-white">{ratio.label}</span>
+                    {isSelected && (
+                      <span className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(37,99,235,0.8)]" />
+                    )}
+                  </div>
+                  <span className="text-[10px] text-zinc-400 leading-tight">{ratio.desc}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Video URL or Uploader depending on source */}
         {vslData.videoSource !== 'local' ? (
           <div>
@@ -208,18 +247,82 @@ export const AdminVSLEditor: React.FC = () => {
           </div>
         )}
 
-        {/* Poster Frame Image */}
-        <div>
-          <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
-            Poster Frame Image URL
-          </label>
-          <input
-            type="text"
-            value={vslData.posterUrl}
-            onChange={(e) => setVslData({ ...vslData, posterUrl: e.target.value })}
-            placeholder="/assets/vsl/vsl-poster.jpg"
-            className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs font-mono outline-none focus:border-blue-500"
-          />
+        {/* Poster Frame Image & Monochrome Toggle */}
+        <div className="space-y-3">
+          <div>
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+              Poster Frame Image URL
+            </label>
+            <input
+              type="text"
+              value={vslData.posterUrl}
+              onChange={(e) => setVslData({ ...vslData, posterUrl: e.target.value })}
+              placeholder="/assets/vsl/vsl-poster.jpg"
+              className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs font-mono outline-none focus:border-blue-500"
+            />
+          </div>
+
+          {/* Monochrome Control Toggle */}
+          <div className="p-4 rounded-xl bg-[#12121c] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-white">
+                  Poster Image Color Mode
+                </span>
+                <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase ${
+                  Boolean(vslData.posterMonochrome || vslData.monochrome)
+                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                    : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                }`}>
+                  {Boolean(vslData.posterMonochrome || vslData.monochrome) ? 'Monochrome (ON)' : 'Full Color (OFF)'}
+                </span>
+              </div>
+              <p className="text-[11px] text-zinc-400 mt-0.5">
+                OFF = original full-color image (default) · ON = professional monochrome/grayscale effect
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 self-start sm:self-auto">
+              <button
+                type="button"
+                onClick={() => setVslData({ ...vslData, posterMonochrome: false, monochrome: false })}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-all cursor-pointer ${
+                  !Boolean(vslData.posterMonochrome || vslData.monochrome)
+                    ? 'bg-blue-600 text-white shadow-[0_0_12px_rgba(37,99,235,0.4)]'
+                    : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                }`}
+              >
+                Full Color (OFF)
+              </button>
+              <button
+                type="button"
+                onClick={() => setVslData({ ...vslData, posterMonochrome: true, monochrome: true })}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-all cursor-pointer ${
+                  Boolean(vslData.posterMonochrome || vslData.monochrome)
+                    ? 'bg-zinc-200 text-zinc-950 font-extrabold shadow-sm'
+                    : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                }`}
+              >
+                Monochrome (ON)
+              </button>
+            </div>
+          </div>
+
+          {/* Visual Poster Preview with Live Color Mode */}
+          {vslData.posterUrl && (
+            <div className="relative w-full max-w-xs h-32 rounded-xl overflow-hidden border border-white/10 bg-black">
+              <img
+                src={vslData.posterUrl}
+                alt="Poster preview"
+                className={`w-full h-full object-cover transition-all duration-300 ${
+                  Boolean(vslData.posterMonochrome || vslData.monochrome) ? 'grayscale contrast-110' : ''
+                }`}
+              />
+              <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-black/80 text-white backdrop-blur-sm border border-white/10">
+                {Boolean(vslData.posterMonochrome || vslData.monochrome) ? 'Preview: Monochrome' : 'Preview: Full Color'}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* VTT Captions */}

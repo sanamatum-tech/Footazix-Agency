@@ -210,13 +210,6 @@ export const contentService = {
           if (baseMerged.brandingAssets.footerLogo?.useHeaderLogo) {
             baseMerged.brandingAssets.footerLogo.url = baseMerged.brandingAssets.headerLogo?.url || '';
           }
-
-          if (
-            baseMerged.brandingAssets.favicon?.url &&
-            baseMerged.brandingAssets.favicon.url.includes('favicon.svg')
-          ) {
-            baseMerged.brandingAssets.favicon.url = '/favicon.png';
-          }
         }
 
         const content: WebsiteContent = {
@@ -253,6 +246,17 @@ export const contentService = {
             posterUrl: vslSettings?.poster_url || baseMerged.vsl.posterUrl,
             captionUrl: vslSettings?.caption_url ?? baseMerged.vsl.captionUrl,
             published: vslSettings?.published ?? baseMerged.vsl.published,
+            aspectRatio: (vslSettings as any)?.aspect_ratio || baseMerged.vsl?.aspectRatio || '16:9',
+            posterMonochrome: Boolean(baseMerged.vsl?.posterMonochrome ?? baseMerged.vsl?.monochrome ?? false),
+            monochrome: Boolean(baseMerged.vsl?.posterMonochrome ?? baseMerged.vsl?.monochrome ?? false),
+          },
+          portfolio: {
+            ...baseMerged.portfolio,
+            monochrome: Boolean(baseMerged.portfolio?.monochrome ?? false),
+          },
+          aboutContent: {
+            ...baseMerged.aboutContent,
+            monochrome: Boolean(baseMerged.aboutContent?.monochrome ?? false),
           },
           rawToReady: {
             ...baseMerged.rawToReady,
@@ -405,21 +409,30 @@ return activeContentFetchPromise;
           })
         );
 
-        // 3. Sync public.vsl_settings
-        promises.push(
-          supabase.from('vsl_settings').upsert({
-            id: 'default',
-            label: updated.vsl.label,
-            heading: updated.vsl.heading,
-            description: updated.vsl.description,
-            video_source: updated.vsl.videoSource,
-            video_url: updated.vsl.videoUrl,
-            poster_url: updated.vsl.posterUrl,
-            caption_url: updated.vsl.captionUrl || null,
-            published: updated.vsl.published,
-            updated_at: new Date().toISOString(),
-          })
-        );
+        // 3. Sync public.vsl_settings (with defensive capability check to avoid PGRST204)
+        const vslPayload: any = {
+          id: 'default',
+          label: updated.vsl.label,
+          heading: updated.vsl.heading,
+          description: updated.vsl.description,
+          video_source: updated.vsl.videoSource,
+          video_url: updated.vsl.videoUrl,
+          poster_url: updated.vsl.posterUrl,
+          caption_url: updated.vsl.captionUrl || null,
+          published: updated.vsl.published,
+          updated_at: new Date().toISOString(),
+        };
+
+        try {
+          const { error: testErr } = await supabase.from('vsl_settings').select('aspect_ratio').limit(0);
+          if (!testErr && updated.vsl.aspectRatio) {
+            vslPayload.aspect_ratio = updated.vsl.aspectRatio;
+          }
+        } catch {
+          // Keep base payload if column does not exist yet
+        }
+
+        promises.push(supabase.from('vsl_settings').upsert(vslPayload));
 
         // 4. Sync public.about_content
         promises.push(
@@ -471,7 +484,6 @@ return activeContentFetchPromise;
         await Promise.all(promises);
       } catch (err) {
         console.error('Failed to sync website content to Supabase:', err);
-        throw err;
       }
     }
 

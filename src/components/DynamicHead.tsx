@@ -158,19 +158,66 @@ export const DynamicHead: React.FC = () => {
     // 5. Canonical Link
     setLinkTag('canonical', canonicalUrl);
 
-    // 6. Dynamic Favicon & Touch Icon
-    const faviconUrl = content.brandingAssets?.favicon?.url || '/favicon.png';
-    if (faviconUrl) {
-      const isSvg = faviconUrl.endsWith('.svg') || faviconUrl.includes('.svg');
-      setLinkTag('icon', faviconUrl, isSvg ? 'image/svg+xml' : 'image/png');
+    // 6. Dynamic Favicon & Apple Touch Icon (100% CMS controlled)
+    const faviconConfig = content.brandingAssets?.favicon;
+    const isFaviconVisible = faviconConfig?.visible !== false;
+    const rawFaviconUrl = isFaviconVisible ? (faviconConfig?.url?.trim() || '') : '';
+
+    const existingIcons = Array.from(
+      document.querySelectorAll<HTMLLinkElement>('link[rel="icon"], link[rel="shortcut icon"]')
+    );
+
+    if (rawFaviconUrl) {
+      const isSvg = rawFaviconUrl.endsWith('.svg') || rawFaviconUrl.includes('.svg');
+      const isIco = rawFaviconUrl.endsWith('.ico') || rawFaviconUrl.includes('.ico');
+      const mimeType = isSvg ? 'image/svg+xml' : isIco ? 'image/x-icon' : 'image/png';
+
+      if (existingIcons.length > 0) {
+        existingIcons.forEach((el, index) => {
+          if (index === 0) {
+            el.setAttribute('href', rawFaviconUrl);
+            el.setAttribute('type', mimeType);
+          } else {
+            el.remove();
+          }
+        });
+      } else {
+        const el = document.createElement('link');
+        el.setAttribute('rel', 'icon');
+        el.setAttribute('href', rawFaviconUrl);
+        el.setAttribute('type', mimeType);
+        document.head.appendChild(el);
+      }
+    } else {
+      // User explicitly removed favicon or toggled it off: remove all icon tags
+      existingIcons.forEach((el) => el.remove());
     }
 
-    const touchIconUrl =
-      content.brandingAssets?.favicon?.appleTouchIconUrl ||
-      content.brandingAssets?.favicon?.url ||
-      '/apple-touch-icon.png';
-    if (touchIconUrl) {
-      setLinkTag('apple-touch-icon', touchIconUrl);
+    const rawTouchIconUrl = isFaviconVisible
+      ? (faviconConfig?.appleTouchIconUrl?.trim() || (rawFaviconUrl && !rawFaviconUrl.endsWith('.ico') ? rawFaviconUrl : ''))
+      : '';
+
+    const existingTouchIcons = Array.from(
+      document.querySelectorAll<HTMLLinkElement>('link[rel="apple-touch-icon"]')
+    );
+
+    if (rawTouchIconUrl) {
+      if (existingTouchIcons.length > 0) {
+        existingTouchIcons.forEach((el, index) => {
+          if (index === 0) {
+            el.setAttribute('href', rawTouchIconUrl);
+          } else {
+            el.remove();
+          }
+        });
+      } else {
+        const el = document.createElement('link');
+        el.setAttribute('rel', 'apple-touch-icon');
+        el.setAttribute('href', rawTouchIconUrl);
+        document.head.appendChild(el);
+      }
+    } else {
+      existingTouchIcons.forEach((el) => el.remove());
     }
 
     // 7. Schema.org JSON-LD Structured Data

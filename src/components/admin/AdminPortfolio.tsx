@@ -89,6 +89,7 @@ export const AdminPortfolio: React.FC = () => {
   const [visible, setVisible] = useState<boolean>(true);
   const [videoAspectRatio, setVideoAspectRatio] = useState<AspectRatioType>('16:9');
   const [thumbnailAspectRatio, setThumbnailAspectRatio] = useState<AspectRatioType>('16:9');
+  const [monochrome, setMonochrome] = useState<boolean>(false);
   const [previewTab, setPreviewTab] = useState<'thumbnail' | 'video'>('thumbnail');
 
   const [isDeletingId, setIsDeletingId] = useState<string | null>(null);
@@ -138,6 +139,7 @@ export const AdminPortfolio: React.FC = () => {
     setVisible(true);
     setVideoAspectRatio('9:16');
     setThumbnailAspectRatio('9:16');
+    setMonochrome(false);
     setEditingProject(null);
     setPreviewTab('thumbnail');
     setIsModalOpen(true);
@@ -157,6 +159,7 @@ export const AdminPortfolio: React.FC = () => {
     setVisible(p.visible !== false);
     setVideoAspectRatio(p.videoAspectRatio || '16:9');
     setThumbnailAspectRatio(p.thumbnailAspectRatio || '16:9');
+    setMonochrome(Boolean(p.monochrome));
     setPreviewTab('thumbnail');
     setIsModalOpen(true);
   };
@@ -224,6 +227,7 @@ export const AdminPortfolio: React.FC = () => {
           visible,
           videoAspectRatio,
           thumbnailAspectRatio,
+          monochrome,
         });
         setStatusMessage({ type: 'success', text: 'Project saved directly to Supabase!' });
       } else {
@@ -240,6 +244,7 @@ export const AdminPortfolio: React.FC = () => {
           visible,
           videoAspectRatio,
           thumbnailAspectRatio,
+          monochrome,
         });
         setStatusMessage({ type: 'success', text: 'New project created in Supabase!' });
       }
@@ -609,7 +614,9 @@ NOTIFY pgrst, 'reload config';`;
                     <img
                       src={project.coverImage}
                       alt={project.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ${
+                        project.monochrome ? 'grayscale contrast-110' : ''
+                      }`}
                     />
                     {project.videoUrl && (
                       <div className="absolute inset-0 flex items-center justify-center bg-black/40">
@@ -640,6 +647,15 @@ NOTIFY pgrst, 'reload config';`;
                       </span>
                       <span className="px-1.5 py-0.5 rounded bg-zinc-900 border border-white/5 font-mono text-[10px]">
                         Thumb: {thumbRatio}
+                      </span>
+                      <span
+                        className={`px-1.5 py-0.5 rounded font-mono text-[10px] font-bold ${
+                          project.monochrome
+                            ? 'bg-amber-950/60 text-amber-300 border border-amber-500/30'
+                            : 'bg-emerald-950/60 text-emerald-300 border border-emerald-500/30'
+                        }`}
+                      >
+                        {project.monochrome ? 'Monochrome' : 'Full Color'}
                       </span>
                       <span className="text-zinc-500 line-clamp-1 max-w-xs hidden lg:inline">
                         {project.description}
@@ -734,7 +750,9 @@ NOTIFY pgrst, 'reload config';`;
                   <img
                     src={project.coverImage}
                     alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ${
+                      project.monochrome ? 'grayscale contrast-110' : ''
+                    }`}
                   />
                   <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 flex-wrap">
                     <span className="text-[10px] font-mono uppercase text-blue-400 font-semibold px-2 py-0.5 rounded bg-black/75 backdrop-blur-sm border border-blue-500/40">
@@ -742,6 +760,15 @@ NOTIFY pgrst, 'reload config';`;
                     </span>
                     <span className="text-[9px] font-mono uppercase text-zinc-300 px-1.5 py-0.5 rounded bg-black/75 border border-white/10">
                       {videoRatio}
+                    </span>
+                    <span
+                      className={`text-[9px] font-mono uppercase px-1.5 py-0.5 rounded font-bold ${
+                        project.monochrome
+                          ? 'bg-amber-950/80 text-amber-300 border border-amber-500/40'
+                          : 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/40'
+                      }`}
+                    >
+                      {project.monochrome ? 'Mono' : 'Color'}
                     </span>
                   </div>
                   <div className="absolute top-2.5 right-2.5 flex items-center gap-1">
@@ -1058,6 +1085,52 @@ NOTIFY pgrst, 'reload config';`;
                     </div>
                   </div>
 
+                  {/* 3. THUMBNAIL COLOR MODE TOGGLE */}
+                  <div className="p-3.5 rounded-xl bg-[#12121c] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-white">
+                          Thumbnail Color Mode
+                        </span>
+                        <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
+                          monochrome
+                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                            : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                        }`}>
+                          {monochrome ? 'Monochrome (ON)' : 'Full Color (OFF)'}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-zinc-400 mt-0.5">
+                        OFF = original full-color image (default) · ON = professional monochrome/grayscale effect
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 self-start sm:self-auto">
+                      <button
+                        type="button"
+                        onClick={() => setMonochrome(false)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-all cursor-pointer ${
+                          !monochrome
+                            ? 'bg-blue-600 text-white shadow-[0_0_12px_rgba(37,99,235,0.4)]'
+                            : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                        }`}
+                      >
+                        Full Color (OFF)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setMonochrome(true)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-all cursor-pointer ${
+                          monochrome
+                            ? 'bg-zinc-200 text-zinc-950 font-extrabold shadow-sm'
+                            : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                        }`}
+                      >
+                        Monochrome (ON)
+                      </button>
+                    </div>
+                  </div>
+
                   {/* Status, Visibility & Display Order */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-2 border-t border-white/10">
                     <div>
@@ -1145,7 +1218,9 @@ NOTIFY pgrst, 'reload config';`;
                           <img
                             src={coverImage || '/assets/portfolio/project-01/cover.jpg'}
                             alt={title || 'Preview'}
-                            className="w-full h-full object-cover"
+                            className={`w-full h-full object-cover transition-all duration-300 ${
+                              monochrome ? 'grayscale contrast-110' : ''
+                            }`}
                           />
                           <div className="absolute top-2 left-2">
                             <span className="px-2 py-0.5 rounded text-[9px] font-mono uppercase bg-black/80 text-white border border-white/20">

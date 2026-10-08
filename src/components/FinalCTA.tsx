@@ -13,7 +13,9 @@ export const FinalCTA: React.FC<FinalCTAProps> = ({ onOpenModal }) => {
 
   const showBadge = ctaConfig?.showBadge !== false;
   const showSupporting = ctaConfig?.showSupporting !== false;
-  const showPrimaryCta = ctaConfig?.showPrimaryCta !== false;
+  const showPrimaryCta =
+    ctaConfig?.showPrimaryCta !== false &&
+    content.sectionVisibility?.startProjectModal !== false;
   const showSecondaryCta =
     ctaConfig?.showSecondaryCta !== false &&
     content.sectionVisibility?.instagram !== false &&

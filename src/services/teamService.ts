@@ -34,17 +34,35 @@ function saveStoredTeam(team: TeamMember[]): void {
   }
 }
 
+function extractTeamMeta(description?: string): { cleanDescription: string; monochrome?: boolean } {
+  if (!description) return { cleanDescription: '' };
+  const match = description.match(/<!--mono:(true|false)-->/);
+  if (!match) return { cleanDescription: description };
+  return {
+    cleanDescription: description.replace(match[0], '').trim(),
+    monochrome: match[1] === 'true',
+  };
+}
+
+function injectTeamMeta(description: string, monochrome?: boolean): string {
+  const clean = (description || '').replace(/<!--mono:(true|false)-->/, '').trim();
+  if (monochrome === undefined) return clean;
+  return `${clean} <!--mono:${monochrome}-->`;
+}
+
 function mapRowToTeamMember(row: any): TeamMember {
+  const meta = extractTeamMeta(row.description);
   return {
     id: row.id,
     name: row.name,
     role: row.role,
-    description: row.description,
+    description: meta.cleanDescription,
     photo: row.photo,
     socialLink: row.social_link || undefined,
     email: row.email || undefined,
     displayOrder: row.display_order ?? 1,
     visible: row.visible ?? true,
+    monochrome: row.monochrome !== undefined ? Boolean(row.monochrome) : (meta.monochrome ?? false),
   };
 }
 
@@ -77,6 +95,7 @@ export const teamService = {
 
   async createTeamMember(data: Omit<TeamMember, 'id'>): Promise<TeamMember> {
     const team = getStoredTeam();
+    const enrichedDesc = injectTeamMeta(data.description, data.monochrome);
 
     if (isSupabaseConfigured() && supabase) {
       try {
@@ -86,7 +105,7 @@ export const teamService = {
             {
               name: data.name,
               role: data.role,
-              description: data.description,
+              description: enrichedDesc,
               photo: data.photo,
               social_link: data.socialLink || null,
               email: data.email || null,
@@ -121,15 +140,20 @@ export const teamService = {
   async updateTeamMember(id: string, updates: Partial<TeamMember>): Promise<TeamMember> {
     const team = getStoredTeam();
     const index = team.findIndex((t) => t.id === id);
+    const existing = index !== -1 ? team[index] : null;
+
+    const mergedDesc = updates.description !== undefined ? updates.description : (existing?.description || '');
+    const mergedMono = updates.monochrome !== undefined ? updates.monochrome : (existing?.monochrome ?? false);
+    const enrichedDesc = injectTeamMeta(mergedDesc, mergedMono);
 
     if (isSupabaseConfigured() && supabase) {
       try {
         const payload: Record<string, any> = {
           updated_at: new Date().toISOString(),
+          description: enrichedDesc,
         };
         if (updates.name !== undefined) payload.name = updates.name;
         if (updates.role !== undefined) payload.role = updates.role;
-        if (updates.description !== undefined) payload.description = updates.description;
         if (updates.photo !== undefined) payload.photo = updates.photo;
         if (updates.socialLink !== undefined) payload.social_link = updates.socialLink;
         if (updates.email !== undefined) payload.email = updates.email;
