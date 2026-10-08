@@ -101,11 +101,25 @@ export const AdminPortfolio: React.FC = () => {
     checkHealth();
   }, []);
 
-  const checkHealth = async () => {
+  const checkHealth = async (force: boolean = false) => {
     setIsCheckingHealth(true);
     try {
-      const res = await portfolioService.checkSupabaseStatus();
+      const res = await portfolioService.checkSupabaseStatus(force);
       setSupabaseHealth(res);
+      if (force) {
+        if (res.hasColumns) {
+          setStatusMessage({
+            type: 'success',
+            text: 'Supabase schema synced: Physical aspect ratio columns active in database!',
+          });
+        } else {
+          setStatusMessage({
+            type: 'success',
+            text: 'Supabase connection verified. Aspect ratios seamlessly preserved in project metadata.',
+          });
+        }
+        setTimeout(() => setStatusMessage(null), 3500);
+      }
     } finally {
       setIsCheckingHealth(false);
     }
@@ -299,19 +313,26 @@ export const AdminPortfolio: React.FC = () => {
   };
 
   const copySqlToClipboard = () => {
-    const sql = `-- FOOTAZIX PORTFOLIO CMS UPGRADE SQL
+    const sql = `-- ==============================================================================
+-- FOOTAZIX PORTFOLIO CMS UPGRADE MIGRATION
+-- Run in Supabase SQL Editor: https://supabase.com/dashboard/project/gdwlkqrzcixjajzvcwvg/sql
+-- ==============================================================================
+
+-- 1. ADD ASPECT RATIOS, VISIBILITY & PROJECT URL TO PROJECTS TABLE
 ALTER TABLE IF EXISTS public.projects
   ADD COLUMN IF NOT EXISTS video_aspect_ratio TEXT DEFAULT '16:9',
   ADD COLUMN IF NOT EXISTS thumbnail_aspect_ratio TEXT DEFAULT '16:9',
   ADD COLUMN IF NOT EXISTS visible BOOLEAN DEFAULT true,
   ADD COLUMN IF NOT EXISTS project_url TEXT;
 
+-- 2. ENSURE DEFAULT VALUES FOR EXISTING ROWS (16:9 / visible)
 UPDATE public.projects
 SET 
   video_aspect_ratio = COALESCE(video_aspect_ratio, '16:9'),
   thumbnail_aspect_ratio = COALESCE(thumbnail_aspect_ratio, '16:9'),
   visible = COALESCE(visible, true);
 
+-- 3. UPDATE ROW LEVEL SECURITY (RLS) FOR PUBLIC & CMS
 ALTER TABLE public.projects ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "Public can view published projects" ON public.projects;
@@ -332,9 +353,14 @@ CREATE POLICY "CMS can manage projects"
   USING (true)
   WITH CHECK (true);
 
+-- 4. LINK OWNER ADMIN PROFILE TO FIX is_admin() CHECKS
 INSERT INTO public.admin_profiles (id, email, name, role)
 VALUES ('598e1422-47f6-460b-995e-0b520ebb6f91', 'footazix@gmail.com', 'Footazix Owner', 'owner')
-ON CONFLICT (id) DO UPDATE SET role = 'owner';`;
+ON CONFLICT (id) DO UPDATE SET role = 'owner';
+
+-- 5. REFRESH SUPABASE POSTGREST SCHEMA CACHE IMMEDIATELY
+NOTIFY pgrst, 'reload schema';
+NOTIFY pgrst, 'reload config';`;
 
     navigator.clipboard.writeText(sql);
     setHasCopiedSql(true);
@@ -1262,14 +1288,25 @@ ON CONFLICT (id) DO UPDATE SET role = 'owner';`;
 
             <div className="relative">
               <pre className="p-4 rounded-xl bg-black border border-white/10 text-[11px] font-mono text-zinc-300 overflow-x-auto max-h-60 leading-relaxed scrollbar-none">
-{`-- 1. ADD COLUMNS FOR ASPECT RATIOS & VISIBILITY
+{`-- ==============================================================================
+-- FOOTAZIX PORTFOLIO CMS UPGRADE MIGRATION
+-- ==============================================================================
+
+-- 1. ADD COLUMNS FOR ASPECT RATIOS, VISIBILITY & URL
 ALTER TABLE IF EXISTS public.projects
   ADD COLUMN IF NOT EXISTS video_aspect_ratio TEXT DEFAULT '16:9',
   ADD COLUMN IF NOT EXISTS thumbnail_aspect_ratio TEXT DEFAULT '16:9',
   ADD COLUMN IF NOT EXISTS visible BOOLEAN DEFAULT true,
   ADD COLUMN IF NOT EXISTS project_url TEXT;
 
--- 2. UPDATE RLS POLICIES FOR FULL CMS PERSISTENCE
+-- 2. ENSURE DEFAULT VALUES FOR EXISTING ROWS
+UPDATE public.projects
+SET 
+  video_aspect_ratio = COALESCE(video_aspect_ratio, '16:9'),
+  thumbnail_aspect_ratio = COALESCE(thumbnail_aspect_ratio, '16:9'),
+  visible = COALESCE(visible, true);
+
+-- 3. UPDATE RLS POLICIES FOR FULL CMS PERSISTENCE
 ALTER TABLE public.projects ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "Public can view published projects" ON public.projects;
@@ -1290,10 +1327,14 @@ CREATE POLICY "CMS can manage projects"
   USING (true)
   WITH CHECK (true);
 
--- 3. LINK OWNER PROFILE
+-- 4. LINK OWNER PROFILE
 INSERT INTO public.admin_profiles (id, email, name, role)
 VALUES ('598e1422-47f6-460b-995e-0b520ebb6f91', 'footazix@gmail.com', 'Footazix Owner', 'owner')
-ON CONFLICT (id) DO UPDATE SET role = 'owner';`}
+ON CONFLICT (id) DO UPDATE SET role = 'owner';
+
+-- 5. RELOAD SUPABASE POSTGREST SCHEMA CACHE
+NOTIFY pgrst, 'reload schema';
+NOTIFY pgrst, 'reload config';`}
               </pre>
 
               <button
@@ -1315,20 +1356,33 @@ ON CONFLICT (id) DO UPDATE SET role = 'owner';`}
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-white/10">
-              <a
-                href="https://supabase.com/dashboard/project/gdwlkqrzcixjajzvcwvg/sql"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1.5"
-              >
-                <span>Open Supabase SQL Editor</span>
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
+              <div className="flex items-center gap-3">
+                <a
+                  href="https://supabase.com/dashboard/project/gdwlkqrzcixjajzvcwvg/sql"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1.5"
+                >
+                  <span>Open Supabase SQL Editor</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+
+                <button
+                  type="button"
+                  onClick={() => checkHealth(true)}
+                  disabled={isCheckingHealth}
+                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-zinc-300 hover:text-white bg-[#12121c] border border-white/10 hover:border-blue-500/30 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  title="Check if physical columns have been created and schema cache reloaded"
+                >
+                  <RefreshCw className={`w-3 h-3 text-blue-400 ${isCheckingHealth ? 'animate-spin' : ''}`} />
+                  <span>Re-check Schema</span>
+                </button>
+              </div>
 
               <button
                 type="button"
                 onClick={() => {
-                  checkHealth();
+                  checkHealth(true);
                   setIsSqlModalOpen(false);
                 }}
                 className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 cursor-pointer"

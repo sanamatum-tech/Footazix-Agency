@@ -10,7 +10,7 @@ ALTER TABLE IF EXISTS public.projects
   ADD COLUMN IF NOT EXISTS visible BOOLEAN DEFAULT true,
   ADD COLUMN IF NOT EXISTS project_url TEXT;
 
--- 2. ENSURE DEFAULT VALUES FOR EXISTING ROWS
+-- 2. ENSURE DEFAULT VALUES FOR EXISTING ROWS (16:9 / visible)
 UPDATE public.projects
 SET 
   video_aspect_ratio = COALESCE(video_aspect_ratio, '16:9'),
@@ -64,3 +64,7 @@ INSERT INTO public.admin_profiles (id, email, name, role)
 VALUES 
   ('598e1422-47f6-460b-995e-0b520ebb6f91', 'footazix@gmail.com', 'Footazix Owner', 'owner')
 ON CONFLICT (id) DO UPDATE SET role = 'owner';
+
+-- 6. REFRESH / RELOAD SUPABASE POSTGREST SCHEMA CACHE IMMEDIATELY
+NOTIFY pgrst, 'reload schema';
+NOTIFY pgrst, 'reload config';

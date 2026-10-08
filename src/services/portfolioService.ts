@@ -11,6 +11,7 @@ import { Project, AspectRatioType } from '../types';
 import { INITIAL_PROJECTS } from '../data/mockData';
 
 const STORAGE_KEY = 'footazix_portfolio_projects';
+const METADATA_REGEX = /<!--aspect:(\{[^}]+\})-->/;
 
 type Listener = (projects: Project[]) => void;
 const listeners: Set<Listener> = new Set();
@@ -47,6 +48,49 @@ function saveStoredProjects(projects: Project[]): void {
   listeners.forEach((fn) => fn(projects));
 }
 
+function extractMetadata(description?: string): {
+  cleanDescription: string;
+  videoAspectRatio?: AspectRatioType;
+  thumbnailAspectRatio?: AspectRatioType;
+  visible?: boolean;
+  projectUrl?: string;
+} {
+  if (!description) return { cleanDescription: '' };
+  const match = description.match(METADATA_REGEX);
+  if (!match) return { cleanDescription: description };
+  try {
+    const parsed = JSON.parse(match[1]);
+    const cleanDescription = description.replace(match[0], '').trim();
+    return {
+      cleanDescription,
+      videoAspectRatio: parsed.video,
+      thumbnailAspectRatio: parsed.thumb,
+      visible: parsed.vis,
+      projectUrl: parsed.url,
+    };
+  } catch {
+    return { cleanDescription: description };
+  }
+}
+
+function injectMetadata(
+  description: string,
+  meta: {
+    videoAspectRatio?: AspectRatioType;
+    thumbnailAspectRatio?: AspectRatioType;
+    visible?: boolean;
+    projectUrl?: string;
+  }
+): string {
+  const clean = (description || '').replace(METADATA_REGEX, '').trim();
+  const metaObj: any = {};
+  if (meta.videoAspectRatio) metaObj.video = meta.videoAspectRatio;
+  if (meta.thumbnailAspectRatio) metaObj.thumb = meta.thumbnailAspectRatio;
+  if (meta.visible !== undefined) metaObj.vis = meta.visible;
+  if (meta.projectUrl) metaObj.url = meta.projectUrl;
+  return `${clean} <!--aspect:${JSON.stringify(metaObj)}-->`;
+}
+
 // Map database record to Project interface
 function mapRowToProject(row: any): Project {
   // Normalize cover image if it has redundant prefix /https://
@@ -55,20 +99,24 @@ function mapRowToProject(row: any): Project {
     cover = cover.substring(1);
   }
 
+  const meta = extractMetadata(row.description);
+  const isVertical = row.category === 'Reels' || row.category === 'Shorts';
+  const defaultRatio: AspectRatioType = isVertical ? '9:16' : '16:9';
+
   return {
     id: String(row.id),
     title: row.title || 'Untitled Project',
     category: row.category || 'Reels',
-    description: row.description || '',
+    description: meta.cleanDescription,
     coverImage: cover || '/assets/portfolio/project-01/cover.jpg',
     videoUrl: row.video_url || undefined,
-    projectUrl: row.project_url || undefined,
+    projectUrl: row.project_url || meta.projectUrl || undefined,
     client: row.client_name || undefined,
     displayOrder: Number(row.display_order ?? 1),
     status: (row.status === 'draft' ? 'draft' : 'published') as 'published' | 'draft',
-    visible: row.visible !== false,
-    videoAspectRatio: (row.video_aspect_ratio || '16:9') as AspectRatioType,
-    thumbnailAspectRatio: (row.thumbnail_aspect_ratio || '16:9') as AspectRatioType,
+    visible: row.visible !== undefined ? Boolean(row.visible) : (meta.visible !== undefined ? Boolean(meta.visible) : true),
+    videoAspectRatio: (row.video_aspect_ratio || meta.videoAspectRatio || defaultRatio) as AspectRatioType,
+    thumbnailAspectRatio: (row.thumbnail_aspect_ratio || meta.thumbnailAspectRatio || defaultRatio) as AspectRatioType,
     createdAt: row.created_at ? row.created_at.split('T')[0] : undefined,
   };
 }
@@ -78,6 +126,62 @@ export interface SupabaseHealthStatus {
   hasColumns: boolean;
   canManage: boolean;
   error?: string;
+  hasVideoAspect?: boolean;
+  hasThumbAspect?: boolean;
+}
+
+interface SchemaCapabilities {
+  video_aspect_ratio: boolean;
+  thumbnail_aspect_ratio: boolean;
+  visible: boolean;
+  project_url: boolean;
+  checkedAt: number;
+}
+
+let cachedCapabilities: SchemaCapabilities | null = null;
+
+async function getCapabilities(forceRefresh: boolean = false): Promise<SchemaCapabilities> {
+  const now = Date.now();
+  if (!forceRefresh && cachedCapabilities && (now - cachedCapabilities.checkedAt < 60000)) {
+    return cachedCapabilities;
+  }
+  if (!isSupabaseConfigured() || !supabase) {
+    return {
+      video_aspect_ratio: false,
+      thumbnail_aspect_ratio: false,
+      visible: false,
+      project_url: false,
+      checkedAt: now,
+    };
+  }
+
+  try {
+    const [vRes, tRes, visRes, urlRes] = await Promise.all([
+      supabase.from('projects').select('video_aspect_ratio').limit(0),
+      supabase.from('projects').select('thumbnail_aspect_ratio').limit(0),
+      supabase.from('projects').select('visible').limit(0),
+      supabase.from('projects').select('project_url').limit(0),
+    ]);
+
+    cachedCapabilities = {
+      video_aspect_ratio: !vRes.error,
+      thumbnail_aspect_ratio: !tRes.error,
+      visible: !visRes.error,
+      project_url: !urlRes.error,
+      checkedAt: now,
+    };
+  } catch (err) {
+    console.warn('Capability probe notice:', err);
+    cachedCapabilities = {
+      video_aspect_ratio: false,
+      thumbnail_aspect_ratio: false,
+      visible: false,
+      project_url: false,
+      checkedAt: now,
+    };
+  }
+
+  return cachedCapabilities;
 }
 
 export const portfolioService = {
@@ -87,36 +191,52 @@ export const portfolioService = {
   },
 
   /**
-   * Diagnostic check to verify Supabase projects table, columns and RLS readiness
+   * Diagnostic check to verify Supabase projects table connection and column readiness
+   * NEVER throws or displays unhandled PGRST204 errors
    */
-  async checkSupabaseStatus(): Promise<SupabaseHealthStatus> {
+  async checkSupabaseStatus(forceRefresh: boolean = false): Promise<SupabaseHealthStatus> {
     if (!isSupabaseConfigured() || !supabase) {
       return { connected: false, hasColumns: false, canManage: false, error: 'Supabase URL/Key not configured' };
     }
 
     try {
-      const { data, error } = await supabase
+      const caps = await getCapabilities(forceRefresh);
+
+      // Verify general connectivity via limit(1)
+      const { error } = await supabase
         .from('projects')
-        .select('id, video_aspect_ratio, thumbnail_aspect_ratio, visible')
+        .select('*')
         .limit(1);
 
       if (error) {
-        if (error.code === '42703') {
-          // Columns do not exist yet
-          return { connected: true, hasColumns: false, canManage: false, error: 'Columns missing. Run the SQL migration in Supabase SQL editor.' };
-        }
-        return { connected: true, hasColumns: false, canManage: false, error: error.message };
+        return { connected: false, hasColumns: false, canManage: false, error: error.message };
       }
 
-      return { connected: true, hasColumns: true, canManage: true };
+      const hasColumns = caps.video_aspect_ratio && caps.thumbnail_aspect_ratio;
+
+      return {
+        connected: true,
+        hasColumns,
+        hasVideoAspect: caps.video_aspect_ratio,
+        hasThumbAspect: caps.thumbnail_aspect_ratio,
+        canManage: true,
+      };
     } catch (err: any) {
       return { connected: false, hasColumns: false, canManage: false, error: err?.message };
     }
   },
 
+  /**
+   * Force reload schema capabilities and PostgREST status
+   */
+  async reloadSchemaCache(): Promise<SupabaseHealthStatus> {
+    return this.checkSupabaseStatus(true);
+  },
+
   async getProjects(): Promise<Project[]> {
     if (isSupabaseConfigured() && supabase) {
       try {
+        // Query with select('*') so PostgREST never errors if a column is missing
         const { data, error } = await supabase
           .from('projects')
           .select('*')
@@ -164,77 +284,126 @@ export const portfolioService = {
   async createProject(data: Omit<Project, 'id'>): Promise<Project> {
     const projects = getStoredProjects();
     const displayOrder = data.displayOrder ?? projects.length + 1;
+    const vRatio = data.videoAspectRatio || (data.category === 'Reels' || data.category === 'Shorts' ? '9:16' : '16:9');
+    const tRatio = data.thumbnailAspectRatio || (data.category === 'Reels' || data.category === 'Shorts' ? '9:16' : '16:9');
+    const isVisible = data.visible !== false;
 
     if (isSupabaseConfigured() && supabase) {
-      // 1. Attempt insert with all extended columns
-      const fullInsertPayload = {
+      const caps = await getCapabilities();
+
+      // Encode aspect ratios & visibility into description metadata safely so it's ALWAYS preserved
+      // across all devices and browsers regardless of whether physical columns exist yet
+      const enrichedDesc = injectMetadata(data.description, {
+        videoAspectRatio: vRatio,
+        thumbnailAspectRatio: tRatio,
+        visible: isVisible,
+        projectUrl: data.projectUrl,
+      });
+
+      const insertPayload: Record<string, any> = {
         title: data.title,
         category: data.category,
-        description: data.description,
+        description: enrichedDesc,
         cover_image: data.coverImage,
         video_url: data.videoUrl || null,
-        project_url: data.projectUrl || null,
         client_name: data.client || null,
         display_order: displayOrder,
         status: data.status || 'published',
-        visible: data.visible !== false,
-        video_aspect_ratio: data.videoAspectRatio || '16:9',
-        thumbnail_aspect_ratio: data.thumbnailAspectRatio || '16:9',
       };
+
+      // ONLY include physical columns if the Supabase schema cache actually has them
+      if (caps.video_aspect_ratio) {
+        insertPayload.video_aspect_ratio = vRatio;
+      }
+      if (caps.thumbnail_aspect_ratio) {
+        insertPayload.thumbnail_aspect_ratio = tRatio;
+      }
+      if (caps.visible) {
+        insertPayload.visible = isVisible;
+      }
+      if (caps.project_url && data.projectUrl) {
+        insertPayload.project_url = data.projectUrl;
+      }
 
       try {
         const { data: inserted, error } = await supabase
           .from('projects')
-          .insert([fullInsertPayload])
+          .insert([insertPayload])
           .select()
-          .single();
+          .maybeSingle();
 
-        if (!error && inserted) {
-          const newProject = mapRowToProject(inserted);
-          const updated = [...projects, newProject];
-          saveStoredProjects(updated);
-          return newProject;
-        }
+        if (error) {
+          // If error is PGRST204 or missing column, invalidate capabilities cache and retry once with pure base columns
+          const isMissingCol =
+            error.code === 'PGRST204' ||
+            error.code === '42703' ||
+            error.message.includes('schema cache') ||
+            error.message.includes('column');
 
-        // Handle specific Supabase schema error 42703 (missing columns if migration not run yet)
-        if (error && error.code === '42703') {
-          console.warn('Extended columns missing in projects table, falling back to base columns:', error.message);
-          const baseInsertPayload = {
-            title: data.title,
-            category: data.category,
-            description: data.description,
-            cover_image: data.coverImage,
-            video_url: data.videoUrl || null,
-            client_name: data.client || null,
-            display_order: displayOrder,
-            status: data.status || 'published',
-          };
-
-          const { data: baseInserted, error: baseError } = await supabase
-            .from('projects')
-            .insert([baseInsertPayload])
-            .select()
-            .single();
-
-          if (!baseError && baseInserted) {
-            const newProject: Project = {
-              ...mapRowToProject(baseInserted),
-              visible: data.visible !== false,
-              videoAspectRatio: data.videoAspectRatio || '16:9',
-              thumbnailAspectRatio: data.thumbnailAspectRatio || '16:9',
-              projectUrl: data.projectUrl || undefined,
+          if (isMissingCol) {
+            console.warn('Physical column pending in schema cache. Preserving in metadata:', error.message);
+            cachedCapabilities = {
+              video_aspect_ratio: false,
+              thumbnail_aspect_ratio: false,
+              visible: false,
+              project_url: false,
+              checkedAt: Date.now(),
             };
+
+            const basePayload = {
+              title: data.title,
+              category: data.category,
+              description: enrichedDesc,
+              cover_image: data.coverImage,
+              video_url: data.videoUrl || null,
+              client_name: data.client || null,
+              display_order: displayOrder,
+              status: data.status || 'published',
+            };
+
+            const { data: retryInserted, error: retryError } = await supabase
+              .from('projects')
+              .insert([basePayload])
+              .select()
+              .maybeSingle();
+
+            if (retryError) {
+              throw new Error(`Supabase Insert Error (${retryError.code}): ${retryError.message}`);
+            }
+
+            const newProject = retryInserted
+              ? mapRowToProject(retryInserted)
+              : {
+                  ...data,
+                  id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `proj-${Date.now()}`,
+                  displayOrder,
+                  visible: isVisible,
+                  videoAspectRatio: vRatio,
+                  thumbnailAspectRatio: tRatio,
+                };
+
             const updated = [...projects, newProject];
             saveStoredProjects(updated);
             return newProject;
-          } else if (baseError) {
-            throw new Error(`Supabase Insert Error (${baseError.code}): ${baseError.message}`);
           }
-        }
 
-        if (error) {
           throw new Error(`Supabase Error (${error.code}): ${error.message}`);
         }
+
+        const newProject = inserted
+          ? mapRowToProject(inserted)
+          : {
+              ...data,
+              id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `proj-${Date.now()}`,
+              displayOrder,
+              visible: isVisible,
+              videoAspectRatio: vRatio,
+              thumbnailAspectRatio: tRatio,
+            };
+
+        const updated = [...projects, newProject];
+        saveStoredProjects(updated);
+        return newProject;
       } catch (err: any) {
         console.error('Failed to create project in Supabase:', err);
         throw err;
@@ -247,9 +416,9 @@ export const portfolioService = {
       id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `proj-${Date.now()}`,
       createdAt: new Date().toISOString().split('T')[0],
       displayOrder,
-      visible: data.visible !== false,
-      videoAspectRatio: data.videoAspectRatio || '16:9',
-      thumbnailAspectRatio: data.thumbnailAspectRatio || '16:9',
+      visible: isVisible,
+      videoAspectRatio: vRatio,
+      thumbnailAspectRatio: tRatio,
     };
     const updated = [...projects, fallbackProject];
     saveStoredProjects(updated);
@@ -259,81 +428,145 @@ export const portfolioService = {
   async updateProject(id: string, updates: Partial<Project>): Promise<Project> {
     const projects = getStoredProjects();
     const index = projects.findIndex((p) => p.id === id);
+    const existing = index !== -1 ? projects[index] : null;
+
+    const mergedTitle = updates.title !== undefined ? updates.title : existing?.title;
+    const mergedCategory = updates.category !== undefined ? updates.category : existing?.category;
+    const mergedDesc = updates.description !== undefined ? updates.description : existing?.description || '';
+    const mergedCover = updates.coverImage !== undefined ? updates.coverImage : existing?.coverImage;
+    const mergedVideo = updates.videoUrl !== undefined ? updates.videoUrl : existing?.videoUrl;
+    const mergedProjectUrl = updates.projectUrl !== undefined ? updates.projectUrl : existing?.projectUrl;
+    const mergedClient = updates.client !== undefined ? updates.client : existing?.client;
+    const mergedOrder = updates.displayOrder !== undefined ? updates.displayOrder : existing?.displayOrder;
+    const mergedStatus = updates.status !== undefined ? updates.status : existing?.status;
+    const mergedVisible = updates.visible !== undefined ? updates.visible : (existing?.visible !== false);
+    const mergedVRatio = updates.videoAspectRatio !== undefined ? updates.videoAspectRatio : existing?.videoAspectRatio;
+    const mergedTRatio = updates.thumbnailAspectRatio !== undefined ? updates.thumbnailAspectRatio : existing?.thumbnailAspectRatio;
 
     if (isSupabaseConfigured() && supabase) {
-      try {
-        const fullPayload: Record<string, any> = {
-          updated_at: new Date().toISOString(),
-        };
-        if (updates.title !== undefined) fullPayload.title = updates.title;
-        if (updates.category !== undefined) fullPayload.category = updates.category;
-        if (updates.description !== undefined) fullPayload.description = updates.description;
-        if (updates.coverImage !== undefined) fullPayload.cover_image = updates.coverImage;
-        if (updates.videoUrl !== undefined) fullPayload.video_url = updates.videoUrl;
-        if (updates.projectUrl !== undefined) fullPayload.project_url = updates.projectUrl;
-        if (updates.client !== undefined) fullPayload.client_name = updates.client;
-        if (updates.displayOrder !== undefined) fullPayload.display_order = updates.displayOrder;
-        if (updates.status !== undefined) fullPayload.status = updates.status;
-        if (updates.visible !== undefined) fullPayload.visible = updates.visible;
-        if (updates.videoAspectRatio !== undefined) fullPayload.video_aspect_ratio = updates.videoAspectRatio;
-        if (updates.thumbnailAspectRatio !== undefined) fullPayload.thumbnail_aspect_ratio = updates.thumbnailAspectRatio;
+      const caps = await getCapabilities();
 
+      const enrichedDesc = injectMetadata(mergedDesc, {
+        videoAspectRatio: mergedVRatio,
+        thumbnailAspectRatio: mergedTRatio,
+        visible: mergedVisible,
+        projectUrl: mergedProjectUrl,
+      });
+
+      const updatePayload: Record<string, any> = {
+        updated_at: new Date().toISOString(),
+        description: enrichedDesc,
+      };
+      if (mergedTitle !== undefined) updatePayload.title = mergedTitle;
+      if (mergedCategory !== undefined) updatePayload.category = mergedCategory;
+      if (mergedCover !== undefined) updatePayload.cover_image = mergedCover;
+      if (mergedVideo !== undefined) updatePayload.video_url = mergedVideo;
+      if (mergedClient !== undefined) updatePayload.client_name = mergedClient;
+      if (mergedOrder !== undefined) updatePayload.display_order = mergedOrder;
+      if (mergedStatus !== undefined) updatePayload.status = mergedStatus;
+
+      // Only include physical columns if Supabase schema actually has them
+      if (caps.video_aspect_ratio && mergedVRatio !== undefined) {
+        updatePayload.video_aspect_ratio = mergedVRatio;
+      }
+      if (caps.thumbnail_aspect_ratio && mergedTRatio !== undefined) {
+        updatePayload.thumbnail_aspect_ratio = mergedTRatio;
+      }
+      if (caps.visible && mergedVisible !== undefined) {
+        updatePayload.visible = mergedVisible;
+      }
+      if (caps.project_url && mergedProjectUrl !== undefined) {
+        updatePayload.project_url = mergedProjectUrl;
+      }
+
+      try {
         const { data: updatedRow, error } = await supabase
           .from('projects')
-          .update(fullPayload)
+          .update(updatePayload)
           .eq('id', id)
           .select()
           .maybeSingle();
 
-        if (!error && updatedRow) {
-          const mapped = mapRowToProject(updatedRow);
-          if (index !== -1) {
-            projects[index] = mapped;
-          }
-          saveStoredProjects([...projects]);
-          return mapped;
-        }
+        if (error) {
+          // If error is PGRST204 or missing column, invalidate capabilities cache and retry with base columns
+          const isMissingCol =
+            error.code === 'PGRST204' ||
+            error.code === '42703' ||
+            error.message.includes('schema cache') ||
+            error.message.includes('column');
 
-        // If error is missing column 42703, strip extended columns and retry
-        if (error && error.code === '42703') {
-          const basePayload: Record<string, any> = {
-            updated_at: new Date().toISOString(),
-          };
-          if (updates.title !== undefined) basePayload.title = updates.title;
-          if (updates.category !== undefined) basePayload.category = updates.category;
-          if (updates.description !== undefined) basePayload.description = updates.description;
-          if (updates.coverImage !== undefined) basePayload.cover_image = updates.coverImage;
-          if (updates.videoUrl !== undefined) basePayload.video_url = updates.videoUrl;
-          if (updates.client !== undefined) basePayload.client_name = updates.client;
-          if (updates.displayOrder !== undefined) basePayload.display_order = updates.displayOrder;
-          if (updates.status !== undefined) basePayload.status = updates.status;
-
-          const { data: baseRow, error: baseErr } = await supabase
-            .from('projects')
-            .update(basePayload)
-            .eq('id', id)
-            .select()
-            .maybeSingle();
-
-          if (!baseErr && baseRow) {
-            const mapped: Project = {
-              ...mapRowToProject(baseRow),
-              visible: updates.visible ?? projects[index]?.visible ?? true,
-              videoAspectRatio: updates.videoAspectRatio ?? projects[index]?.videoAspectRatio ?? '16:9',
-              thumbnailAspectRatio: updates.thumbnailAspectRatio ?? projects[index]?.thumbnailAspectRatio ?? '16:9',
-              projectUrl: updates.projectUrl ?? projects[index]?.projectUrl,
+          if (isMissingCol) {
+            console.warn('Physical column not present in schema cache on update, retrying with base columns:', error.message);
+            cachedCapabilities = {
+              video_aspect_ratio: false,
+              thumbnail_aspect_ratio: false,
+              visible: false,
+              project_url: false,
+              checkedAt: Date.now(),
             };
+
+            const basePayload: Record<string, any> = {
+              updated_at: new Date().toISOString(),
+              description: enrichedDesc,
+            };
+            if (mergedTitle !== undefined) basePayload.title = mergedTitle;
+            if (mergedCategory !== undefined) basePayload.category = mergedCategory;
+            if (mergedCover !== undefined) basePayload.cover_image = mergedCover;
+            if (mergedVideo !== undefined) basePayload.video_url = mergedVideo;
+            if (mergedClient !== undefined) basePayload.client_name = mergedClient;
+            if (mergedOrder !== undefined) basePayload.display_order = mergedOrder;
+            if (mergedStatus !== undefined) basePayload.status = mergedStatus;
+
+            const { data: retryRow, error: retryError } = await supabase
+              .from('projects')
+              .update(basePayload)
+              .eq('id', id)
+              .select()
+              .maybeSingle();
+
+            if (retryError) {
+              throw new Error(`Supabase Update Error (${retryError.code}): ${retryError.message}`);
+            }
+
+            const mapped = retryRow
+              ? mapRowToProject(retryRow)
+              : ({
+                  ...(existing || {}),
+                  ...updates,
+                  id,
+                  description: mergedDesc,
+                  videoAspectRatio: mergedVRatio,
+                  thumbnailAspectRatio: mergedTRatio,
+                  visible: mergedVisible,
+                } as Project);
+
             if (index !== -1) {
               projects[index] = mapped;
             }
             saveStoredProjects([...projects]);
             return mapped;
           }
-        }
 
-        if (error) {
           throw new Error(`Supabase Update Error (${error.code}): ${error.message}`);
         }
+
+        const mapped = updatedRow
+          ? mapRowToProject(updatedRow)
+          : ({
+              ...(existing || {}),
+              ...updates,
+              id,
+              description: mergedDesc,
+              videoAspectRatio: mergedVRatio,
+              thumbnailAspectRatio: mergedTRatio,
+              visible: mergedVisible,
+            } as Project);
+
+        if (index !== -1) {
+          projects[index] = mapped;
+        }
+        saveStoredProjects([...projects]);
+        return mapped;
       } catch (err: any) {
         console.error('Failed updating project in Supabase:', err);
         throw err;
