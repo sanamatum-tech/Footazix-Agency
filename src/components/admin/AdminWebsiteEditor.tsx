@@ -49,6 +49,7 @@ type EditorTab =
   | 'about'
   | 'services'
   | 'team'
+  | 'faq'
   | 'cta'
   | 'footer'
   | 'legal'
@@ -219,8 +220,9 @@ export const AdminWebsiteEditor: React.FC = () => {
     { id: 'about', label: 'Process', icon: Layers },
     { id: 'services', label: 'Services', icon: BriefcaseBusiness },
     { id: 'team', label: 'About & Team', icon: UsersRound },
+    { id: 'faq', label: 'FAQ', icon: HelpCircle },
     { id: 'cta', label: 'Final CTA', icon: Flame },
-    { id: 'footer', label: 'Footer', icon: PanelBottom },
+    { id: 'footer', label: 'Footer & Credits', icon: PanelBottom },
     { id: 'legal', label: 'Legal Pages', icon: ShieldCheck },
     { id: 'seo', label: 'SEO & Metadata', icon: Search },
   ];
@@ -2403,7 +2405,161 @@ export const AdminWebsiteEditor: React.FC = () => {
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 10: FINAL CTA */}
+        {/* TAB 10: FAQ */}
+        {/* ========================================================================= */}
+        {activeTab === 'faq' && (
+          <div className="space-y-6">
+            <div className="border-b border-white/10 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 className="text-base font-bold text-white uppercase tracking-wider mb-1">
+                  FAQ Section CMS
+                </h3>
+                <p className="text-xs text-zinc-400">
+                  Manage section header, badge, accordion behaviors, and custom question CTA.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-zinc-400 font-mono">Section Visibility:</span>
+                <button
+                  type="button"
+                  onClick={() => handleChange('sectionVisibility.faq', formData.sectionVisibility.faq === false ? true : false)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold uppercase transition-colors cursor-pointer flex items-center gap-1.5 ${
+                    formData.sectionVisibility.faq !== false
+                      ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-500/30'
+                      : 'bg-zinc-900 text-zinc-400 border border-white/10'
+                  }`}
+                >
+                  {formData.sectionVisibility.faq !== false ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                  <span>{formData.sectionVisibility.faq !== false ? 'Visible' : 'Hidden'}</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                  Section Pill Badge
+                </label>
+                <input
+                  type="text"
+                  value={formData.faqSection?.badge || 'QUESTIONS & ANSWERS'}
+                  onChange={(e) => handleChange('faqSection.badge', e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                  Main Section Heading
+                </label>
+                <input
+                  type="text"
+                  value={formData.faqSection?.heading || 'FREQUENTLY ASKED QUESTIONS'}
+                  onChange={(e) => handleChange('faqSection.heading', e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-display font-bold uppercase"
+                />
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                  Subheading Description
+                </label>
+                <textarea
+                  rows={2}
+                  value={formData.faqSection?.subheading || ''}
+                  onChange={(e) => handleChange('faqSection.subheading', e.target.value)}
+                  placeholder="Everything you need to know about our video editing pipeline..."
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none resize-none leading-relaxed"
+                />
+              </div>
+
+              <div className="sm:col-span-2 p-4 rounded-xl bg-[#12121c] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <span className="text-xs font-bold text-white block">Accordion Interaction Behavior</span>
+                  <span className="text-[11px] text-zinc-400">
+                    Allow visitors to keep multiple FAQ accordion items open simultaneously.
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleChange('faqSection.allowMultipleOpen', false)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-all cursor-pointer ${
+                      !formData.faqSection?.allowMultipleOpen
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                    }`}
+                  >
+                    Single Open
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleChange('faqSection.allowMultipleOpen', true)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-all cursor-pointer ${
+                      Boolean(formData.faqSection?.allowMultipleOpen)
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                    }`}
+                  >
+                    Multiple Open
+                  </button>
+                </div>
+              </div>
+
+              {/* Bottom CTA Button */}
+              <div className="sm:col-span-2 p-4 rounded-xl bg-[#12121c] border border-white/10 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-white uppercase tracking-wider">
+                    FAQ Section Bottom CTA Button
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleChange('faqSection.ctaVisible', formData.faqSection?.ctaVisible === false)}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold uppercase cursor-pointer ${
+                      formData.faqSection?.ctaVisible !== false
+                        ? 'bg-blue-600/20 text-blue-300 border border-blue-500/30'
+                        : 'bg-zinc-800 text-zinc-400'
+                    }`}
+                  >
+                    {formData.faqSection?.ctaVisible !== false ? 'CTA: Visible' : 'CTA: Hidden'}
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                      Button Label
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.faqSection?.ctaText || 'HAVE A CUSTOM QUESTION? REACH OUT →'}
+                      onChange={(e) => handleChange('faqSection.ctaText', e.target.value)}
+                      className="w-full px-3.5 py-2 rounded-xl bg-[#090910] border border-white/10 text-white text-xs font-mono outline-none focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                      Button Action / Link
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.faqSection?.ctaAction || 'inquiry'}
+                      onChange={(e) => handleChange('faqSection.ctaAction', e.target.value)}
+                      placeholder="inquiry, #contact, or external URL"
+                      className="w-full px-3.5 py-2 rounded-xl bg-[#090910] border border-white/10 text-white text-xs font-mono outline-none focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 11: FINAL CTA */}
         {/* ========================================================================= */}
         {activeTab === 'cta' && (
           <div className="space-y-6">
@@ -2509,19 +2665,162 @@ export const AdminWebsiteEditor: React.FC = () => {
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 11: FOOTER */}
+        {/* TAB 12: FOOTER & CREDITS */}
         {/* ========================================================================= */}
         {activeTab === 'footer' && (
           <div className="space-y-6">
-            <div className="border-b border-white/10 pb-4">
-              <h3 className="text-base font-bold text-white uppercase tracking-wider mb-1">
-                Footer CMS
-              </h3>
-              <p className="text-xs text-zinc-400">
-                Manage copyright line, navigation link labels, legal links, and social labels.
-              </p>
+            <div className="border-b border-white/10 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 className="text-base font-bold text-white uppercase tracking-wider mb-1">
+                  Footer & Developer Credits CMS
+                </h3>
+                <p className="text-xs text-zinc-400">
+                  Manage copyright text, developer attribution with clickable Instagram link, navigation labels, and legal links.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-zinc-400 font-mono">Footer Visibility:</span>
+                <button
+                  type="button"
+                  onClick={() => handleChange('sectionVisibility.footer', formData.sectionVisibility.footer === false ? true : false)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold uppercase transition-colors cursor-pointer flex items-center gap-1.5 ${
+                    formData.sectionVisibility.footer !== false
+                      ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-500/30'
+                      : 'bg-zinc-900 text-zinc-400 border border-white/10'
+                  }`}
+                >
+                  {formData.sectionVisibility.footer !== false ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                  <span>{formData.sectionVisibility.footer !== false ? 'Visible' : 'Hidden'}</span>
+                </button>
+              </div>
             </div>
 
+            {/* Developer Credit & Copyright Box — Special Highlight */}
+            <div className="p-5 rounded-2xl bg-[#0e0e18] border border-blue-500/30 space-y-4 shadow-lg shadow-blue-500/5">
+              <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
+                  <span className="text-sm font-bold text-white">
+                    Developer Credit & Copyright Bar
+                  </span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <label className="text-xs text-zinc-300 flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.footer?.showCopyright !== false}
+                      onChange={(e) => handleChange('footer.showCopyright', e.target.checked)}
+                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                    />
+                    <span>Show Copyright</span>
+                  </label>
+                  <label className="text-xs text-zinc-300 flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.footer?.showDeveloperCredit !== false}
+                      onChange={(e) => handleChange('footer.showDeveloperCredit', e.target.checked)}
+                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                    />
+                    <span>Show Developer Credit</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Live Preview Bar */}
+              <div className="p-3.5 rounded-xl bg-black border border-white/10 font-mono text-xs flex flex-wrap items-center gap-2 justify-between">
+                <div className="flex items-center gap-2 flex-wrap text-zinc-400">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
+                    Live Preview
+                  </span>
+                  <span>{formData.footer?.copyrightText || '© Footazix'}</span>
+                  {formData.footer?.showDeveloperCredit !== false && (
+                    <>
+                      <span className="text-zinc-600">|</span>
+                      <span>{formData.footer?.developedByLabel || 'Developed by'}</span>
+                      <a
+                        href={formData.footer?.developerUrl || 'https://www.instagram.com/sanamatum_creates?stkn=MXVjbzVtamQwaGJveg=='}
+                        target={formData.footer?.developerNewTab !== false ? '_blank' : undefined}
+                        rel={formData.footer?.developerNewTab !== false ? 'noopener noreferrer' : undefined}
+                        className="text-zinc-200 hover:text-blue-400 underline underline-offset-2 flex items-center gap-1 font-semibold"
+                      >
+                        <span>{formData.footer?.developerName || 'Sanamatum Ningthoujam'}</span>
+                        <ExternalLink className="w-2.5 h-2.5 text-blue-400" />
+                      </a>
+                    </>
+                  )}
+                </div>
+                <span className="text-[10px] text-zinc-500 font-mono">renders on public footer</span>
+              </div>
+
+              {/* Input Fields */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                    Copyright Notice
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.footer?.copyrightText ?? '© Footazix'}
+                    onChange={(e) => handleChange('footer.copyrightText', e.target.value)}
+                    placeholder="© Footazix"
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                    Developer Attribution Prefix
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.footer?.developedByLabel ?? 'Developed by'}
+                    onChange={(e) => handleChange('footer.developedByLabel', e.target.value)}
+                    placeholder="Developed by"
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                    Developer Name
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.footer?.developerName ?? 'Sanamatum Ningthoujam'}
+                    onChange={(e) => handleChange('footer.developerName', e.target.value)}
+                    placeholder="Sanamatum Ningthoujam"
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-semibold"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+                      Developer Hyperlink URL (Instagram)
+                    </label>
+                    <label className="text-[11px] text-zinc-400 flex items-center gap-1.5 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.footer?.developerNewTab !== false}
+                        onChange={(e) => handleChange('footer.developerNewTab', e.target.checked)}
+                        className="w-3.5 h-3.5 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                      />
+                      <span>Open in new tab</span>
+                    </label>
+                  </div>
+                  <input
+                    type="text"
+                    value={formData.footer?.developerUrl ?? 'https://www.instagram.com/sanamatum_creates?stkn=MXVjbzVtamQwaGJveg=='}
+                    onChange={(e) => handleChange('footer.developerUrl', e.target.value)}
+                    placeholder="https://www.instagram.com/sanamatum_creates?stkn=MXVjbzVtamQwaGJveg=="
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs focus:border-blue-500 outline-none font-mono"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* General Footer Content */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
@@ -2540,24 +2839,24 @@ export const AdminWebsiteEditor: React.FC = () => {
 
               <div>
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
-                  Copyright Notice
-                </label>
-                <input
-                  type="text"
-                  value={formData.footer.copyrightText}
-                  onChange={(e) => handleChange('footer.copyrightText', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
                   Back to Top Button Text
                 </label>
                 <input
                   type="text"
                   value={formData.footer?.backToTopText || 'Back to top'}
                   onChange={(e) => handleChange('footer.backToTopText', e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                  Contact Button Label
+                </label>
+                <input
+                  type="text"
+                  value={formData.footer?.contactText || 'Contact'}
+                  onChange={(e) => handleChange('footer.contactText', e.target.value)}
                   className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
                 />
               </div>

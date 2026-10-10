@@ -217,6 +217,11 @@ export interface FooterSettings {
   showInstagram?: boolean;
   copyrightText: string;
   showCopyright?: boolean;
+  developedByLabel?: string;
+  developerName?: string;
+  developerUrl?: string;
+  developerNewTab?: boolean;
+  showDeveloperCredit?: boolean;
   legalSectionTitle?: string;
   termsLabel?: string;
   privacyLabel?: string;
@@ -445,6 +450,8 @@ export interface MediaAsset {
   type?: 'image' | 'video' | 'poster' | 'logo' | string;
   size: string;
   dimensions?: string;
+  duration?: string | number;
+  verified?: boolean;
   uploadedAt: string;
   createdAt?: string;
 }

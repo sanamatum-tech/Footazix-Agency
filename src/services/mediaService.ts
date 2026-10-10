@@ -85,6 +85,79 @@ export function getImageDimensions(fileOrUrl: File | string): Promise<{ width: n
   });
 }
 
+export function getVideoMetadata(fileOrUrl: File | string): Promise<{ duration: number; width: number; height: number }> {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined') {
+      resolve({ duration: 0, width: 1920, height: 1080 });
+      return;
+    }
+    const video = document.createElement('video');
+    video.preload = 'metadata';
+    let isCleaned = false;
+    const cleanUp = () => {
+      if (isCleaned) return;
+      isCleaned = true;
+      if (typeof fileOrUrl !== 'string') {
+        URL.revokeObjectURL(video.src);
+      }
+    };
+    video.onloadedmetadata = () => {
+      const d = video.duration || 0;
+      const w = video.videoWidth || 1920;
+      const h = video.videoHeight || 1080;
+      cleanUp();
+      resolve({ duration: d, width: w, height: h });
+    };
+    video.onerror = () => {
+      cleanUp();
+      resolve({ duration: 0, width: 1920, height: 1080 });
+    };
+    if (typeof fileOrUrl === 'string') {
+      video.src = fileOrUrl;
+    } else {
+      video.src = URL.createObjectURL(fileOrUrl);
+    }
+  });
+}
+
+export async function verifyMediaUrl(url: string): Promise<{
+  accessible: boolean;
+  status: number;
+  contentType?: string;
+  contentLength?: string;
+  error?: string;
+}> {
+  if (!url || !url.trim()) {
+    return { accessible: false, status: 0, error: 'Empty URL' };
+  }
+  try {
+    const res = await fetch(url, { method: 'HEAD', cache: 'no-store' });
+    if (res.ok) {
+      const ct = res.headers.get('content-type') || undefined;
+      const cl = res.headers.get('content-length')
+        ? formatBytes(parseInt(res.headers.get('content-length')!, 10))
+        : undefined;
+      return { accessible: true, status: res.status, contentType: ct, contentLength: cl };
+    }
+    // Try range GET fallback if HEAD returns 405
+    const getRes = await fetch(url, {
+      method: 'GET',
+      headers: { Range: 'bytes=0-100' },
+      cache: 'no-store',
+    });
+    if (getRes.ok || getRes.status === 206) {
+      const ct = getRes.headers.get('content-type') || undefined;
+      const cl = getRes.headers.get('content-length')
+        ? formatBytes(parseInt(getRes.headers.get('content-length')!, 10))
+        : undefined;
+      return { accessible: true, status: getRes.status, contentType: ct, contentLength: cl };
+    }
+    return { accessible: false, status: getRes.status, error: `HTTP ${getRes.status} ${getRes.statusText}` };
+  } catch (err: any) {
+    return { accessible: false, status: 0, error: err?.message || 'Network check failed' };
+  }
+}
+
 export const mediaService = {
   subscribe(listener: Listener): () => void {
     listeners.add(listener);
@@ -110,11 +183,17 @@ export const mediaService = {
                 .from(SUPABASE_STORAGE_BUCKET)
                 .getPublicUrl(filePath);
 
+              const isVideo =
+                Boolean(f.name.match(/\.(mp4|webm|ogg|mov|m4v)$/i)) ||
+                folder === 'videos' ||
+                Boolean(f.metadata?.mimetype?.startsWith('video/'));
+
               return {
                 id: `sp-${f.id || f.name}`,
                 name: f.name,
                 url: publicUrl,
-                category: category || 'images',
+                category: (folder as MediaCategory) || (isVideo ? 'videos' : 'images'),
+                type: isVideo ? 'video' : 'image',
                 size: formatBytes(f.metadata?.size || 0),
                 uploadedAt: f.created_at ? f.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
               };
@@ -137,23 +216,44 @@ export const mediaService = {
   },
 
   async uploadMedia(file: File, category: MediaCategory): Promise<MediaAsset> {
-    // 1. If Supabase is configured, upload directly to Supabase Storage
+    const isVideo =
+      category === 'videos' ||
+      file.type.startsWith('video/') ||
+      Boolean(file.name.match(/\.(mp4|webm|ogg|mov|m4v)$/i));
+
+    const targetCategory: MediaCategory = isVideo ? 'videos' : category;
+    const contentType = file.type || (isVideo ? 'video/mp4' : undefined);
+
+    // Extract video duration and dimensions dynamically
+    let durationSec: number | undefined;
+    let dimensionsStr: string | undefined;
+    if (isVideo) {
+      try {
+        const meta = await getVideoMetadata(file);
+        if (meta.duration > 0) durationSec = Math.round(meta.duration);
+        if (meta.width > 0 && meta.height > 0) dimensionsStr = `${meta.width}x${meta.height}`;
+      } catch {
+        // Non-blocking
+      }
+    }
+
+    // 1. If Supabase is configured, upload directly to Supabase Storage bucket
     if (isSupabaseConfigured() && supabase) {
       try {
         const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-        const filePath = `${category}/${Date.now()}_${cleanName}`;
+        const filePath = `${targetCategory}/${Date.now()}_${cleanName}`;
 
         const { data, error } = await supabase.storage
           .from(SUPABASE_STORAGE_BUCKET)
           .upload(filePath, file, {
             cacheControl: '3600',
             upsert: true,
-            contentType: file.type || undefined,
+            contentType,
           });
 
         if (error) {
           console.error('Supabase storage upload error:', error);
-          throw new Error(error.message);
+          throw new Error(`Storage upload error: ${error.message}`);
         }
 
         const { data: { publicUrl } } = supabase.storage
@@ -164,27 +264,39 @@ export const mediaService = {
           id: `media-${Date.now()}`,
           name: file.name,
           url: publicUrl,
-          category,
+          category: targetCategory,
+          type: isVideo ? 'video' : 'image',
           size: formatBytes(file.size),
+          duration: durationSec ? `${durationSec}s` : undefined,
+          dimensions: dimensionsStr,
           uploadedAt: new Date().toISOString().split('T')[0],
+          verified: true,
         };
 
         const current = getStoredMedia();
-        const updated = [asset, ...current];
+        const updated = [asset, ...current.filter((m) => m.url !== publicUrl)];
         saveStoredMedia(updated);
         return asset;
       } catch (err: any) {
-        console.warn('Supabase storage upload failed, falling back to persistent data URL:', err.message);
+        console.warn('Supabase storage upload failed:', err.message);
+        if (isVideo) {
+          throw new Error(`Failed to upload video to Supabase Storage: ${err?.message || 'Unknown error'}`);
+        }
       }
     }
 
-    // 2. Persistent fallback to base64 data URL (NOT a temporary blob URL)
+    // 2. Persistent fallback to base64 data URL for images only (never video)
+    if (isVideo) {
+      throw new Error('Supabase Storage is required to host direct video uploads. Please ensure Supabase credentials are configured.');
+    }
+
     const dataUrl = await fileToDataUrl(file);
     const media: MediaAsset = {
       id: `media-${Date.now()}`,
       name: file.name,
       url: dataUrl,
-      category,
+      category: targetCategory,
+      type: 'image',
       size: formatBytes(file.size),
       uploadedAt: new Date().toISOString().split('T')[0],
     };

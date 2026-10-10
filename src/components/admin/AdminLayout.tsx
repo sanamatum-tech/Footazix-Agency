@@ -79,7 +79,7 @@ export const AdminLayout: React.FC = () => {
       groupLabel: 'MAIN',
       items: [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { id: 'website', label: 'Website Editor', icon: Globe2 },
+        { id: 'website', label: 'Text Editor & Content', icon: Globe2 },
       ],
     },
     {
@@ -110,7 +110,7 @@ export const AdminLayout: React.FC = () => {
 
   const sectionTitles: Record<AdminSection, { title: string; breadcrumb: string }> = {
     dashboard: { title: 'Dashboard', breadcrumb: 'Home / Dashboard' },
-    website: { title: 'Website Editor', breadcrumb: 'Content / Website Editor' },
+    website: { title: 'Text Editor & Website Content', breadcrumb: 'Content / Text Editor' },
     hero: { title: 'Hero CMS', breadcrumb: 'Content / Hero' },
     vsl: { title: 'VSL Settings', breadcrumb: 'Content / VSL' },
     portfolio: { title: 'Portfolio Management', breadcrumb: 'Content / Portfolio' },

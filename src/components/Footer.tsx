@@ -62,7 +62,15 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
   const backToTopText = footerConfig?.backToTopText || 'Back to top';
   const copyrightText =
     footerConfig?.copyrightText ||
-    `© ${new Date().getFullYear()} ${content.brand?.name || 'Footazix'}. ${content.brand?.domain || 'footazix.site'}. All rights reserved.`;
+    `© ${content.brand?.name || 'Footazix'}`;
+
+  const showDeveloperCredit = footerConfig?.showDeveloperCredit !== false;
+  const developedByLabel = footerConfig?.developedByLabel || 'Developed by';
+  const developerName = footerConfig?.developerName || 'Sanamatum Ningthoujam';
+  const developerUrl =
+    footerConfig?.developerUrl ||
+    'https://www.instagram.com/sanamatum_creates?stkn=MXVjbzVtamQwaGJveg==';
+  const developerNewTab = footerConfig?.developerNewTab !== false;
 
   // Dynamic Navigation Items with fallback to legacy props
   const navItems = React.useMemo<FooterNavItem[]>(() => {
@@ -215,7 +223,30 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
         {/* Bottom Bar: Copyright, Legal Navigation & Discreet Owner Lock */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-zinc-400 font-mono text-[11px]">
           <div className="flex flex-wrap items-center gap-4">
-            {showCopyright && <span>{copyrightText}</span>}
+            {showCopyright && (
+              <div className="inline-flex items-center gap-1.5 flex-wrap">
+                <span>{copyrightText}</span>
+                {showDeveloperCredit && developerName && (
+                  <>
+                    <span className="text-zinc-600">|</span>
+                    <span>{developedByLabel}</span>
+                    {developerUrl ? (
+                      <a
+                        href={developerUrl}
+                        target={developerNewTab ? '_blank' : undefined}
+                        rel={developerNewTab ? 'noopener noreferrer' : undefined}
+                        className="text-zinc-200 hover:text-blue-400 transition-colors underline underline-offset-2 cursor-pointer inline-flex items-center gap-0.5 group"
+                      >
+                        <span>{developerName}</span>
+                        <ExternalLink className="w-2.5 h-2.5 opacity-60 group-hover:opacity-100 transition-opacity" />
+                      </a>
+                    ) : (
+                      <span className="text-zinc-200">{developerName}</span>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
 
             {/* Legal Links */}
             {showLegal && legalLinks.length > 0 && (

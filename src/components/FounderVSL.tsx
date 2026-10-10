@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useApp } from '../context/AppContext';
-import { Play, Pause, Volume2, VolumeX, Maximize, AlertCircle, ArrowRight } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, Maximize, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
 
 interface FounderVSLProps {
   onOpenContact?: () => void;
@@ -17,6 +17,8 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
   const [showCaptions, setShowCaptions] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [videoError, setVideoError] = useState(false);
+  const [isBuffering, setIsBuffering] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -109,11 +111,38 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
       videoRef.current.pause();
       setIsPlaying(false);
     } else {
+      setIsBuffering(true);
       videoRef.current
         .play()
-        .then(() => setIsPlaying(true))
-        .catch(() => {
+        .then(() => {
+          setIsPlaying(true);
+          setIsBuffering(false);
+          setVideoError(false);
+        })
+        .catch((err) => {
+          setIsBuffering(false);
           setVideoError(true);
+          setErrorMessage(err?.message || 'Video could not be played. Please check the video source.');
+        });
+    }
+  };
+
+  const handleRetryVideo = () => {
+    setVideoError(false);
+    setErrorMessage(null);
+    setIsBuffering(true);
+    if (videoRef.current) {
+      videoRef.current.load();
+      videoRef.current
+        .play()
+        .then(() => {
+          setIsPlaying(true);
+          setIsBuffering(false);
+        })
+        .catch((err) => {
+          setIsBuffering(false);
+          setVideoError(true);
+          setErrorMessage(err?.message || 'Playback retry failed.');
         });
     }
   };
@@ -258,20 +287,36 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
           ) : null}
 
           {/* 3. Direct Upload or Local Video Source */}
-          {(vsl.videoSource === 'direct' || vsl.videoSource === 'local') && (
+          {(vsl.videoSource === 'direct' || vsl.videoSource === 'local' || !vsl.videoSource) && (
             <>
               <video
                 ref={videoRef}
-                src={vsl.videoUrl || '/assets/vsl/footazix-vsl.mp4'}
                 poster={vsl.posterUrl || '/assets/vsl/vsl-poster.jpg'}
                 className={`w-full h-full object-cover ${!isPlaying && isMonochrome ? 'grayscale contrast-110' : ''}`}
                 playsInline
+                preload="metadata"
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedMetadata={handleLoadedMetadata}
-                onEnded={() => setIsPlaying(false)}
-                onError={() => setVideoError(true)}
+                onEnded={() => {
+                  setIsPlaying(false);
+                  setIsBuffering(false);
+                }}
+                onWaiting={() => setIsBuffering(true)}
+                onPlaying={() => {
+                  setIsBuffering(false);
+                  setIsPlaying(true);
+                  setVideoError(false);
+                }}
+                onCanPlay={() => setIsBuffering(false)}
+                onError={() => {
+                  setIsBuffering(false);
+                  setVideoError(true);
+                  setErrorMessage('Video failed to load. Check that the file URL is accessible and in a supported browser format (e.g. MP4).');
+                }}
                 onClick={handlePlayToggle}
               >
+                {vsl.videoUrl && <source src={vsl.videoUrl} type="video/mp4" />}
+                <source src="/assets/vsl/footazix-vsl.mp4" type="video/mp4" />
                 {hasCaptionsConfigured && showCaptions && (
                   <track
                     kind="subtitles"
@@ -283,8 +328,17 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
                 )}
               </video>
 
-              {/* Poster Play Overlay if not playing */}
-              {!isPlaying && (
+              {/* Buffering Indicator */}
+              {isBuffering && isPlaying && (
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center pointer-events-none z-10">
+                  <div className="p-3 rounded-full bg-black/70 border border-white/10 text-blue-400">
+                    <Loader2 className="w-8 h-8 animate-spin" />
+                  </div>
+                </div>
+              )}
+
+              {/* Poster Play Overlay if not playing and no error */}
+              {!isPlaying && !videoError && (
                 <div
                   onClick={handlePlayToggle}
                   className="absolute inset-0 bg-black/45 hover:bg-black/30 transition-colors flex items-center justify-center cursor-pointer"
@@ -297,7 +351,7 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
 
               {/* Custom Dark Glass Controls Bar */}
               <div
-                className={`absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 via-black/60 to-transparent transition-opacity duration-300 ${
+                className={`absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 via-black/60 to-transparent transition-opacity duration-300 z-10 ${
                   isPlaying ? 'opacity-0 group-hover:opacity-100' : 'opacity-100'
                 }`}
               >
@@ -373,18 +427,25 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
             </>
           )}
 
-          {/* Missing/Failed Video Notice */}
+          {/* Missing/Failed Video Notice with Retry Action */}
           {videoError && (
-            <div className="absolute inset-0 bg-[#07070d] flex flex-col items-center justify-center p-6 text-center">
-              <div className="w-12 h-12 rounded-full bg-blue-600/10 border border-blue-500/30 flex items-center justify-center text-blue-400 mb-3">
-                <Play className="w-5 h-5 fill-current ml-0.5" />
+            <div className="absolute inset-0 bg-[#07070d]/95 flex flex-col items-center justify-center p-6 text-center z-20">
+              <div className="w-12 h-12 rounded-full bg-red-600/10 border border-red-500/30 flex items-center justify-center text-red-400 mb-3">
+                <AlertCircle className="w-6 h-6" />
               </div>
               <p className="text-xs sm:text-sm font-display font-bold text-white tracking-widest uppercase mb-1">
                 {vsl.fallbackMessage || 'VIDEO UNAVAILABLE'}
               </p>
-              <p className="text-xs text-zinc-400 max-w-sm">
-                The Footazix system reel is currently being updated.
+              <p className="text-xs text-zinc-400 max-w-sm mb-4">
+                {errorMessage || 'The Footazix system reel could not be loaded.'}
               </p>
+              <button
+                type="button"
+                onClick={handleRetryVideo}
+                className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-colors cursor-pointer flex items-center gap-1.5"
+              >
+                <span>Retry Playback</span>
+              </button>
             </div>
           )}
         </div>

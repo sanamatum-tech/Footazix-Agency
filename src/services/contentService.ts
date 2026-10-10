@@ -277,8 +277,18 @@ export const contentService = {
           },
           footer: {
             ...baseMerged.footer,
-            copyrightText: siteSettings?.footer_copyright || baseMerged.footer.copyrightText,
-            tagline: siteSettings?.footer_tagline || baseMerged.footer.tagline,
+            copyrightText:
+              siteSettings?.footer_copyright && siteSettings.footer_copyright !== 'Footazix. footazix.site. All rights reserved.'
+                ? siteSettings.footer_copyright
+                : (baseMerged.footer?.copyrightText || '© Footazix'),
+            tagline: siteSettings?.footer_tagline || baseMerged.footer?.tagline,
+            developedByLabel: baseMerged.footer?.developedByLabel || 'Developed by',
+            developerName: baseMerged.footer?.developerName || 'Sanamatum Ningthoujam',
+            developerUrl:
+              baseMerged.footer?.developerUrl ||
+              'https://www.instagram.com/sanamatum_creates?stkn=MXVjbzVtamQwaGJveg==',
+            developerNewTab: baseMerged.footer?.developerNewTab !== false,
+            showDeveloperCredit: baseMerged.footer?.showDeveloperCredit !== false,
           },
         };
 
