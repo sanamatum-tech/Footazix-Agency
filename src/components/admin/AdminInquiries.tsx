@@ -18,6 +18,9 @@ import {
   CheckCircle2,
   Save,
   RefreshCw,
+  Download,
+  Copy,
+  Check,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -131,6 +134,77 @@ export const AdminInquiries: React.FC = () => {
     setTimeout(() => setToast(null), 2500);
   };
 
+  const [copiedField, setCopiedField] = useState<'email' | 'phone' | null>(null);
+
+  const handleCopy = async (text: string, field: 'email' | 'phone') => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedField(field);
+      setTimeout(() => setCopiedField(null), 2000);
+    } catch {
+      // Fallback
+    }
+  };
+
+  const handleExportCSV = () => {
+    const listToExport = filtered.length > 0 ? filtered : inquiries;
+    if (listToExport.length === 0) {
+      setToast('No inquiries available to export.');
+      setTimeout(() => setToast(null), 2500);
+      return;
+    }
+
+    const headers = [
+      'Inquiry ID',
+      'Date & Time',
+      'Client Name',
+      'Email',
+      'Phone',
+      'Company / Brand',
+      'Services Requested',
+      'Budget Scope',
+      'Status',
+      'Project Details',
+      'Studio Notes',
+    ];
+
+    const escapeCsv = (val?: string | number | null) => {
+      if (val === undefined || val === null) return '""';
+      const str = String(val).replace(/"/g, '""');
+      return `"${str}"`;
+    };
+
+    const rows = listToExport.map((inq) => [
+      escapeCsv(inq.id),
+      escapeCsv(inq.createdAt),
+      escapeCsv(inq.name),
+      escapeCsv(inq.email),
+      escapeCsv(inq.phone || ''),
+      escapeCsv(inq.company || ''),
+      escapeCsv(inq.services.join('; ')),
+      escapeCsv(inq.budget || ''),
+      escapeCsv(inq.status),
+      escapeCsv(inq.details),
+      escapeCsv(inq.notes || ''),
+    ]);
+
+    const csvContent =
+      'data:text/csv;charset=utf-8,\uFEFF' +
+      [headers.join(','), ...rows.map((e) => e.join(','))].join('\r\n');
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    const dateStr = new Date().toISOString().split('T')[0];
+    link.setAttribute('download', `footazix-client-inquiries-${dateStr}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setToast(`Exported ${listToExport.length} inquiries to CSV.`);
+    setTimeout(() => setToast(null), 2500);
+  };
+
   // Strictly neutral & blue palette (anti-green, anti-purple rule)
   const getStatusBadge = (status: InquiryStatus) => {
     switch (status) {
@@ -165,13 +239,23 @@ export const AdminInquiries: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           {toast && (
             <span className="text-xs text-blue-400 font-medium animate-in fade-in flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span>{toast}</span>
             </span>
           )}
+
+          <button
+            type="button"
+            onClick={handleExportCSV}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-zinc-300 bg-[#12121c] hover:bg-[#1a1a29] border border-white/10 hover:text-white transition-colors cursor-pointer"
+            title="Export inquiries to CSV for spreadsheet analysis"
+          >
+            <Download className="w-3.5 h-3.5 text-blue-400" />
+            <span>Export CSV</span>
+          </button>
 
           <button
             type="button"
@@ -334,18 +418,58 @@ export const AdminInquiries: React.FC = () => {
 
             {/* Contact details */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-xl bg-[#12121c] text-xs">
-              <div className="flex items-center gap-2 text-zinc-300">
-                <Mail className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                <a href={`mailto:${activeInquiry.email}`} className="hover:underline truncate">
-                  {activeInquiry.email}
-                </a>
+              <div className="flex items-center justify-between gap-2 text-zinc-300">
+                <div className="flex items-center gap-2 truncate">
+                  <Mail className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                  <a href={`mailto:${activeInquiry.email}`} className="hover:underline truncate text-white font-medium">
+                    {activeInquiry.email}
+                  </a>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleCopy(activeInquiry.email, 'email')}
+                  className="px-2 py-0.5 rounded text-[10px] text-zinc-400 hover:text-white bg-zinc-800/80 hover:bg-zinc-700 transition-colors inline-flex items-center gap-1 shrink-0"
+                  title="Copy email to clipboard"
+                >
+                  {copiedField === 'email' ? (
+                    <>
+                      <Check className="w-3 h-3 text-blue-400" />
+                      <span className="text-blue-400">Copied</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3 h-3 text-zinc-400" />
+                      <span>Copy</span>
+                    </>
+                  )}
+                </button>
               </div>
               {activeInquiry.phone && (
-                <div className="flex items-center gap-2 text-zinc-300">
-                  <Phone className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                  <a href={`tel:${activeInquiry.phone}`} className="hover:underline">
-                    {activeInquiry.phone}
-                  </a>
+                <div className="flex items-center justify-between gap-2 text-zinc-300">
+                  <div className="flex items-center gap-2 truncate">
+                    <Phone className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                    <a href={`tel:${activeInquiry.phone}`} className="hover:underline text-white font-medium">
+                      {activeInquiry.phone}
+                    </a>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(activeInquiry.phone!, 'phone')}
+                    className="px-2 py-0.5 rounded text-[10px] text-zinc-400 hover:text-white bg-zinc-800/80 hover:bg-zinc-700 transition-colors inline-flex items-center gap-1 shrink-0"
+                    title="Copy phone to clipboard"
+                  >
+                    {copiedField === 'phone' ? (
+                      <>
+                        <Check className="w-3 h-3 text-blue-400" />
+                        <span className="text-blue-400">Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3 h-3 text-zinc-400" />
+                        <span>Copy</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               )}
               {activeInquiry.budget && (

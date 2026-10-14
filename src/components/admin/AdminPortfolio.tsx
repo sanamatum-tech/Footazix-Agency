@@ -29,6 +29,7 @@ import {
   AlertTriangle,
   RefreshCw,
   Sparkles,
+  FolderOpen,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -62,9 +63,10 @@ function getAspectClass(ratio: AspectRatioType): string {
 }
 
 export const AdminPortfolio: React.FC = () => {
-  const { projects } = useApp();
+  const { projects, media } = useApp();
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showMediaPickerModal, setShowMediaPickerModal] = useState(false);
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
@@ -465,9 +467,9 @@ NOTIFY pgrst, 'reload config';`;
         <div className="p-3.5 rounded-xl bg-[#090910] border border-white/10 flex items-center justify-between">
           <div>
             <span className="text-[10px] font-mono uppercase text-zinc-400 block">Live & Visible</span>
-            <span className="text-base font-bold text-emerald-400 tabular-nums">{publishedCount}</span>
+            <span className="text-base font-bold text-blue-400 tabular-nums">{publishedCount}</span>
           </div>
-          <Eye className="w-4 h-4 text-emerald-400" />
+          <Eye className="w-4 h-4 text-blue-400" />
         </div>
         <div className="p-3.5 rounded-xl bg-[#090910] border border-white/10 flex items-center justify-between">
           <div>
@@ -651,8 +653,8 @@ NOTIFY pgrst, 'reload config';`;
                       <span
                         className={`px-1.5 py-0.5 rounded font-mono text-[10px] font-bold ${
                           project.monochrome
-                            ? 'bg-amber-950/60 text-amber-300 border border-amber-500/30'
-                            : 'bg-emerald-950/60 text-emerald-300 border border-emerald-500/30'
+                            ? 'bg-zinc-800 text-zinc-300 border border-white/10'
+                            : 'bg-blue-950/60 text-blue-300 border border-blue-500/30'
                         }`}
                       >
                         {project.monochrome ? 'Monochrome' : 'Full Color'}
@@ -694,14 +696,14 @@ NOTIFY pgrst, 'reload config';`;
                     onClick={(e) => handleToggleVisible(project, e)}
                     className={`px-2.5 py-1 rounded-lg text-xs font-mono uppercase font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
                       project.visible !== false
-                        ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-500/30'
+                        ? 'bg-blue-950/60 text-blue-300 border border-blue-500/30'
                         : 'bg-zinc-900 text-zinc-500 border border-white/10'
                     }`}
                     title="Toggle Visible / Hidden on public site"
                   >
                     {project.visible !== false ? (
                       <>
-                        <Eye className="w-3 h-3 text-emerald-400" />
+                        <Eye className="w-3 h-3 text-blue-400" />
                         <span>Visible</span>
                       </>
                     ) : (
@@ -764,8 +766,8 @@ NOTIFY pgrst, 'reload config';`;
                     <span
                       className={`text-[9px] font-mono uppercase px-1.5 py-0.5 rounded font-bold ${
                         project.monochrome
-                          ? 'bg-amber-950/80 text-amber-300 border border-amber-500/40'
-                          : 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/40'
+                          ? 'bg-zinc-800 text-zinc-300 border border-white/10'
+                          : 'bg-blue-950/80 text-blue-300 border border-blue-500/40'
                       }`}
                     >
                       {project.monochrome ? 'Mono' : 'Color'}
@@ -957,24 +959,34 @@ NOTIFY pgrst, 'reload config';`;
                         className="hidden"
                         onChange={handleVideoUpload}
                       />
-                      <button
-                        type="button"
-                        disabled={uploadingField === 'video'}
-                        onClick={() => videoFileInputRef.current?.click()}
-                        className="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider text-blue-400 hover:text-white bg-blue-950/40 border border-blue-500/30 transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-50"
-                      >
-                        {uploadingField === 'video' ? (
-                          <>
-                            <Loader2 className="w-3 h-3 animate-spin" />
-                            <span>Uploading...</span>
-                          </>
-                        ) : (
-                          <>
-                            <Upload className="w-3 h-3" />
-                            <span>Upload Video MP4</span>
-                          </>
-                        )}
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setShowMediaPickerModal(true)}
+                          className="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider text-blue-400 hover:text-white bg-blue-950/40 border border-blue-500/30 transition-colors flex items-center gap-1 cursor-pointer"
+                        >
+                          <FolderOpen className="w-3 h-3" />
+                          <span>Choose from Media</span>
+                        </button>
+                        <button
+                          type="button"
+                          disabled={uploadingField === 'video'}
+                          onClick={() => videoFileInputRef.current?.click()}
+                          className="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider text-blue-400 hover:text-white bg-blue-950/40 border border-blue-500/30 transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-50"
+                        >
+                          {uploadingField === 'video' ? (
+                            <>
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                              <span>Uploading...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Upload className="w-3 h-3" />
+                              <span>Upload Video MP4</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
                     </div>
 
                     <input
@@ -1094,8 +1106,8 @@ NOTIFY pgrst, 'reload config';`;
                         </span>
                         <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
                           monochrome
-                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                            : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                            ? 'bg-zinc-800 text-zinc-300 border border-white/10'
+                            : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
                         }`}>
                           {monochrome ? 'Monochrome (ON)' : 'Full Color (OFF)'}
                         </span>
@@ -1464,6 +1476,94 @@ NOTIFY pgrst, 'reload config';`}
               >
                 Done
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Video Media Picker Modal */}
+      {showMediaPickerModal && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
+          onClick={() => setShowMediaPickerModal(false)}
+        >
+          <div
+            className="w-full max-w-xl bg-[#0b0b14] border border-white/15 rounded-2xl p-6 space-y-4 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                <Film className="w-4 h-4 text-blue-400" />
+                <span>Select Video from Supabase Media Library</span>
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowMediaPickerModal(false)}
+                className="p-1.5 rounded-lg text-zinc-400 hover:text-white bg-[#12121c] cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="max-h-80 overflow-y-auto space-y-2">
+              {media.filter(
+                (m) =>
+                  m.category === 'videos' ||
+                  m.type === 'video' ||
+                  Boolean(m.name?.match(/\.(mp4|webm|ogg|mov|m4v)$/i)) ||
+                  Boolean(m.url?.match(/\.(mp4|webm|ogg|mov|m4v)/i))
+              ).length === 0 ? (
+                <div className="py-8 text-center text-xs text-zinc-500">
+                  No video assets found in Media Library. Upload an MP4 to Storage using the button.
+                </div>
+              ) : (
+                media
+                  .filter(
+                    (m) =>
+                      m.category === 'videos' ||
+                      m.type === 'video' ||
+                      Boolean(m.name?.match(/\.(mp4|webm|ogg|mov|m4v)$/i)) ||
+                      Boolean(m.url?.match(/\.(mp4|webm|ogg|mov|m4v)/i))
+                  )
+                  .map((asset) => (
+                    <div
+                      key={asset.id}
+                      onClick={() => {
+                        setVideoUrl(asset.url);
+                        setShowMediaPickerModal(false);
+                        setStatusMessage({
+                          type: 'success',
+                          text: `Selected video: ${asset.name}`,
+                        });
+                        setTimeout(() => setStatusMessage(null), 3000);
+                      }}
+                      className="p-3 rounded-xl bg-[#12121c] hover:bg-zinc-800 border border-white/5 hover:border-blue-500/40 flex items-center justify-between gap-3 cursor-pointer transition-colors"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 rounded-lg bg-blue-950/40 text-blue-400 border border-blue-500/30 flex items-center justify-center shrink-0">
+                          <Film className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <span className="text-xs font-semibold text-white truncate block">
+                            {asset.name}
+                          </span>
+                          <span className="text-[10px] font-mono text-zinc-400">
+                            {asset.size} {asset.duration ? `· ${asset.duration}` : ''}
+                          </span>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        className="px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 shrink-0"
+                      >
+                        Select
+                      </button>
+                    </div>
+                  ))
+              )}
             </div>
           </div>
         </div>

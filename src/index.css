@@ -6,6 +6,10 @@
     --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     font-family: var(--font-sans);
     background-color: #050508;
@@ -18,6 +22,12 @@
   h1, h2, h3, .font-display {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
+  }
+
+  /* Accessible focus indicators for keyboard navigation */
+  :focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
   }
 }
 
@@ -50,6 +60,7 @@
 /* Custom scrollbar for dark aesthetic */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: #050508;
@@ -61,3 +72,46 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #3b82f6;
 }
+
+/* Premium VSL Video Border Animation */
+@keyframes vslBorderTravel {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.vsl-border-beam {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    transparent 280deg,
+    rgba(37, 99, 235, 0.25) 305deg,
+    rgba(59, 130, 246, 0.75) 330deg,
+    rgba(147, 197, 253, 0.95) 345deg,
+    rgba(59, 130, 246, 0.75) 355deg,
+    transparent 360deg
+  );
+  animation: vslBorderTravel 10s linear infinite;
+  will-change: transform;
+}
+
+/* Respect user's reduced-motion preference (WCAG AAA) */
+@media (prefers-reduced-motion: reduce) {
+  .vsl-border-beam {
+    animation: none !important;
+    display: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+

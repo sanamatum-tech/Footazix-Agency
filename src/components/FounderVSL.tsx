@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { Play, Pause, Volume2, VolumeX, Maximize, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
 
@@ -22,6 +22,29 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Synchronize and re-initialize video playback whenever URL or source changes
+  useEffect(() => {
+    setIsPlaying(false);
+    setIsBuffering(false);
+    setVideoError(false);
+    setErrorMessage(null);
+    setCurrentTime(0);
+    if (videoRef.current) {
+      videoRef.current.load();
+    }
+  }, [vsl.videoUrl, vsl.videoSource]);
+
+  // Synchronize fullscreen state if user exits via Escape key or browser controls
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
 
   const showBadge = vsl.showBadge !== false && Boolean(vsl.label);
   const showHeading = vsl.showHeading !== false && Boolean(vsl.heading);
@@ -222,12 +245,52 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
           )}
         </div>
 
-        {/* Video Player Container */}
+        {/* Video Player Container with Premium Travelling Blue Border */}
         <div className={`w-full ${wrapperClass}`}>
-          <div
-            ref={containerRef}
-            className={`relative w-full ${aspectClass} rounded-2xl sm:rounded-3xl overflow-hidden bg-black border border-white/10 shadow-2xl group transition-all duration-300`}
-          >
+          <div className="relative group/vsl p-[1.5px] rounded-2xl sm:rounded-3xl transition-all duration-500">
+            {/* Ambient Soft Outer Glow - Refined, subtle, deep blue matching Footazix branding */}
+            <div
+              aria-hidden="true"
+              className="absolute -inset-1 sm:-inset-1.5 rounded-2xl sm:rounded-3xl bg-blue-600/20 blur-xl opacity-40 group-hover/vsl:opacity-70 transition-opacity duration-700 pointer-events-none -z-10 motion-reduce:hidden"
+            />
+
+            {/* Base Thin Elegant Blue Border */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 rounded-2xl sm:rounded-3xl border border-blue-500/30 pointer-events-none shadow-[inset_0_0_12px_rgba(37,99,235,0.06)]"
+            />
+
+            {/* Subtle Animated Blue Highlight Travelling Around Border */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 rounded-2xl sm:rounded-3xl overflow-hidden pointer-events-none"
+            >
+              <div className="absolute -inset-[150%] vsl-border-beam pointer-events-none opacity-90" />
+            </div>
+
+            {/* Refined Corner Lighting Accents - Following exact rounded corners */}
+            <div
+              aria-hidden="true"
+              className="absolute top-0 left-0 w-6 h-6 sm:w-8 sm:h-8 rounded-tl-2xl sm:rounded-tl-3xl border-t border-l border-blue-400/60 pointer-events-none drop-shadow-[0_0_8px_rgba(59,130,246,0.5)] z-20"
+            />
+            <div
+              aria-hidden="true"
+              className="absolute top-0 right-0 w-6 h-6 sm:w-8 sm:h-8 rounded-tr-2xl sm:rounded-tr-3xl border-t border-r border-blue-400/60 pointer-events-none drop-shadow-[0_0_8px_rgba(59,130,246,0.5)] z-20"
+            />
+            <div
+              aria-hidden="true"
+              className="absolute bottom-0 left-0 w-6 h-6 sm:w-8 sm:h-8 rounded-bl-2xl sm:rounded-bl-3xl border-b border-l border-blue-400/60 pointer-events-none drop-shadow-[0_0_8px_rgba(59,130,246,0.5)] z-20"
+            />
+            <div
+              aria-hidden="true"
+              className="absolute bottom-0 right-0 w-6 h-6 sm:w-8 sm:h-8 rounded-br-2xl sm:rounded-br-3xl border-b border-r border-blue-400/60 pointer-events-none drop-shadow-[0_0_8px_rgba(59,130,246,0.5)] z-20"
+            />
+
+            {/* Video Player Container */}
+            <div
+              ref={containerRef}
+              className={`relative w-full ${aspectClass} rounded-[calc(1rem-1.5px)] sm:rounded-[calc(1.5rem-1.5px)] overflow-hidden bg-black shadow-2xl group transition-all duration-300 z-10`}
+            >
           {/* 1. YouTube Source */}
           {vsl.videoSource === 'youtube' && vsl.videoUrl ? (
             isPlaying ? (
@@ -291,10 +354,13 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
             <>
               <video
                 ref={videoRef}
+                key={vsl.videoUrl || 'footazix-direct-vsl'}
+                src={vsl.videoUrl || '/assets/vsl/footazix-vsl.mp4'}
                 poster={vsl.posterUrl || '/assets/vsl/vsl-poster.jpg'}
                 className={`w-full h-full object-cover ${!isPlaying && isMonochrome ? 'grayscale contrast-110' : ''}`}
                 playsInline
                 preload="metadata"
+                crossOrigin="anonymous"
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedMetadata={handleLoadedMetadata}
                 onEnded={() => {
@@ -307,11 +373,14 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
                   setIsPlaying(true);
                   setVideoError(false);
                 }}
-                onCanPlay={() => setIsBuffering(false)}
+                onCanPlay={() => {
+                  setIsBuffering(false);
+                  setVideoError(false);
+                }}
                 onError={() => {
                   setIsBuffering(false);
                   setVideoError(true);
-                  setErrorMessage('Video failed to load. Check that the file URL is accessible and in a supported browser format (e.g. MP4).');
+                  setErrorMessage(vsl.fallbackMessage || 'Video failed to load from storage. Check that the file URL is accessible and in a supported browser format (e.g. MP4).');
                 }}
                 onClick={handlePlayToggle}
               >
@@ -448,6 +517,7 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
               </button>
             </div>
           )}
+          </div>
         </div>
       </div>
 

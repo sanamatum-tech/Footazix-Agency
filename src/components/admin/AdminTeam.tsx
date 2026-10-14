@@ -15,6 +15,7 @@ import {
   ExternalLink,
   X,
 } from 'lucide-react';
+import { VerifiedTeamBadge } from '../VerifiedTeamBadge';
 
 export const AdminTeam: React.FC = () => {
   const { team } = useApp();
@@ -220,8 +221,9 @@ export const AdminTeam: React.FC = () => {
                 {/* Info */}
                 <div className="min-w-0 space-y-0.5">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="text-sm font-bold text-white truncate">
-                      {member.name}
+                    <h3 className="text-sm font-bold text-white truncate flex items-center gap-1.5">
+                      <span>{member.name}</span>
+                      <VerifiedTeamBadge size="sm" />
                     </h3>
                     <span className="text-[10px] font-mono text-blue-400 font-semibold px-2 py-0.5 rounded bg-blue-950/60 border border-blue-500/30">
                       {member.role}
@@ -229,8 +231,8 @@ export const AdminTeam: React.FC = () => {
                     <span
                       className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
                         member.monochrome
-                          ? 'bg-amber-950/60 text-amber-300 border border-amber-500/30'
-                          : 'bg-emerald-950/60 text-emerald-300 border border-emerald-500/30'
+                          ? 'bg-zinc-800 text-zinc-300 border border-white/10'
+                          : 'bg-blue-950/60 text-blue-300 border border-blue-500/30'
                       }`}
                     >
                       {member.monochrome ? 'Monochrome' : 'Full Color'}

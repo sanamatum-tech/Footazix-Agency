@@ -117,13 +117,21 @@ export const AdminVSLEditor: React.FC = () => {
       }
 
       // 2. Set permanent Supabase URL and direct source
-      setVslData((prev) => ({
-        ...prev,
+      const updatedVsl: VSLSettings = {
+        ...vslData,
         videoSource: 'direct',
         videoUrl: uploaded.url,
-      }));
+      };
+      setVslData(updatedVsl);
 
-      // 3. Immediately verify the uploaded file is accessible publicly
+      // 3. Automatically synchronize to Supabase database & storage snapshot
+      try {
+        await updateWebsiteContent({ vsl: updatedVsl });
+      } catch (saveErr) {
+        console.warn('Auto-save notice:', saveErr);
+      }
+
+      // 4. Immediately verify the uploaded file is accessible publicly
       setVerificationState({ status: 'testing', message: 'Testing public URL accessibility...' });
       const verifyRes = await verifyMediaUrl(uploaded.url);
 
@@ -137,7 +145,7 @@ export const AdminVSLEditor: React.FC = () => {
             size: uploaded.size,
           },
         });
-        setStatusMessage(`Video uploaded & verified in Supabase Storage!`);
+        setStatusMessage(`Video uploaded, saved to Supabase, & live on public website!`);
       } else {
         setVerificationState({
           status: 'error',
@@ -152,19 +160,25 @@ export const AdminVSLEditor: React.FC = () => {
     } finally {
       setIsUploadingVideo(false);
       e.target.value = '';
-      setTimeout(() => setStatusMessage(''), 4000);
+      setTimeout(() => setStatusMessage(''), 4500);
     }
   };
 
   const handleSelectFromMedia = async (asset: MediaAsset) => {
-    setVslData((prev) => ({
-      ...prev,
+    const updatedVsl: VSLSettings = {
+      ...vslData,
       videoSource: 'direct',
       videoUrl: asset.url,
-    }));
+    };
+    setVslData(updatedVsl);
     setShowMediaPicker(false);
-    setStatusMessage(`Selected video: ${asset.name}`);
-    setTimeout(() => setStatusMessage(''), 3000);
+    try {
+      await updateWebsiteContent({ vsl: updatedVsl });
+      setStatusMessage(`Assigned & saved "${asset.name}" to Founder VSL!`);
+    } catch {
+      setStatusMessage(`Selected video: ${asset.name}`);
+    }
+    setTimeout(() => setStatusMessage(''), 3500);
   };
 
   const handleVTTUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -388,7 +402,7 @@ export const AdminVSLEditor: React.FC = () => {
                   className="p-2.5 rounded-xl bg-[#12121c] border border-white/10 text-zinc-400 hover:text-white cursor-pointer"
                   title="Copy Video URL"
                 >
-                  {copiedUrl ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                  {copiedUrl ? <Check className="w-4 h-4 text-blue-400" /> : <Copy className="w-4 h-4" />}
                 </button>
                 <a
                   href={vslData.videoUrl}
@@ -456,7 +470,7 @@ export const AdminVSLEditor: React.FC = () => {
                   <span
                     className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase flex items-center gap-1 ${
                       verificationState.status === 'verified'
-                        ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                        ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
                         : verificationState.status === 'testing'
                         ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
                         : verificationState.status === 'error'
@@ -465,7 +479,7 @@ export const AdminVSLEditor: React.FC = () => {
                     }`}
                   >
                     {verificationState.status === 'testing' && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
-                    {verificationState.status === 'verified' && <Check className="w-2.5 h-2.5" />}
+                    {verificationState.status === 'verified' && <Check className="w-2.5 h-2.5 text-blue-400" />}
                     {verificationState.status === 'error' && <AlertCircle className="w-2.5 h-2.5" />}
                     <span>{verificationState.status.toUpperCase()}</span>
                   </span>
@@ -502,7 +516,7 @@ export const AdminVSLEditor: React.FC = () => {
                 <p
                   className={`text-[11px] font-mono ${
                     verificationState.status === 'verified'
-                      ? 'text-emerald-400'
+                      ? 'text-blue-400'
                       : verificationState.status === 'error'
                       ? 'text-red-400'
                       : 'text-zinc-400'
@@ -591,7 +605,7 @@ export const AdminVSLEditor: React.FC = () => {
                     </span>
                   </div>
 
-                  <span className="text-[10px] font-mono text-emerald-400">
+                  <span className="text-[10px] font-mono text-blue-400">
                     {previewPlaying ? 'Playing' : 'Ready'}
                   </span>
                 </div>
@@ -625,8 +639,8 @@ export const AdminVSLEditor: React.FC = () => {
                 <span
                   className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase ${
                     Boolean(vslData.posterMonochrome || vslData.monochrome)
-                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                      : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                      ? 'bg-zinc-800 text-zinc-300 border border-white/10'
+                      : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
                   }`}
                 >
                   {Boolean(vslData.posterMonochrome || vslData.monochrome)

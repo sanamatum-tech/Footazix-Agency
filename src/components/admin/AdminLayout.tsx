@@ -11,10 +11,12 @@ import { AdminFAQ } from './AdminFAQ';
 import { AdminInquiries } from './AdminInquiries';
 import { AdminMediaLibrary } from './AdminMediaLibrary';
 import { AdminSettings } from './AdminSettings';
+import { AdminGlobalTextEditor } from './AdminGlobalTextEditor';
 import { FootazixLogo } from '../FootazixLogo';
 import {
   LayoutDashboard,
   Globe2,
+  Type,
   PanelsTopLeft,
   PlaySquare,
   FolderKanban,
@@ -40,6 +42,7 @@ import { motion, AnimatePresence } from 'motion/react';
 export type AdminSection =
   | 'dashboard'
   | 'website'
+  | 'text_editor'
   | 'hero'
   | 'vsl'
   | 'portfolio'
@@ -79,7 +82,8 @@ export const AdminLayout: React.FC = () => {
       groupLabel: 'MAIN',
       items: [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { id: 'website', label: 'Text Editor & Content', icon: Globe2 },
+        { id: 'text_editor', label: 'Global Text Editor', icon: Type },
+        { id: 'website', label: 'Website Content', icon: Globe2 },
       ],
     },
     {
@@ -110,7 +114,8 @@ export const AdminLayout: React.FC = () => {
 
   const sectionTitles: Record<AdminSection, { title: string; breadcrumb: string }> = {
     dashboard: { title: 'Dashboard', breadcrumb: 'Home / Dashboard' },
-    website: { title: 'Text Editor & Website Content', breadcrumb: 'Content / Text Editor' },
+    text_editor: { title: 'Global Website Text Editor', breadcrumb: 'Content / Global Text Editor' },
+    website: { title: 'Website Content & System CMS', breadcrumb: 'Content / Website Content' },
     hero: { title: 'Hero CMS', breadcrumb: 'Content / Hero' },
     vsl: { title: 'VSL Settings', breadcrumb: 'Content / VSL' },
     portfolio: { title: 'Portfolio Management', breadcrumb: 'Content / Portfolio' },
@@ -126,6 +131,8 @@ export const AdminLayout: React.FC = () => {
     switch (activeSection) {
       case 'dashboard':
         return <AdminDashboard onNavigateSection={(sec) => setActiveSection(sec as AdminSection)} />;
+      case 'text_editor':
+        return <AdminGlobalTextEditor />;
       case 'website':
         return <AdminWebsiteEditor />;
       case 'hero':

@@ -27,12 +27,14 @@ import {
   AlertCircle,
   PlaySquare,
   Sparkles,
+  FolderKanban,
 } from 'lucide-react';
+import { portfolioService } from '../../services/portfolioService';
 
 const CATEGORIES: Array<'all' | MediaCategory> = ['all', 'images', 'videos', 'posters', 'logos'];
 
 export const AdminMediaLibrary: React.FC = () => {
-  const { media, content, updateWebsiteContent } = useApp();
+  const { media, content, updateWebsiteContent, projects } = useApp();
   const [selectedCategory, setSelectedCategory] = useState<'all' | MediaCategory>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
@@ -43,6 +45,7 @@ export const AdminMediaLibrary: React.FC = () => {
   const [previewAsset, setPreviewAsset] = useState<MediaAsset | null>(null);
   const [previewMonochrome, setPreviewMonochrome] = useState<boolean>(false);
   const [isDeletingId, setIsDeletingId] = useState<string | null>(null);
+  const [portfolioAssignAsset, setPortfolioAssignAsset] = useState<MediaAsset | null>(null);
 
   // Video preview player state
   const [isPlaying, setIsPlaying] = useState(false);
@@ -203,6 +206,23 @@ export const AdminMediaLibrary: React.FC = () => {
       setTimeout(() => setStatusMessage(''), 3500);
     } catch (err: any) {
       setStatusMessage(`Failed to update VSL: ${err?.message || 'Error'}`);
+    }
+  };
+
+  const handleAssignToProject = async (projectId: string) => {
+    if (!portfolioAssignAsset) return;
+    try {
+      setStatusMessage('Assigning video to portfolio project in Supabase...');
+      await portfolioService.updateProject(projectId, {
+        videoUrl: portfolioAssignAsset.url,
+      });
+      const proj = projects.find((p) => p.id === projectId);
+      setStatusMessage(`Assigned video to "${proj?.title || 'Project'}" successfully!`);
+      setPortfolioAssignAsset(null);
+      setTimeout(() => setStatusMessage(''), 3500);
+    } catch (err: any) {
+      setStatusMessage(`Failed to update project: ${err?.message || 'Error'}`);
+      setTimeout(() => setStatusMessage(''), 4000);
     }
   };
 
@@ -482,15 +502,26 @@ export const AdminMediaLibrary: React.FC = () => {
                   </button>
 
                   {isVid && (
-                    <button
-                      type="button"
-                      onClick={() => handleAssignToVSL(asset)}
-                      className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-blue-400 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 cursor-pointer hidden md:inline-flex items-center gap-1"
-                      title="Set as Founder VSL Video"
-                    >
-                      <PlaySquare className="w-3 h-3" />
-                      <span>Set as VSL</span>
-                    </button>
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => handleAssignToVSL(asset)}
+                        className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-blue-400 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 cursor-pointer hidden md:inline-flex items-center gap-1"
+                        title="Set as Founder VSL Video"
+                      >
+                        <PlaySquare className="w-3 h-3" />
+                        <span>Set as VSL</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPortfolioAssignAsset(asset)}
+                        className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-zinc-300 bg-[#12121c] hover:text-white border border-white/10 cursor-pointer hidden md:inline-flex items-center gap-1"
+                        title="Use video in Portfolio project"
+                      >
+                        <FolderKanban className="w-3 h-3 text-blue-400" />
+                        <span>In Portfolio</span>
+                      </button>
+                    </>
                   )}
 
                   <button
@@ -500,7 +531,7 @@ export const AdminMediaLibrary: React.FC = () => {
                   >
                     {copiedUrl === asset.url ? (
                       <>
-                        <Check className="w-3 h-3 text-emerald-400" />
+                        <Check className="w-3 h-3 text-blue-400" />
                         <span>Copied</span>
                       </>
                     ) : (
@@ -662,8 +693,8 @@ export const AdminMediaLibrary: React.FC = () => {
                             <span>Checking URL...</span>
                           </span>
                         ) : verificationResult?.accessible ? (
-                          <span className="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
-                            <CheckCircle2 className="w-3 h-3" />
+                          <span className="text-[10px] font-mono text-blue-400 flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3 text-blue-400" />
                             <span>Storage Object Verified (200 OK)</span>
                           </span>
                         ) : verificationResult ? (
@@ -720,23 +751,113 @@ export const AdminMediaLibrary: React.FC = () => {
 
               {/* Quick Actions for Videos */}
               {isAssetVideo(previewAsset) && (
-                <div className="p-3 rounded-xl bg-[#12121c] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div>
-                    <span className="text-xs font-bold text-white block">Use in Founder VSL</span>
-                    <span className="text-[11px] text-zinc-400">
-                      Assigns this video directly to the Founder VSL system on the public website.
-                    </span>
+                <div className="space-y-2">
+                  <div className="p-3 rounded-xl bg-[#12121c] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <span className="text-xs font-bold text-white block">Use in Founder VSL</span>
+                      <span className="text-[11px] text-zinc-400">
+                        Assigns this video directly to the Founder VSL system on the public website.
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleAssignToVSL(previewAsset)}
+                      className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 flex items-center justify-center gap-1.5 shrink-0 cursor-pointer shadow-lg shadow-blue-600/25"
+                    >
+                      <PlaySquare className="w-3.5 h-3.5" />
+                      <span>Set as Founder VSL Video</span>
+                    </button>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => handleAssignToVSL(previewAsset)}
-                    className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-emerald-600 hover:bg-emerald-500 flex items-center justify-center gap-1.5 shrink-0 cursor-pointer shadow-lg shadow-emerald-600/20"
-                  >
-                    <PlaySquare className="w-3.5 h-3.5" />
-                    <span>Set as Founder VSL Video</span>
-                  </button>
+                  <div className="p-3 rounded-xl bg-[#12121c] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <span className="text-xs font-bold text-white block">Use in Portfolio Project</span>
+                      <span className="text-[11px] text-zinc-400">
+                        Attach this video to any existing work in your portfolio.
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setPortfolioAssignAsset(previewAsset)}
+                      className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 flex items-center justify-center gap-1.5 shrink-0 cursor-pointer shadow-lg shadow-blue-600/20"
+                    >
+                      <FolderKanban className="w-3.5 h-3.5" />
+                      <span>Assign to Portfolio Project</span>
+                    </button>
+                  </div>
                 </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Portfolio Project Assignment Modal */}
+      {portfolioAssignAsset && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
+          onClick={() => setPortfolioAssignAsset(null)}
+        >
+          <div
+            className="w-full max-w-xl bg-[#0b0b14] border border-white/15 rounded-2xl p-6 space-y-4 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                <FolderKanban className="w-4 h-4 text-blue-400" />
+                <span>Assign Video to Portfolio Project</span>
+              </h3>
+              <button
+                type="button"
+                onClick={() => setPortfolioAssignAsset(null)}
+                className="p-1.5 rounded-lg text-zinc-400 hover:text-white bg-[#12121c] cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <p className="text-xs text-zinc-400">
+              Choose a project to update with video: <span className="text-white font-mono">{portfolioAssignAsset.name}</span>
+            </p>
+
+            <div className="max-h-80 overflow-y-auto space-y-2">
+              {projects.length === 0 ? (
+                <div className="py-8 text-center text-xs text-zinc-500">
+                  No portfolio projects found.
+                </div>
+              ) : (
+                projects.map((p) => (
+                  <div
+                    key={p.id}
+                    onClick={() => handleAssignToProject(p.id)}
+                    className="p-3.5 rounded-xl bg-[#12121c] hover:bg-zinc-800 border border-white/5 hover:border-blue-500/40 flex items-center justify-between gap-3 cursor-pointer transition-colors"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-12 h-9 rounded-lg bg-zinc-900 border border-white/10 overflow-hidden shrink-0">
+                        {p.coverImage && (
+                          <img src={p.coverImage} alt={p.title} className="w-full h-full object-cover" />
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-xs font-bold text-white truncate block">{p.title}</span>
+                        <span className="text-[10px] text-zinc-400 font-mono">
+                          {p.category} · {p.status}
+                        </span>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 shrink-0"
+                    >
+                      Assign Video
+                    </button>
+                  </div>
+                ))
               )}
             </div>
           </div>

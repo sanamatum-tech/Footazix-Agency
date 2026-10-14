@@ -2,6 +2,7 @@ import React from 'react';
 import { useApp } from '../context/AppContext';
 import { ExternalLink, Mail } from 'lucide-react';
 import { motion } from 'motion/react';
+import { VerifiedTeamBadge } from './VerifiedTeamBadge';
 
 export const About: React.FC = () => {
   const { content, team } = useApp();
@@ -83,7 +84,10 @@ export const About: React.FC = () => {
                     )}
                     <div>
                       <h3 className="text-lg font-display font-extrabold text-white tracking-tight">
-                        {member.name}
+                        <span className="inline-flex items-center gap-1.5 align-baseline">
+                          <span>{member.name}</span>
+                          <VerifiedTeamBadge size="md" />
+                        </span>
                       </h3>
                       <p className="text-xs font-semibold text-blue-400">
                         {member.role}

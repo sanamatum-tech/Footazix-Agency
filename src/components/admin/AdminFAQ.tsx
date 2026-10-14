@@ -319,11 +319,11 @@ export const AdminFAQ: React.FC = () => {
                         {faq.category}
                       </span>
                       {faq.published ? (
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/15 text-blue-300 border border-blue-500/30 font-medium">
                           Published
                         </span>
                       ) : (
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-white/10 font-medium">
                           Draft
                         </span>
                       )}
@@ -351,7 +351,7 @@ export const AdminFAQ: React.FC = () => {
                     onClick={() => togglePublished(faq)}
                     className={`px-2.5 py-1.5 rounded-lg text-xs font-mono uppercase tracking-wider font-semibold transition-colors cursor-pointer border ${
                       faq.published
-                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'
+                        ? 'bg-blue-600/20 text-blue-300 border-blue-500/30 hover:bg-blue-600/30'
                         : 'bg-zinc-800 text-zinc-400 border-white/10 hover:text-white'
                     }`}
                     title={faq.published ? 'Click to unpublish' : 'Click to publish'}
