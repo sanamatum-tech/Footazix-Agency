@@ -102,7 +102,7 @@ export const authService = {
           return { success: false, error: 'Failed to authenticate user.' };
         }
 
-        // Verify admin profile in admin_profiles table
+        // Verify admin profile in admin_profiles table or editors table
         const { data: profile, error: profileError } = await supabase
           .from('admin_profiles')
           .select('*')
@@ -113,13 +113,29 @@ export const authService = {
           console.warn('Admin profile lookup warning:', profileError);
         }
 
-        // Check if user is an authorized admin
-        // Note: if table is newly seeded, allow owner or first user
+        // Check if user is in editors table
+        let editorName = profile?.name;
+        let userRole: 'owner' | 'editor' = profile?.role || 'editor';
+
+        if (!profile) {
+          try {
+            const { data: editorData } = await supabase
+              .from('editors')
+              .select('*')
+              .eq('email', data.user.email)
+              .maybeSingle();
+            if (editorData) {
+              editorName = editorData.name;
+              userRole = 'editor';
+            }
+          } catch {}
+        }
+
         const user: AdminUser = {
           id: data.user.id,
           email: data.user.email || email,
-          name: profile?.name || data.user.user_metadata?.name || email.split('@')[0] || 'Admin',
-          role: profile?.role || 'owner',
+          name: editorName || data.user.user_metadata?.name || email.split('@')[0] || 'Member',
+          role: userRole,
         };
 
         this.saveLocalSession(user, rememberMe);
@@ -133,22 +149,77 @@ export const authService = {
       }
     }
 
-    // 2. Fallback when VITE_SUPABASE_URL is not yet set in environment
-    // Allows preview & testing while instructing user to configure Supabase
+    // 2. Fallback when VITE_SUPABASE_URL is not yet set or in local preview mode
     if (password.length < 4) {
       return { success: false, error: 'Password must be at least 4 characters.' };
     }
 
+    const isEditorEmail = email.includes('editor') || email.includes('alex') || email.includes('maya');
     const fallbackUser: AdminUser = {
-      id: 'local-admin-preview',
+      id: isEditorEmail ? 'editor-alex-01' : 'local-admin-preview',
       email: email.trim().toLowerCase(),
-      name: email.split('@')[0] || 'Admin',
-      role: 'owner',
+      name: isEditorEmail ? 'Alex Rivera' : (email.split('@')[0] || 'Admin'),
+      role: isEditorEmail ? 'editor' : 'owner',
     };
 
     this.saveLocalSession(fallbackUser, rememberMe);
     notifyListeners(fallbackUser);
     return { success: true, user: fallbackUser };
+  },
+
+  async resetPassword(email: string): Promise<{ success: boolean; message: string; error?: string }> {
+    if (!email.trim()) {
+      return { success: false, message: '', error: 'Please enter your registered email address.' };
+    }
+
+    if (isSupabaseConfigured() && supabase) {
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+          redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/editors` : undefined,
+        });
+
+        if (error) {
+          return { success: false, message: '', error: error.message };
+        }
+
+        return {
+          success: true,
+          message: 'Password reset link sent! Check your inbox to set a new password.',
+        };
+      } catch (err: any) {
+        return {
+          success: false,
+          message: '',
+          error: err?.message || 'Failed to send password reset email.',
+        };
+      }
+    }
+
+    // Fallback in preview mode
+    return {
+      success: true,
+      message: `Reset link generated for ${email}. (In preview mode, you can sign in directly).`,
+    };
+  },
+
+  async updatePassword(newPassword: string): Promise<{ success: boolean; error?: string }> {
+    if (!newPassword || newPassword.length < 6) {
+      return { success: false, error: 'Password must be at least 6 characters long.' };
+    }
+
+    if (isSupabaseConfigured() && supabase) {
+      try {
+        const { error } = await supabase.auth.updateUser({ password: newPassword });
+        if (error) {
+          return { success: false, error: error.message };
+        }
+        return { success: true };
+      } catch (err: any) {
+        return { success: false, error: err?.message || 'Failed to update password.' };
+      }
+    }
+
+    return { success: true };
   },
 
   async logout(): Promise<void> {

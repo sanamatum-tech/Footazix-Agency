@@ -451,3 +451,111 @@ CREATE POLICY "Admins can manage faqs"
   USING (public.is_admin())
   WITH CHECK (public.is_admin());
 
+-- ==============================================================================
+-- 11. EDITORS & EDITOR ASSIGNMENTS TABLES & POLICIES
+-- ==============================================================================
+CREATE TABLE IF NOT EXISTS public.editors (
+  id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::TEXT,
+  auth_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  email TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'editor' CHECK (role IN ('editor', 'lead_editor')),
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'invited', 'inactive')),
+  designation TEXT DEFAULT 'Video Editor',
+  bio TEXT,
+  avatar_url TEXT,
+  specialties TEXT[] DEFAULT ARRAY[]::TEXT[],
+  assigned_clients TEXT[] DEFAULT ARRAY[]::TEXT[],
+  is_primary BOOLEAN DEFAULT false,
+  completed_projects_count INTEGER DEFAULT 0,
+  active_projects_count INTEGER DEFAULT 0,
+  rating NUMERIC(3, 1) DEFAULT 5.0,
+  invited_at TIMESTAMPTZ,
+  last_active_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_editors_email ON public.editors (email);
+CREATE INDEX IF NOT EXISTS idx_editors_status ON public.editors (status);
+
+ALTER TABLE public.editors ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Admins have full access to editors" ON public.editors;
+CREATE POLICY "Admins have full access to editors"
+  ON public.editors FOR ALL
+  TO authenticated
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
+
+DROP POLICY IF EXISTS "Editors can read their own profile" ON public.editors;
+CREATE POLICY "Editors can read their own profile"
+  ON public.editors FOR SELECT
+  TO authenticated
+  USING (auth_user_id = auth.uid() OR email = (SELECT email FROM auth.users WHERE id = auth.uid()));
+
+DROP POLICY IF EXISTS "Editors can update their personal bio and specialties" ON public.editors;
+CREATE POLICY "Editors can update their personal bio and specialties"
+  ON public.editors FOR UPDATE
+  TO authenticated
+  USING (auth_user_id = auth.uid() OR email = (SELECT email FROM auth.users WHERE id = auth.uid()))
+  WITH CHECK (auth_user_id = auth.uid() OR email = (SELECT email FROM auth.users WHERE id = auth.uid()));
+
+-- Editor Assignments
+CREATE TABLE IF NOT EXISTS public.editor_assignments (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  client_name TEXT NOT NULL,
+  editor_id TEXT REFERENCES public.editors(id) ON DELETE SET NULL,
+  editor_name TEXT,
+  editor_email TEXT,
+  status TEXT NOT NULL DEFAULT 'assigned' CHECK (status IN ('assigned', 'in_progress', 'draft_submitted', 'revision_requested', 'approved', 'completed')),
+  priority TEXT NOT NULL DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high', 'urgent')),
+  format TEXT NOT NULL DEFAULT 'vertical' CHECK (format IN ('vertical', 'horizontal', 'square')),
+  due_date TIMESTAMPTZ,
+  brief TEXT,
+  raw_footage_url TEXT,
+  style_guide_url TEXT,
+  target_duration TEXT,
+  latest_draft_url TEXT,
+  latest_draft_notes TEXT,
+  revision_feedback TEXT,
+  created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_editor_assignments_editor_id ON public.editor_assignments (editor_id);
+CREATE INDEX IF NOT EXISTS idx_editor_assignments_status ON public.editor_assignments (status);
+
+ALTER TABLE public.editor_assignments ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Admins have full access to assignments" ON public.editor_assignments;
+CREATE POLICY "Admins have full access to assignments"
+  ON public.editor_assignments FOR ALL
+  TO authenticated
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
+
+DROP POLICY IF EXISTS "Editors can view assigned projects" ON public.editor_assignments;
+CREATE POLICY "Editors can view assigned projects"
+  ON public.editor_assignments FOR SELECT
+  TO authenticated
+  USING (
+    editor_email = (SELECT email FROM auth.users WHERE id = auth.uid()) OR
+    public.is_admin()
+  );
+
+DROP POLICY IF EXISTS "Editors can update their assigned project drafts" ON public.editor_assignments;
+CREATE POLICY "Editors can update their assigned project drafts"
+  ON public.editor_assignments FOR UPDATE
+  TO authenticated
+  USING (
+    editor_email = (SELECT email FROM auth.users WHERE id = auth.uid()) OR
+    public.is_admin()
+  )
+  WITH CHECK (
+    editor_email = (SELECT email FROM auth.users WHERE id = auth.uid()) OR
+    public.is_admin()
+  );
+
+

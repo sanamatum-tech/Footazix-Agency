@@ -35,7 +35,7 @@ import { authService } from '../services/authService';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { INITIAL_WEBSITE_CONTENT } from '../data/mockData';
 
-export type ActiveView = 'public' | 'admin' | 'terms' | 'privacy';
+export type ActiveView = 'public' | 'admin' | 'terms' | 'privacy' | 'editors';
 
 interface AppContextValue {
   // Navigation / View
@@ -45,6 +45,7 @@ interface AppContextValue {
   navigateToPublic: () => void;
   navigateToTerms: () => void;
   navigateToPrivacy: () => void;
+  navigateToEditors: () => void;
 
   // Auth (Supabase Auth + admin_profiles)
   currentUser: AdminUser | null;
@@ -87,6 +88,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     if (path.startsWith('/secureadmin') || window.location.hash === '#secureadmin' || window.location.search.includes('admin=true')) {
       return 'admin';
     }
+    if (path.startsWith('/editors') || window.location.hash === '#editors') {
+      return 'editors';
+    }
     if (path.startsWith('/terms')) return 'terms';
     if (path.startsWith('/privacy')) return 'privacy';
     return 'public';
@@ -111,6 +115,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setActiveView('admin');
     if (typeof window !== 'undefined' && window.location.pathname !== '/secureadmin') {
       window.history.pushState({}, '', '/secureadmin');
+    }
+  }, []);
+
+  const navigateToEditors = useCallback(() => {
+    setActiveView('editors');
+    if (typeof window !== 'undefined' && window.location.pathname !== '/editors') {
+      window.history.pushState({}, '', '/editors');
     }
   }, []);
 
@@ -141,6 +152,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       const path = window.location.pathname.toLowerCase();
       if (path.startsWith('/secureadmin')) {
         setActiveView('admin');
+      } else if (path.startsWith('/editors')) {
+        setActiveView('editors');
       } else if (path.startsWith('/terms')) {
         setActiveView('terms');
       } else if (path.startsWith('/privacy')) {
@@ -342,6 +355,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         navigateToPublic,
         navigateToTerms,
         navigateToPrivacy,
+        navigateToEditors,
         currentUser,
         isAuthenticated: !!currentUser,
         login,

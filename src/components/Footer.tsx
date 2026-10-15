@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { FootazixLogo } from './FootazixLogo';
-import { LockKeyhole, ExternalLink, ArrowUp, ArrowRight } from 'lucide-react';
+import { LockKeyhole, ExternalLink, ArrowUp, ArrowRight, Film } from 'lucide-react';
 import { FooterNavItem, FooterSocialLinkItem, FooterLegalLinkItem } from '../types';
 
 interface FooterProps {
@@ -9,7 +9,7 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
-  const { content, navigateToAdmin, navigateToTerms, navigateToPrivacy } = useApp();
+  const { content, navigateToAdmin, navigateToTerms, navigateToPrivacy, navigateToEditors } = useApp();
   const footerConfig = content.footer;
 
   const handleLinkClick = (href: string) => {
@@ -265,15 +265,26 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
               </div>
             )}
 
-            {/* Owner Discreet Lock Button */}
-            <button
-              onClick={navigateToAdmin}
-              className="inline-flex items-center justify-center p-1 text-zinc-600 hover:text-zinc-400 active:text-blue-400 transition-colors cursor-pointer rounded opacity-60 hover:opacity-100"
-              title="Private Studio Access"
-              aria-label="Private Studio Access"
-            >
-              <LockKeyhole className="w-3 h-3" />
-            </button>
+            {/* Discreet Access Icons */}
+            <div className="flex items-center gap-1 border-l border-white/10 pl-2">
+              <button
+                onClick={navigateToEditors}
+                className="inline-flex items-center justify-center p-1 text-zinc-600 hover:text-blue-400 transition-colors cursor-pointer rounded opacity-60 hover:opacity-100"
+                title="Editor Workspace (/editors)"
+                aria-label="Editor Workspace"
+              >
+                <Film className="w-3 h-3" />
+              </button>
+
+              <button
+                onClick={navigateToAdmin}
+                className="inline-flex items-center justify-center p-1 text-zinc-600 hover:text-zinc-400 active:text-blue-400 transition-colors cursor-pointer rounded opacity-60 hover:opacity-100"
+                title="Private Studio Access"
+                aria-label="Private Studio Access"
+              >
+                <LockKeyhole className="w-3 h-3" />
+              </button>
+            </div>
           </div>
 
           {/* Back to top */}

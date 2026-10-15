@@ -12,6 +12,7 @@ import { AdminInquiries } from './AdminInquiries';
 import { AdminMediaLibrary } from './AdminMediaLibrary';
 import { AdminSettings } from './AdminSettings';
 import { AdminGlobalTextEditor } from './AdminGlobalTextEditor';
+import { AdminEditors } from './AdminEditors';
 import { FootazixLogo } from '../FootazixLogo';
 import {
   LayoutDashboard,
@@ -36,6 +37,7 @@ import {
   CheckCircle2,
   AlertCircle,
   Loader2,
+  Film,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -50,6 +52,7 @@ export type AdminSection =
   | 'team'
   | 'faq'
   | 'inquiries'
+  | 'editors'
   | 'media'
   | 'settings';
 
@@ -102,6 +105,7 @@ export const AdminLayout: React.FC = () => {
       groupLabel: 'BUSINESS',
       items: [
         { id: 'inquiries', label: 'Inquiries', icon: Inbox, badge: newInquiriesCount },
+        { id: 'editors', label: 'Editors & Dispatch', icon: Film },
       ],
     },
     {
@@ -123,6 +127,7 @@ export const AdminLayout: React.FC = () => {
     team: { title: 'Team Members', breadcrumb: 'Content / Team' },
     faq: { title: 'FAQ Management', breadcrumb: 'Content / FAQ' },
     inquiries: { title: 'Client Inquiries', breadcrumb: 'Business / Inquiries' },
+    editors: { title: 'Editor Team & Video Dispatch', breadcrumb: 'Business / Editors' },
     media: { title: 'Media Library', breadcrumb: 'Content / Media' },
     settings: { title: 'Studio Settings', breadcrumb: 'System / Settings' },
   };
@@ -149,6 +154,8 @@ export const AdminLayout: React.FC = () => {
         return <AdminFAQ />;
       case 'inquiries':
         return <AdminInquiries />;
+      case 'editors':
+        return <AdminEditors />;
       case 'media':
         return <AdminMediaLibrary />;
       case 'settings':

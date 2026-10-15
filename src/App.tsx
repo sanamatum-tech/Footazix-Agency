@@ -15,6 +15,7 @@ import { Footer } from './components/Footer';
 import { AdminLayout } from './components/admin/AdminLayout';
 import { AdminLogin } from './components/admin/AdminLogin';
 import { LegalPage } from './components/LegalPage';
+import { EditorWorkspaceWrapper } from './components/editors/EditorWorkspaceWrapper';
 
 function MainWebsite() {
   const { content } = useApp();
@@ -199,6 +200,8 @@ function AppContent() {
       <DynamicHead />
       {activeView === 'admin' ? (
         isAuthenticated ? <AdminLayout /> : <AdminLogin />
+      ) : activeView === 'editors' ? (
+        <EditorWorkspaceWrapper />
       ) : activeView === 'terms' ? (
         <LegalPage type="terms" />
       ) : activeView === 'privacy' ? (
