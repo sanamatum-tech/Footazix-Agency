@@ -11,7 +11,6 @@ import {
   KeyRound,
   CheckCircle2,
   Video,
-  Sparkles,
   ArrowLeft,
 } from 'lucide-react';
 
@@ -20,7 +19,7 @@ interface EditorLoginProps {
 }
 
 export const EditorLogin: React.FC<EditorLoginProps> = ({ onSuccess }) => {
-  const { navigateToPublic } = useApp();
+  const { navigateToPublic, loginEditor } = useApp();
   const [tab, setTab] = useState<'signin' | 'forgot'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,21 +32,24 @@ export const EditorLogin: React.FC<EditorLoginProps> = ({ onSuccess }) => {
     e.preventDefault();
     setError(null);
 
-    if (!email.trim() || !password.trim()) {
+    const cleanEmail = email.trim();
+    const cleanPassword = password.trim();
+
+    if (!cleanEmail || !cleanPassword) {
       setError('Please provide both your editor email and password.');
       return;
     }
 
     setLoading(true);
     try {
-      const res = await authService.login(email.trim(), password, rememberMe);
+      const res = await loginEditor(cleanEmail, cleanPassword, rememberMe);
       if (res.success) {
         if (onSuccess) onSuccess();
       } else {
         setError(res.error || 'Authentication failed. Please verify your credentials.');
       }
     } catch (err: any) {
-      setError(err?.message || 'A network error occurred while connecting to the editor portal.');
+      setError('Unable to connect to the authorization service. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }
@@ -58,30 +60,25 @@ export const EditorLogin: React.FC<EditorLoginProps> = ({ onSuccess }) => {
     setError(null);
     setResetMessage(null);
 
-    if (!email.trim()) {
+    const cleanEmail = email.trim();
+    if (!cleanEmail) {
       setError('Please enter your editor email address to receive password reset instructions.');
       return;
     }
 
     setLoading(true);
     try {
-      const res = await authService.resetPassword(email.trim());
+      const res = await authService.resetPassword(cleanEmail);
       if (res.success) {
         setResetMessage(res.message);
       } else {
         setError(res.error || 'Unable to send password recovery link.');
       }
     } catch (err: any) {
-      setError(err?.message || 'Error requesting password reset.');
+      setError('Unable to connect to the authorization service. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }
-  };
-
-  const fillQuickDemo = (demoEmail: string) => {
-    setEmail(demoEmail);
-    setPassword('Footazix2026!');
-    setError(null);
   };
 
   return (
@@ -93,21 +90,26 @@ export const EditorLogin: React.FC<EditorLoginProps> = ({ onSuccess }) => {
       </div>
 
       <div className="w-full max-w-md relative z-10">
-        {/* Brand header */}
+        {/* Brand header with responsive alignment */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center mb-4">
-            <FootazixLogo className="h-8 w-auto text-white" />
-          </div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 mb-3">
-            <Video className="w-3.5 h-3.5 text-blue-400" />
-            <span className="text-xs font-mono font-medium tracking-wider uppercase text-blue-400">
-              Editor Workspace
-            </span>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-3.5 mb-5">
+            <div className="flex items-center shrink-0">
+              <FootazixLogo className="h-7 sm:h-8 w-auto text-white" />
+            </div>
+            {/* Elegant vertical divider on desktop/tablet */}
+            <span className="hidden sm:inline-block w-px h-5 bg-white/15" aria-hidden="true" />
+            {/* Editor Workspace Badge */}
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 shrink-0">
+              <Video className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+              <span className="text-[11px] font-mono font-medium tracking-wider uppercase leading-none">
+                Editor Workspace
+              </span>
+            </div>
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-white mb-2 font-display">
             Editor Sign In
           </h1>
-          <p className="text-sm text-zinc-400 max-w-sm mx-auto">
+          <p className="text-sm text-zinc-400 max-w-sm mx-auto leading-relaxed">
             Authorized workspace for Footazix video editors, motion designers, and sound engineers.
           </p>
         </div>
@@ -122,7 +124,7 @@ export const EditorLogin: React.FC<EditorLoginProps> = ({ onSuccess }) => {
               {error && (
                 <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex items-start gap-2.5 animate-in fade-in">
                   <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5" />
-                  <span>{error}</span>
+                  <span className="leading-relaxed">{error}</span>
                 </div>
               )}
 
@@ -139,6 +141,7 @@ export const EditorLogin: React.FC<EditorLoginProps> = ({ onSuccess }) => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="editor@footazix.com"
+                    autoComplete="email"
                     required
                     className="w-full bg-[#12121c] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                   />
@@ -156,7 +159,7 @@ export const EditorLogin: React.FC<EditorLoginProps> = ({ onSuccess }) => {
                       setError(null);
                       setTab('forgot');
                     }}
-                    className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
+                    className="text-xs text-blue-400 hover:text-blue-300 transition-colors cursor-pointer"
                   >
                     Forgot password?
                   </button>
@@ -170,6 +173,7 @@ export const EditorLogin: React.FC<EditorLoginProps> = ({ onSuccess }) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••••••"
+                    autoComplete="current-password"
                     required
                     className="w-full bg-[#12121c] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                   />
@@ -196,7 +200,7 @@ export const EditorLogin: React.FC<EditorLoginProps> = ({ onSuccess }) => {
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Verifying Credentials...</span>
+                    <span>Verifying Editor Authorization...</span>
                   </>
                 ) : (
                   <>
@@ -216,7 +220,7 @@ export const EditorLogin: React.FC<EditorLoginProps> = ({ onSuccess }) => {
               {error && (
                 <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex items-start gap-2.5 animate-in fade-in">
                   <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5" />
-                  <span>{error}</span>
+                  <span className="leading-relaxed">{error}</span>
                 </div>
               )}
 
@@ -240,6 +244,7 @@ export const EditorLogin: React.FC<EditorLoginProps> = ({ onSuccess }) => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="editor@footazix.com"
+                    autoComplete="email"
                     required
                     className="w-full bg-[#12121c] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                   />
@@ -249,7 +254,7 @@ export const EditorLogin: React.FC<EditorLoginProps> = ({ onSuccess }) => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
               >
                 {loading ? (
                   <>
@@ -268,43 +273,13 @@ export const EditorLogin: React.FC<EditorLoginProps> = ({ onSuccess }) => {
                   setResetMessage(null);
                   setTab('signin');
                 }}
-                className="w-full py-2.5 text-xs text-zinc-400 hover:text-white transition-colors flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 text-xs text-zinc-400 hover:text-white transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 <span>Back to Sign In</span>
               </button>
             </form>
           )}
-
-          {/* Quick Demo Credentials */}
-          <div className="mt-6 pt-5 border-t border-white/5">
-            <div className="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-zinc-500 mb-2.5">
-              <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-              <span>Quick Test Access (Preview Accounts)</span>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => fillQuickDemo('alex@footazix.com')}
-                className="text-left p-2 rounded-lg bg-[#12121c] hover:bg-[#181826] border border-white/5 hover:border-blue-500/30 transition-all text-xs group"
-              >
-                <span className="block font-medium text-zinc-200 group-hover:text-blue-400 transition-colors">
-                  Alex Rivera
-                </span>
-                <span className="block text-[10px] text-zinc-500">Lead Editor</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => fillQuickDemo('maya@footazix.com')}
-                className="text-left p-2 rounded-lg bg-[#12121c] hover:bg-[#181826] border border-white/5 hover:border-blue-500/30 transition-all text-xs group"
-              >
-                <span className="block font-medium text-zinc-200 group-hover:text-blue-400 transition-colors">
-                  Maya Chen
-                </span>
-                <span className="block text-[10px] text-zinc-500">Motion Specialist</span>
-              </button>
-            </div>
-          </div>
         </div>
 
         {/* Back to public site */}
@@ -312,7 +287,7 @@ export const EditorLogin: React.FC<EditorLoginProps> = ({ onSuccess }) => {
           <button
             type="button"
             onClick={navigateToPublic}
-            className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors inline-flex items-center gap-1.5"
+            className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Return to Footazix Public Site</span>

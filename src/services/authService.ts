@@ -54,18 +54,60 @@ export const authService = {
         return null;
       }
 
-      // Verify admin role in admin_profiles table
+      // 1. Verify admin role in admin_profiles table
       const { data: profile } = await supabase
         .from('admin_profiles')
         .select('*')
         .eq('id', session.user.id)
         .maybeSingle();
 
+      if (profile) {
+        const user: AdminUser = {
+          id: session.user.id,
+          email: session.user.email || '',
+          name: profile?.name || session.user.email?.split('@')[0] || 'Admin',
+          role: profile?.role || 'owner',
+        };
+
+        this.saveLocalSession(user, true);
+        notifyListeners(user);
+        return user;
+      }
+
+      // 2. Check if user is in editors table
+      const { data: editorData } = await supabase
+        .from('editors')
+        .select('*')
+        .ilike('email', session.user.email || '')
+        .maybeSingle();
+
+      if (editorData) {
+        // Enforce active status
+        if (editorData.status !== 'active') {
+          await supabase.auth.signOut();
+          this.clearLocalSession();
+          notifyListeners(null);
+          return null;
+        }
+
+        const user: AdminUser = {
+          id: editorData.id || session.user.id,
+          email: session.user.email || editorData.email,
+          name: editorData.name || session.user.email?.split('@')[0] || 'Editor',
+          role: 'editor',
+        };
+
+        this.saveLocalSession(user, true);
+        notifyListeners(user);
+        return user;
+      }
+
+      // Fallback: authenticated user without profile
       const user: AdminUser = {
         id: session.user.id,
         email: session.user.email || '',
-        name: profile?.name || session.user.email?.split('@')[0] || 'Admin',
-        role: profile?.role || 'owner',
+        name: session.user.email?.split('@')[0] || 'User',
+        role: 'editor',
       };
 
       this.saveLocalSession(user, true);
@@ -74,6 +116,174 @@ export const authService = {
     } catch (err) {
       console.warn('Auth initialization warning:', err);
       return this.getCurrentUser();
+    }
+  },
+
+  /**
+   * Dedicated Admin-Controlled Editor Login
+   * Authenticates against Supabase Auth, verifies active status in editors table,
+   * and provides clear non-technical feedback.
+   */
+  async loginEditor(
+    email: string,
+    password: string,
+    rememberMe: boolean = true
+  ): Promise<{ success: boolean; user?: AdminUser; error?: string }> {
+    const trimmedEmail = email.trim().toLowerCase();
+    if (!trimmedEmail || !password.trim()) {
+      return { success: false, error: 'Please enter both your editor email and password.' };
+    }
+
+    if (isSupabaseConfigured() && supabase) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: trimmedEmail,
+          password,
+        });
+
+        if (error) {
+          const msg = error.message?.toLowerCase() || '';
+          if (msg.includes('fetch') || msg.includes('network') || msg.includes('connection')) {
+            return {
+              success: false,
+              error: 'Unable to connect to the authorization service. Please check your connection and try again.',
+            };
+          }
+          if (
+            msg.includes('invalid login credentials') ||
+            msg.includes('invalid_grant') ||
+            msg.includes('invalid credentials') ||
+            msg.includes('password')
+          ) {
+            return {
+              success: false,
+              error: 'Invalid email or password. Please verify your credentials.',
+            };
+          }
+          return { success: false, error: error.message || 'Authentication failed. Please verify your credentials.' };
+        }
+
+        if (!data.user) {
+          return { success: false, error: 'Failed to authenticate user.' };
+        }
+
+        // Verify if owner/admin
+        const { data: adminProfile } = await supabase
+          .from('admin_profiles')
+          .select('*')
+          .eq('id', data.user.id)
+          .maybeSingle();
+
+        if (adminProfile) {
+          const user: AdminUser = {
+            id: data.user.id,
+            email: data.user.email || trimmedEmail,
+            name: adminProfile.name || 'Admin',
+            role: adminProfile.role || 'owner',
+          };
+          this.saveLocalSession(user, rememberMe);
+          notifyListeners(user);
+          return { success: true, user };
+        }
+
+        // Verify in editors table
+        const { data: editorData, error: editorErr } = await supabase
+          .from('editors')
+          .select('*')
+          .ilike('email', trimmedEmail)
+          .maybeSingle();
+
+        if (editorErr || !editorData || editorData.status !== 'active') {
+          // If inactive or unauthorized, immediately sign out
+          await supabase.auth.signOut();
+          this.clearLocalSession();
+          notifyListeners(null);
+          return {
+            success: false,
+            error: 'Your editor account has not been activated or is not authorized. Please contact your Footazix administrator.',
+          };
+        }
+
+        const user: AdminUser = {
+          id: editorData.id || data.user.id,
+          email: data.user.email || editorData.email || trimmedEmail,
+          name: editorData.name || 'Editor',
+          role: 'editor',
+        };
+
+        this.saveLocalSession(user, rememberMe);
+        notifyListeners(user);
+        return { success: true, user };
+      } catch (err: any) {
+        const msg = err?.message?.toLowerCase() || '';
+        if (msg.includes('network') || msg.includes('fetch') || msg.includes('connection')) {
+          return {
+            success: false,
+            error: 'Unable to connect to the authorization service. Please check your connection and try again.',
+          };
+        }
+        return {
+          success: false,
+          error: err?.message || 'Authentication error occurred while contacting Supabase.',
+        };
+      }
+    }
+
+    // Fallback when Supabase is not configured (offline / local preview mode)
+    try {
+      const { editorService } = await import('./editorService');
+      const editors = await editorService.getEditors();
+      const editor = editors.find((e) => e.email.toLowerCase() === trimmedEmail);
+
+      // Check if studio owner
+      const isOwner = trimmedEmail === 'footazix@gmail.com' || trimmedEmail === 'admin@footazix.com' || trimmedEmail.includes('admin');
+      if (isOwner) {
+        const user: AdminUser = {
+          id: 'local-owner',
+          email: trimmedEmail,
+          name: 'Studio Owner',
+          role: 'owner',
+        };
+        this.saveLocalSession(user, rememberMe);
+        notifyListeners(user);
+        return { success: true, user };
+      }
+
+      if (!editor) {
+        return {
+          success: false,
+          error: 'Your editor account has not been activated or is not authorized. Please contact your Footazix administrator.',
+        };
+      }
+
+      if (editor.status !== 'active') {
+        return {
+          success: false,
+          error: 'Your editor account has not been activated or is not authorized. Please contact your Footazix administrator.',
+        };
+      }
+
+      if (!password || password.length < 4) {
+        return {
+          success: false,
+          error: 'Invalid email or password. Please verify your credentials.',
+        };
+      }
+
+      const user: AdminUser = {
+        id: editor.id,
+        email: editor.email,
+        name: editor.name,
+        role: 'editor',
+      };
+      this.saveLocalSession(user, rememberMe);
+      notifyListeners(user);
+      return { success: true, user };
+    } catch {
+      return {
+        success: false,
+        error: 'Unable to connect to the authorization service. Please check your connection and try again.',
+      };
     }
   },
 

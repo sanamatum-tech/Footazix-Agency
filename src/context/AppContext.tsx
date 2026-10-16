@@ -51,6 +51,7 @@ interface AppContextValue {
   currentUser: AdminUser | null;
   isAuthenticated: boolean;
   login: (email: string, password: string, remember?: boolean) => Promise<{ success: boolean; error?: string }>;
+  loginEditor: (email: string, password: string, remember?: boolean) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
 
   // Supabase Status
@@ -254,6 +255,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return { success: false, error: res.error || 'Invalid credentials' };
   };
 
+  const loginEditor = async (email: string, password: string, remember: boolean = true) => {
+    const res = await authService.loginEditor(email, password, remember);
+    if (res.success && res.user) {
+      setCurrentUser(res.user);
+      return { success: true };
+    }
+    return { success: false, error: res.error || 'Authentication failed' };
+  };
+
   const logout = async () => {
     await authService.logout();
     setCurrentUser(null);
@@ -359,6 +369,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         currentUser,
         isAuthenticated: !!currentUser,
         login,
+        loginEditor,
         logout,
         isSupabaseConnected,
         content,
