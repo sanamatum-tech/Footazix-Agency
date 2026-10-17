@@ -35,7 +35,7 @@ import { authService } from '../services/authService';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { INITIAL_WEBSITE_CONTENT } from '../data/mockData';
 
-export type ActiveView = 'public' | 'admin' | 'terms' | 'privacy' | 'clients';
+export type ActiveView = 'public' | 'admin' | 'terms' | 'privacy';
 
 interface AppContextValue {
   // Navigation / View
@@ -45,7 +45,6 @@ interface AppContextValue {
   navigateToPublic: () => void;
   navigateToTerms: () => void;
   navigateToPrivacy: () => void;
-  navigateToClients: () => void;
 
   // Auth (Supabase Auth + admin_profiles)
   currentUser: AdminUser | null;
@@ -85,9 +84,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const getInitialView = (): ActiveView => {
     if (typeof window === 'undefined') return 'public';
     const path = window.location.pathname.toLowerCase();
-    if (path.startsWith('/clients') || window.location.hash === '#clients' || window.location.search.includes('clients=true')) {
-      return 'clients';
-    }
     if (path.startsWith('/secureadmin') || window.location.hash === '#secureadmin' || window.location.search.includes('admin=true')) {
       return 'admin';
     }
@@ -139,20 +135,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   }, []);
 
-  const navigateToClients = useCallback(() => {
-    setActiveView('clients');
-    if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/clients')) {
-      window.history.pushState({}, '', '/clients');
-    }
-  }, []);
-
   // Sync browser back/forward buttons
   useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname.toLowerCase();
-      if (path.startsWith('/clients')) {
-        setActiveView('clients');
-      } else if (path.startsWith('/secureadmin')) {
+      if (path.startsWith('/secureadmin')) {
         setActiveView('admin');
       } else if (path.startsWith('/terms')) {
         setActiveView('terms');
@@ -355,7 +342,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         navigateToPublic,
         navigateToTerms,
         navigateToPrivacy,
-        navigateToClients,
         currentUser,
         isAuthenticated: !!currentUser,
         login,

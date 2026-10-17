@@ -9,7 +9,7 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
-  const { content, navigateToAdmin, navigateToTerms, navigateToPrivacy, navigateToClients } = useApp();
+  const { content, navigateToAdmin, navigateToTerms, navigateToPrivacy } = useApp();
   const footerConfig = content.footer;
 
   const handleLinkClick = (href: string) => {
@@ -24,10 +24,6 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
     }
     if (href === 'privacy' || href === '/privacy') {
       navigateToPrivacy();
-      return;
-    }
-    if (href === 'clients' || href === '/clients') {
-      navigateToClients();
       return;
     }
     if (href.startsWith('#')) {
@@ -268,15 +264,6 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
                 ))}
               </div>
             )}
-
-            {/* Client Portal Link */}
-            <span className="text-zinc-700">•</span>
-            <button
-              onClick={navigateToClients}
-              className="text-zinc-400 hover:text-blue-400 transition-colors cursor-pointer underline underline-offset-2"
-            >
-              Client Portal
-            </button>
 
             {/* Owner Discreet Lock Button */}
             <button
