@@ -15,7 +15,7 @@ import { Footer } from './components/Footer';
 import { AdminLayout } from './components/admin/AdminLayout';
 import { AdminLogin } from './components/admin/AdminLogin';
 import { LegalPage } from './components/LegalPage';
-import { EditorWorkspaceWrapper } from './components/editors/EditorWorkspaceWrapper';
+import { ClientPortalRoot } from './components/clients/ClientPortalRoot';
 
 function MainWebsite() {
   const { content } = useApp();
@@ -193,15 +193,15 @@ function MainWebsite() {
 }
 
 function AppContent() {
-  const { activeView, isAuthenticated } = useApp();
+  const { activeView, isAuthenticated, navigateToPublic } = useApp();
 
   return (
     <>
       <DynamicHead />
       {activeView === 'admin' ? (
         isAuthenticated ? <AdminLayout /> : <AdminLogin />
-      ) : activeView === 'editors' ? (
-        <EditorWorkspaceWrapper />
+      ) : activeView === 'clients' ? (
+        <ClientPortalRoot onNavigateHome={navigateToPublic} />
       ) : activeView === 'terms' ? (
         <LegalPage type="terms" />
       ) : activeView === 'privacy' ? (

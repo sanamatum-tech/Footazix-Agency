@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { FootazixLogo } from './FootazixLogo';
-import { LockKeyhole, ExternalLink, ArrowUp, ArrowRight, Film } from 'lucide-react';
+import { LockKeyhole, ExternalLink, ArrowUp, ArrowRight } from 'lucide-react';
 import { FooterNavItem, FooterSocialLinkItem, FooterLegalLinkItem } from '../types';
 
 interface FooterProps {
@@ -9,7 +9,7 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
-  const { content, navigateToAdmin, navigateToTerms, navigateToPrivacy, navigateToEditors } = useApp();
+  const { content, navigateToAdmin, navigateToTerms, navigateToPrivacy, navigateToClients } = useApp();
   const footerConfig = content.footer;
 
   const handleLinkClick = (href: string) => {
@@ -24,6 +24,10 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
     }
     if (href === 'privacy' || href === '/privacy') {
       navigateToPrivacy();
+      return;
+    }
+    if (href === 'clients' || href === '/clients') {
+      navigateToClients();
       return;
     }
     if (href.startsWith('#')) {
@@ -265,26 +269,24 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
               </div>
             )}
 
-            {/* Discreet Access Icons */}
-            <div className="flex items-center gap-1 border-l border-white/10 pl-2">
-              <button
-                onClick={navigateToEditors}
-                className="inline-flex items-center justify-center p-1 text-zinc-600 hover:text-blue-400 transition-colors cursor-pointer rounded opacity-60 hover:opacity-100"
-                title="Editor Workspace (/editors)"
-                aria-label="Editor Workspace"
-              >
-                <Film className="w-3 h-3" />
-              </button>
+            {/* Client Portal Link */}
+            <span className="text-zinc-700">•</span>
+            <button
+              onClick={navigateToClients}
+              className="text-zinc-400 hover:text-blue-400 transition-colors cursor-pointer underline underline-offset-2"
+            >
+              Client Portal
+            </button>
 
-              <button
-                onClick={navigateToAdmin}
-                className="inline-flex items-center justify-center p-1 text-zinc-600 hover:text-zinc-400 active:text-blue-400 transition-colors cursor-pointer rounded opacity-60 hover:opacity-100"
-                title="Private Studio Access"
-                aria-label="Private Studio Access"
-              >
-                <LockKeyhole className="w-3 h-3" />
-              </button>
-            </div>
+            {/* Owner Discreet Lock Button */}
+            <button
+              onClick={navigateToAdmin}
+              className="inline-flex items-center justify-center p-1 text-zinc-600 hover:text-zinc-400 active:text-blue-400 transition-colors cursor-pointer rounded opacity-60 hover:opacity-100"
+              title="Private Studio Access"
+              aria-label="Private Studio Access"
+            >
+              <LockKeyhole className="w-3 h-3" />
+            </button>
           </div>
 
           {/* Back to top */}

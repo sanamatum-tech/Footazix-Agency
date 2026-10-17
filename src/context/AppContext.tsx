@@ -35,7 +35,7 @@ import { authService } from '../services/authService';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { INITIAL_WEBSITE_CONTENT } from '../data/mockData';
 
-export type ActiveView = 'public' | 'admin' | 'terms' | 'privacy' | 'editors';
+export type ActiveView = 'public' | 'admin' | 'terms' | 'privacy' | 'clients';
 
 interface AppContextValue {
   // Navigation / View
@@ -45,13 +45,12 @@ interface AppContextValue {
   navigateToPublic: () => void;
   navigateToTerms: () => void;
   navigateToPrivacy: () => void;
-  navigateToEditors: () => void;
+  navigateToClients: () => void;
 
   // Auth (Supabase Auth + admin_profiles)
   currentUser: AdminUser | null;
   isAuthenticated: boolean;
   login: (email: string, password: string, remember?: boolean) => Promise<{ success: boolean; error?: string }>;
-  loginEditor: (email: string, password: string, remember?: boolean) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
 
   // Supabase Status
@@ -86,11 +85,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const getInitialView = (): ActiveView => {
     if (typeof window === 'undefined') return 'public';
     const path = window.location.pathname.toLowerCase();
+    if (path.startsWith('/clients') || window.location.hash === '#clients' || window.location.search.includes('clients=true')) {
+      return 'clients';
+    }
     if (path.startsWith('/secureadmin') || window.location.hash === '#secureadmin' || window.location.search.includes('admin=true')) {
       return 'admin';
-    }
-    if (path.startsWith('/editors') || window.location.hash === '#editors') {
-      return 'editors';
     }
     if (path.startsWith('/terms')) return 'terms';
     if (path.startsWith('/privacy')) return 'privacy';
@@ -119,13 +118,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   }, []);
 
-  const navigateToEditors = useCallback(() => {
-    setActiveView('editors');
-    if (typeof window !== 'undefined' && window.location.pathname !== '/editors') {
-      window.history.pushState({}, '', '/editors');
-    }
-  }, []);
-
   const navigateToPublic = useCallback(() => {
     setActiveView('public');
     if (typeof window !== 'undefined' && window.location.pathname !== '/') {
@@ -147,14 +139,21 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   }, []);
 
+  const navigateToClients = useCallback(() => {
+    setActiveView('clients');
+    if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/clients')) {
+      window.history.pushState({}, '', '/clients');
+    }
+  }, []);
+
   // Sync browser back/forward buttons
   useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname.toLowerCase();
-      if (path.startsWith('/secureadmin')) {
+      if (path.startsWith('/clients')) {
+        setActiveView('clients');
+      } else if (path.startsWith('/secureadmin')) {
         setActiveView('admin');
-      } else if (path.startsWith('/editors')) {
-        setActiveView('editors');
       } else if (path.startsWith('/terms')) {
         setActiveView('terms');
       } else if (path.startsWith('/privacy')) {
@@ -253,15 +252,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       return { success: true };
     }
     return { success: false, error: res.error || 'Invalid credentials' };
-  };
-
-  const loginEditor = async (email: string, password: string, remember: boolean = true) => {
-    const res = await authService.loginEditor(email, password, remember);
-    if (res.success && res.user) {
-      setCurrentUser(res.user);
-      return { success: true };
-    }
-    return { success: false, error: res.error || 'Authentication failed' };
   };
 
   const logout = async () => {
@@ -365,11 +355,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         navigateToPublic,
         navigateToTerms,
         navigateToPrivacy,
-        navigateToEditors,
+        navigateToClients,
         currentUser,
         isAuthenticated: !!currentUser,
         login,
-        loginEditor,
         logout,
         isSupabaseConnected,
         content,

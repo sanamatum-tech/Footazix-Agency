@@ -12,7 +12,7 @@ import { AdminInquiries } from './AdminInquiries';
 import { AdminMediaLibrary } from './AdminMediaLibrary';
 import { AdminSettings } from './AdminSettings';
 import { AdminGlobalTextEditor } from './AdminGlobalTextEditor';
-import { AdminEditors } from './AdminEditors';
+import { AdminClients } from './AdminClients';
 import { FootazixLogo } from '../FootazixLogo';
 import {
   LayoutDashboard,
@@ -23,6 +23,7 @@ import {
   FolderKanban,
   BriefcaseBusiness,
   UsersRound,
+  Users,
   HelpCircle,
   Inbox,
   Images,
@@ -37,7 +38,6 @@ import {
   CheckCircle2,
   AlertCircle,
   Loader2,
-  Film,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -52,7 +52,7 @@ export type AdminSection =
   | 'team'
   | 'faq'
   | 'inquiries'
-  | 'editors'
+  | 'clients'
   | 'media'
   | 'settings';
 
@@ -69,7 +69,7 @@ interface NavGroup {
 }
 
 export const AdminLayout: React.FC = () => {
-  const { content, inquiries, currentUser, logout, navigateToPublic, saveStatus, saveMessage } =
+  const { content, inquiries, currentUser, logout, navigateToPublic, navigateToClients, saveStatus, saveMessage } =
     useApp();
   const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -104,8 +104,8 @@ export const AdminLayout: React.FC = () => {
     {
       groupLabel: 'BUSINESS',
       items: [
+        { id: 'clients', label: 'Client Portal CMS', icon: Users },
         { id: 'inquiries', label: 'Inquiries', icon: Inbox, badge: newInquiriesCount },
-        { id: 'editors', label: 'Editors & Dispatch', icon: Film },
       ],
     },
     {
@@ -127,7 +127,7 @@ export const AdminLayout: React.FC = () => {
     team: { title: 'Team Members', breadcrumb: 'Content / Team' },
     faq: { title: 'FAQ Management', breadcrumb: 'Content / FAQ' },
     inquiries: { title: 'Client Inquiries', breadcrumb: 'Business / Inquiries' },
-    editors: { title: 'Editor Team & Video Dispatch', breadcrumb: 'Business / Editors' },
+    clients: { title: 'Client Portal CMS', breadcrumb: 'Business / Client Portal' },
     media: { title: 'Media Library', breadcrumb: 'Content / Media' },
     settings: { title: 'Studio Settings', breadcrumb: 'System / Settings' },
   };
@@ -154,8 +154,8 @@ export const AdminLayout: React.FC = () => {
         return <AdminFAQ />;
       case 'inquiries':
         return <AdminInquiries />;
-      case 'editors':
-        return <AdminEditors />;
+      case 'clients':
+        return <AdminClients onPreviewClientPortal={navigateToClients} />;
       case 'media':
         return <AdminMediaLibrary />;
       case 'settings':

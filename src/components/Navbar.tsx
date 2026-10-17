@@ -9,7 +9,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
-  const { content } = useApp();
+  const { content, navigateToClients } = useApp();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -160,6 +160,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
             </a>
           )}
 
+          <button
+            type="button"
+            onClick={navigateToClients}
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider text-zinc-300 hover:text-white bg-[#12121c] border border-white/10 hover:border-blue-500/40 transition-colors cursor-pointer"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+            <span>Client Portal</span>
+          </button>
+
           {showCta && (
             <motion.button
               whileHover={{ scale: 1.02 }}
@@ -230,6 +239,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                   <span>Instagram</span>
                 </a>
               )}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  navigateToClients();
+                }}
+                className="w-full py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 transition-colors flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                <span>Client Portal Login</span>
+              </button>
             </div>
           </motion.div>
         )}
