@@ -41,21 +41,21 @@ export const RawToFinal: React.FC<RawToFinalProps> = ({ onOpenContact }) => {
   ];
 
   return (
-    <section className="py-20 sm:py-24 bg-[#07070b] border-t border-b border-white/5 relative overflow-hidden font-sans">
+    <section className="py-20 sm:py-24 bg-[#0D0F10] border-t border-b border-[#292E25] relative overflow-hidden font-sans">
       <div className="max-w-5xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center max-w-xl mx-auto mb-14">
           {showBadge && (
-            <div className="flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
+            <div className="flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#B1FF00] mb-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#B1FF00] shadow-[0_0_8px_rgba(177,255,0,0.8)]" />
               <span className="font-mono text-[11px]">{badgeText}</span>
             </div>
           )}
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-extrabold text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-extrabold text-[#F5F7F2] tracking-tight">
             {headingText}
           </h2>
           {showSubheading && (
-            <p className="text-zinc-400 text-xs sm:text-sm mt-2 font-normal leading-relaxed">
+            <p className="text-[#A7AEA0] text-xs sm:text-sm mt-2 font-normal leading-relaxed">
               {subheadingText}
             </p>
           )}
@@ -77,36 +77,36 @@ export const RawToFinal: React.FC<RawToFinalProps> = ({ onOpenContact }) => {
                 transition={{ duration: 0.5, delay: idx * 0.12, ease: [0.16, 1, 0.3, 1] }}
                 className={`p-6 rounded-2xl border transition-all duration-300 relative ${
                   isMiddle
-                    ? 'bg-[#0e0e18] border-blue-500/50 shadow-[0_0_24px_rgba(37,99,235,0.12)]'
-                    : 'bg-[#090910] border-white/10 hover:border-white/20'
+                    ? 'bg-[#181C16] border-[#B1FF00]/50 shadow-[0_0_24px_rgba(177,255,0,0.12)]'
+                    : 'bg-[#121512] border-[#292E25] hover:border-[#B1FF00]/30'
                 }`}
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-blue-600/15 border border-blue-500/30 text-blue-400 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-[#B1FF00]/15 border border-[#B1FF00]/30 text-[#B1FF00] flex items-center justify-center">
                       <Icon className="w-4 h-4" />
                     </div>
-                    <span className="text-xs font-mono font-bold text-blue-400 tracking-wider">
+                    <span className="text-xs font-mono font-bold text-[#B1FF00] tracking-wider">
                       {step.num}
                     </span>
                   </div>
                   {badgeLabel && (
-                    <span className="text-[10px] font-mono font-bold tracking-wider uppercase text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
+                    <span className="text-[10px] font-mono font-bold tracking-wider uppercase text-[#B1FF00] bg-[#B1FF00]/10 px-2 py-0.5 rounded border border-[#B1FF00]/20">
                       {badgeLabel}
                     </span>
                   )}
                 </div>
 
-                <h3 className="text-base font-display font-bold text-white mb-2">
+                <h3 className="text-base font-display font-bold text-[#F5F7F2] mb-2">
                   {step.title}
                 </h3>
-                <p className="text-xs text-zinc-400 leading-relaxed font-normal">
+                <p className="text-xs text-[#A7AEA0] leading-relaxed font-normal">
                   {step.desc}
                 </p>
 
                 {/* Step indicator arrow for desktop */}
                 {idx < steps.length - 1 && (
-                  <div className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-[#12121c] border border-white/20 text-blue-400 items-center justify-center shadow-md">
+                  <div className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-[#181C16] border border-[#292E25] text-[#B1FF00] items-center justify-center shadow-md">
                     <ArrowRight className="w-3.5 h-3.5" />
                   </div>
                 )}
@@ -127,10 +127,10 @@ export const RawToFinal: React.FC<RawToFinalProps> = ({ onOpenContact }) => {
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }
               }}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20 cursor-pointer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] transition-colors shadow-lg shadow-[#B1FF00]/20 cursor-pointer"
             >
               <span>{rawToReady.ctaText}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3.5 h-3.5 text-[#070809]" />
             </button>
           </div>
         )}

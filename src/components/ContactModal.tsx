@@ -49,16 +49,16 @@ export const ContactModal: React.FC<ContactModalProps> = ({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.96, y: 16 }}
         transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
-        className="relative w-full h-[100dvh] sm:h-auto sm:max-h-[90vh] sm:max-w-2xl lg:max-w-3xl bg-[#08080f] sm:border border-white/10 sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden"
+        className="relative w-full h-[100dvh] sm:h-auto sm:max-h-[90vh] sm:max-w-2xl lg:max-w-3xl bg-[#0D0F10] sm:border border-[#292E25] sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Sticky Header with clearly visible Close Button */}
-        <div className="flex items-center justify-between px-5 sm:px-8 py-4 border-b border-white/10 bg-[#08080f]/95 backdrop-blur-md sticky top-0 z-30 shrink-0">
+        <div className="flex items-center justify-between px-5 sm:px-8 py-4 border-b border-[#292E25] bg-[#0D0F10]/95 backdrop-blur-md sticky top-0 z-30 shrink-0">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
+            <span className="w-2 h-2 rounded-full bg-[#B1FF00] shadow-[0_0_8px_rgba(177,255,0,0.8)]" />
             <span
               id="inquiry-modal-title"
-              className="text-xs font-mono font-bold tracking-widest uppercase text-zinc-300"
+              className="text-xs font-mono font-bold tracking-widest uppercase text-[#F5F7F2]"
             >
               Start a Project
             </span>
@@ -67,7 +67,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
           {/* Accessible 44px touch target close button */}
           <button
             onClick={onClose}
-            className="w-11 h-11 flex items-center justify-center rounded-xl text-zinc-400 hover:text-white bg-[#12121c] hover:bg-[#1c1c2b] border border-white/10 transition-colors cursor-pointer active:scale-95"
+            className="w-11 h-11 flex items-center justify-center rounded-xl text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#121512] hover:bg-[#181C16] border border-[#292E25] hover:border-[#B1FF00]/40 transition-colors cursor-pointer active:scale-95"
             aria-label="Close project modal (ESC)"
             title="Close (ESC)"
           >

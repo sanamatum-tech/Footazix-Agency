@@ -279,12 +279,12 @@ export const AdminWebsiteEditor: React.FC = () => {
             <h2 className="text-base sm:text-lg font-display font-extrabold text-white tracking-tight flex items-center gap-2">
               <span>Full Website CMS Control System</span>
               {hasUnsavedChanges && (
-                <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" title="Unsaved changes pending" />
+                <span className="w-2 h-2 rounded-full bg-[#B1FF00] animate-pulse" title="Unsaved changes pending" />
               )}
             </h2>
             <p className="text-xs text-zinc-400 mt-0.5">
               {hasUnsavedChanges ? (
-                <span className="text-blue-400 font-medium">Unsaved changes pending — Click Save Changes below</span>
+                <span className="text-[#B1FF00] font-medium">Unsaved changes pending — Click Save Changes below</span>
               ) : (
                 <span>All website modules synchronized with Supabase</span>
               )}
@@ -300,7 +300,7 @@ export const AdminWebsiteEditor: React.FC = () => {
             title="Open Live Public Website"
           >
             <span>Live Site</span>
-            <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
+            <ExternalLink className="w-3.5 h-3.5 text-[#B1FF00]" />
           </button>
 
           <button
@@ -326,7 +326,7 @@ export const AdminWebsiteEditor: React.FC = () => {
           <button
             type="submit"
             disabled={saveStatus === 'saving' || !hasUnsavedChanges}
-            className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-[0_0_16px_rgba(37,99,235,0.3)] cursor-pointer flex items-center gap-2"
+            className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-[0_0_16px_rgba(177,255,0,0.3)] cursor-pointer flex items-center gap-2"
           >
             {saveStatus === 'saving' ? (
               <>
@@ -355,11 +355,11 @@ export const AdminWebsiteEditor: React.FC = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                 isActive
-                  ? 'bg-blue-600/15 text-white border border-blue-500/40 shadow-[0_0_12px_rgba(37,99,235,0.15)]'
+                  ? 'bg-[#B1FF00]/15 text-[#F5F7F2] border border-[#B1FF00]/40 shadow-[0_0_12px_rgba(177,255,0,0.15)]'
                   : 'text-zinc-400 hover:text-white hover:bg-white/[0.03] border border-transparent'
               }`}
             >
-              <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-blue-400' : 'text-zinc-400'}`} />
+              <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#B1FF00]' : 'text-zinc-400'}`} />
               <span>{tab.label}</span>
             </button>
           );
@@ -375,12 +375,12 @@ export const AdminWebsiteEditor: React.FC = () => {
             exit={{ opacity: 0, y: -8 }}
             className={`p-3.5 rounded-xl border flex items-center gap-2.5 text-xs font-medium ${
               toastMessage.type === 'success'
-                ? 'bg-blue-950/40 border-blue-500/40 text-blue-200'
+                ? 'bg-[#181C16] border-[#B1FF00]/40 text-[#F5F7F2]'
                 : 'bg-red-950/40 border-red-500/40 text-red-200'
             }`}
           >
             {toastMessage.type === 'success' ? (
-              <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-[#B1FF00] shrink-0" />
             ) : (
               <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
             )}
@@ -409,9 +409,9 @@ export const AdminWebsiteEditor: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div
                 onClick={() => setActiveTab('branding')}
-                className="p-5 rounded-xl bg-[#12121c] border border-white/5 hover:border-blue-500/40 transition-all cursor-pointer group"
+                className="p-5 rounded-xl bg-[#12121c] border border-white/5 hover:border-[#B1FF00]/40 transition-all cursor-pointer group"
               >
-                <div className="w-9 h-9 rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-400 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                <div className="w-9 h-9 rounded-lg bg-[#B1FF00]/10 border border-[#B1FF00]/20 text-[#B1FF00] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
                   <ImageIcon className="w-4 h-4" />
                 </div>
                 <h4 className="text-sm font-bold text-white mb-1">Branding & Logo</h4>
@@ -422,9 +422,9 @@ export const AdminWebsiteEditor: React.FC = () => {
 
               <div
                 onClick={() => setActiveTab('visibility')}
-                className="p-5 rounded-xl bg-[#12121c] border border-white/5 hover:border-blue-500/40 transition-all cursor-pointer group"
+                className="p-5 rounded-xl bg-[#12121c] border border-white/5 hover:border-[#B1FF00]/40 transition-all cursor-pointer group"
               >
-                <div className="w-9 h-9 rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-400 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                <div className="w-9 h-9 rounded-lg bg-[#B1FF00]/10 border border-[#B1FF00]/20 text-[#B1FF00] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
                   <Eye className="w-4 h-4" />
                 </div>
                 <h4 className="text-sm font-bold text-white mb-1">Section Visibility</h4>
@@ -435,9 +435,9 @@ export const AdminWebsiteEditor: React.FC = () => {
 
               <div
                 onClick={() => setActiveTab('header')}
-                className="p-5 rounded-xl bg-[#12121c] border border-white/5 hover:border-blue-500/40 transition-all cursor-pointer group"
+                className="p-5 rounded-xl bg-[#12121c] border border-white/5 hover:border-[#B1FF00]/40 transition-all cursor-pointer group"
               >
-                <div className="w-9 h-9 rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-400 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                <div className="w-9 h-9 rounded-lg bg-[#B1FF00]/10 border border-[#B1FF00]/20 text-[#B1FF00] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
                   <PanelTop className="w-4 h-4" />
                 </div>
                 <h4 className="text-sm font-bold text-white mb-1">Header & Navigation</h4>
@@ -473,13 +473,13 @@ export const AdminWebsiteEditor: React.FC = () => {
                       onClick={() => handleChange(`sectionVisibility.${key}`, !isVisible)}
                       className={`p-2.5 rounded-lg border text-left flex items-center justify-between text-xs font-medium cursor-pointer transition-all ${
                         isVisible
-                          ? 'bg-blue-600/10 border-blue-500/40 text-blue-200'
+                          ? 'bg-[#B1FF00]/10 border-[#B1FF00]/40 text-[#F5F7F2]'
                           : 'bg-zinc-900/60 border-white/5 text-zinc-500 line-through'
                       }`}
                     >
                       <span>{label}</span>
                       {isVisible ? (
-                        <Check className="w-3.5 h-3.5 text-blue-400" />
+                        <Check className="w-3.5 h-3.5 text-[#B1FF00]" />
                       ) : (
                         <EyeOff className="w-3.5 h-3.5 text-zinc-500" />
                       )}
@@ -510,7 +510,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                 Brand Asset Management
               </h3>
               <p className="text-xs text-zinc-400">
-                Upload and replace official brand assets. All assets are uploaded directly to Supabase Storage (<span className="text-blue-400 font-mono">footazix-media</span>) and load dynamically on the public site.
+                Upload and replace official brand assets. All assets are uploaded directly to Supabase Storage (<span className="text-[#B1FF00] font-mono">footazix-media</span>) and load dynamically on the public site.
               </p>
             </div>
 
@@ -520,7 +520,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                 <div>
                   <h4 className="text-sm font-bold text-white flex items-center gap-2">
                     <span>HEADER LOGO</span>
-                    <span className="text-[10px] font-mono text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
+                    <span className="text-[10px] font-mono text-[#B1FF00] bg-[#B1FF00]/10 px-2 py-0.5 rounded border border-[#B1FF00]/20">
                       Supabase Storage
                     </span>
                   </h4>
@@ -535,7 +535,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="checkbox"
                       checked={formData.brandingAssets?.headerLogo?.visible !== false}
                       onChange={(e) => handleChange('brandingAssets.headerLogo.visible', e.target.checked)}
-                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-[#B1FF00] focus:ring-[#B1FF00] cursor-pointer"
                     />
                     <span>Visible in Header</span>
                   </label>
@@ -580,7 +580,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       value={formData.brandingAssets?.headerLogo?.url || ''}
                       onChange={(e) => handleChange('brandingAssets.headerLogo.url', e.target.value)}
                       placeholder="https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/logos/..."
-                      className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs font-mono focus:border-blue-500 outline-none"
+                      className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs font-mono focus:border-[#B1FF00] outline-none"
                     />
                   </div>
 
@@ -597,7 +597,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="button"
                       disabled={uploadingAsset === 'brandingAssets.headerLogo.url'}
                       onClick={() => logoInputRef.current?.click()}
-                      className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                      className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50"
                     >
                       {uploadingAsset === 'brandingAssets.headerLogo.url' ? (
                         <>
@@ -639,7 +639,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     value={formData.brandingAssets?.headerLogo?.alt || ''}
                     onChange={(e) => handleChange('brandingAssets.headerLogo.alt', e.target.value)}
                     placeholder="Footazix Creative Agency"
-                    className="w-full px-4 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs focus:border-blue-500 outline-none"
+                    className="w-full px-4 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs focus:border-[#B1FF00] outline-none"
                   />
                 </div>
 
@@ -654,7 +654,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     step="5"
                     value={formData.brandingAssets?.headerLogo?.desktopWidth || 155}
                     onChange={(e) => handleChange('brandingAssets.headerLogo.desktopWidth', parseInt(e.target.value, 10))}
-                    className="w-full accent-blue-500 cursor-pointer"
+                    className="w-full accent-[#B1FF00] cursor-pointer"
                   />
                 </div>
 
@@ -669,7 +669,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     step="5"
                     value={formData.brandingAssets?.headerLogo?.mobileWidth || 125}
                     onChange={(e) => handleChange('brandingAssets.headerLogo.mobileWidth', parseInt(e.target.value, 10))}
-                    className="w-full accent-blue-500 cursor-pointer"
+                    className="w-full accent-[#B1FF00] cursor-pointer"
                   />
                 </div>
               </div>
@@ -681,7 +681,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                 <div>
                   <h4 className="text-sm font-bold text-white flex items-center gap-2">
                     <span>FAVICON & APP ICONS</span>
-                    <span className="text-[10px] font-mono text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
+                    <span className="text-[10px] font-mono text-[#B1FF00] bg-[#B1FF00]/10 px-2 py-0.5 rounded border border-[#B1FF00]/20">
                       Dynamic &lt;head&gt;
                     </span>
                   </h4>
@@ -696,7 +696,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="checkbox"
                       checked={formData.brandingAssets?.favicon?.visible !== false}
                       onChange={(e) => handleChange('brandingAssets.favicon.visible', e.target.checked)}
-                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-[#B1FF00] focus:ring-[#B1FF00] cursor-pointer"
                     />
                     <span>Favicon Active</span>
                   </label>
@@ -767,7 +767,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       value={formData.brandingAssets?.favicon?.url || ''}
                       onChange={(e) => handleChange('brandingAssets.favicon.url', e.target.value)}
                       placeholder="https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/favicons/..."
-                      className="w-full px-3 py-2 rounded-lg bg-black border border-white/10 text-white text-xs font-mono focus:border-blue-500 outline-none"
+                      className="w-full px-3 py-2 rounded-lg bg-black border border-white/10 text-white text-xs font-mono focus:border-[#B1FF00] outline-none"
                     />
                   </div>
 
@@ -784,7 +784,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="button"
                       disabled={uploadingAsset === 'brandingAssets.favicon.url'}
                       onClick={() => faviconInputRef.current?.click()}
-                      className="px-3.5 py-2 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 transition-colors cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
+                      className="px-3.5 py-2 rounded-lg text-xs font-semibold text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] transition-colors cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
                     >
                       {uploadingAsset === 'brandingAssets.favicon.url' ? (
                         <>
@@ -856,7 +856,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       value={formData.brandingAssets?.favicon?.appleTouchIconUrl || ''}
                       onChange={(e) => handleChange('brandingAssets.favicon.appleTouchIconUrl', e.target.value)}
                       placeholder="https://...supabase.co/.../favicons/..."
-                      className="w-full px-3 py-2 rounded-lg bg-black border border-white/10 text-white text-xs font-mono focus:border-blue-500 outline-none"
+                      className="w-full px-3 py-2 rounded-lg bg-black border border-white/10 text-white text-xs font-mono focus:border-[#B1FF00] outline-none"
                     />
                   </div>
 
@@ -873,7 +873,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="button"
                       disabled={uploadingAsset === 'brandingAssets.favicon.appleTouchIconUrl'}
                       onClick={() => appleTouchInputRef.current?.click()}
-                      className="px-3.5 py-2 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 transition-colors cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
+                      className="px-3.5 py-2 rounded-lg text-xs font-semibold text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] transition-colors cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
                     >
                       {uploadingAsset === 'brandingAssets.favicon.appleTouchIconUrl' ? (
                         <>
@@ -928,7 +928,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     type="checkbox"
                     checked={formData.brandingAssets?.footerLogo?.visible !== false}
                     onChange={(e) => handleChange('brandingAssets.footerLogo.visible', e.target.checked)}
-                    className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                    className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-[#B1FF00] cursor-pointer"
                   />
                   <span>Visible</span>
                 </label>
@@ -943,7 +943,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="checkbox"
                   checked={formData.brandingAssets?.footerLogo?.useHeaderLogo !== false}
                   onChange={(e) => handleChange('brandingAssets.footerLogo.useHeaderLogo', e.target.checked)}
-                  className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                  className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-[#B1FF00] cursor-pointer"
                 />
               </div>
 
@@ -973,7 +973,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="button"
                       disabled={uploadingAsset === 'brandingAssets.footerLogo.url'}
                       onClick={() => footerLogoInputRef.current?.click()}
-                      className="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 cursor-pointer flex items-center gap-1.5"
+                      className="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] cursor-pointer flex items-center gap-1.5"
                     >
                       <Upload className="w-3.5 h-3.5" />
                       <span>Upload Custom Footer Logo</span>
@@ -984,12 +984,12 @@ export const AdminWebsiteEditor: React.FC = () => {
             </div>
 
             {/* 4. UNIVERSAL SOCIAL SHARING / OPEN GRAPH (OG) IMAGE */}
-            <div className="p-6 rounded-2xl bg-[#0e0e18] border border-blue-500/20 shadow-xl space-y-6">
+            <div className="p-6 rounded-2xl bg-[#0e0e18] border border-[#B1FF00]/20 shadow-xl space-y-6">
               {/* Header */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-400 font-mono text-[10px] font-bold uppercase tracking-wider border border-blue-500/30">
+                    <span className="px-2 py-0.5 rounded-md bg-[#B1FF00]/15 text-[#B1FF00] font-mono text-[10px] font-bold uppercase tracking-wider border border-[#B1FF00]/30">
                       SINGLE SOURCE OF TRUTH
                     </span>
                     <h4 className="text-sm font-bold text-white uppercase tracking-wider">
@@ -997,13 +997,13 @@ export const AdminWebsiteEditor: React.FC = () => {
                     </h4>
                   </div>
                   <p className="text-xs text-zinc-400 max-w-2xl leading-relaxed">
-                    This single image serves as the universal preview card whenever <span className="text-blue-400 font-mono">https://footazix.site/</span> is shared on <strong className="text-zinc-200">WhatsApp, X / Twitter, Discord, Slack, iMessage, LinkedIn, Telegram, and Facebook</strong>. It generates full OpenGraph and Twitter Card metadata.
+                    This single image serves as the universal preview card whenever <span className="text-[#B1FF00] font-mono">https://footazix.site/</span> is shared on <strong className="text-zinc-200">WhatsApp, X / Twitter, Discord, Slack, iMessage, LinkedIn, Telegram, and Facebook</strong>. It generates full OpenGraph and Twitter Card metadata.
                   </p>
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold">
-                    <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                  <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#B1FF00]/10 border border-[#B1FF00]/20 text-[#B1FF00] text-xs font-semibold">
+                    <span className="w-2 h-2 rounded-full bg-[#B1FF00] animate-pulse" />
                     Supabase Storage Active
                   </span>
                 </div>
@@ -1015,7 +1015,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                 <div className="lg:col-span-7 space-y-3">
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                      <Share2 className="w-3.5 h-3.5 text-blue-400" />
+                      <Share2 className="w-3.5 h-3.5 text-[#B1FF00]" />
                       Live Social Card Preview
                     </label>
 
@@ -1026,7 +1026,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                         onClick={() => setOgPreviewPlatform('twitter')}
                         className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                           ogPreviewPlatform === 'twitter'
-                            ? 'bg-blue-600 text-white shadow-sm'
+                            ? 'bg-[#B1FF00] text-[#070809] shadow-sm'
                             : 'text-zinc-400 hover:text-white'
                         }`}
                       >
@@ -1037,7 +1037,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                         onClick={() => setOgPreviewPlatform('whatsapp')}
                         className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                           ogPreviewPlatform === 'whatsapp'
-                            ? 'bg-blue-600 text-white shadow-sm'
+                            ? 'bg-[#B1FF00] text-[#070809] shadow-sm'
                             : 'text-zinc-400 hover:text-white'
                         }`}
                       >
@@ -1129,8 +1129,8 @@ export const AdminWebsiteEditor: React.FC = () => {
 
                     {/* Discord Mockup */}
                     {ogPreviewPlatform === 'discord' && (
-                      <div className="max-w-md mx-auto rounded-xl bg-[#2b2d31] p-3.5 border-l-4 border-blue-500 space-y-2 shadow-xl">
-                        <span className="text-[11px] font-semibold text-blue-400 block font-mono">FOOTAZIX</span>
+                      <div className="max-w-md mx-auto rounded-xl bg-[#2b2d31] p-3.5 border-l-4 border-[#B1FF00] space-y-2 shadow-xl">
+                        <span className="text-[11px] font-semibold text-[#B1FF00] block font-mono">FOOTAZIX</span>
                         <h5 className="text-xs font-bold text-white hover:underline cursor-pointer">
                           {formData.seo?.ogTitle || formData.seo?.siteTitle || 'Footazix — Turn Raw Footage Into Content Worth Watching'}
                         </h5>
@@ -1150,7 +1150,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     {/* Raw Meta Tags Inspector */}
                     {ogPreviewPlatform === 'meta' && (
                       <div className="font-mono text-[11px] bg-black/90 p-3.5 rounded-xl border border-white/10 text-zinc-300 space-y-1 overflow-x-auto max-h-56">
-                        <p className="text-blue-400 font-semibold mb-2">// Universal OpenGraph & Twitter Card Metadata</p>
+                        <p className="text-[#B1FF00] font-semibold mb-2">// Universal OpenGraph & Twitter Card Metadata</p>
                         <p><span className="text-pink-400">&lt;meta</span> <span className="text-yellow-300">property</span>=<span className="text-emerald-300">"og:type"</span> <span className="text-yellow-300">content</span>=<span className="text-emerald-300">"website"</span> <span className="text-pink-400">/&gt;</span></p>
                         <p><span className="text-pink-400">&lt;meta</span> <span className="text-yellow-300">property</span>=<span className="text-emerald-300">"og:url"</span> <span className="text-yellow-300">content</span>=<span className="text-emerald-300">"{formData.seo?.canonicalUrl || 'https://footazix.site'}"</span> <span className="text-pink-400">/&gt;</span></p>
                         <p><span className="text-pink-400">&lt;meta</span> <span className="text-yellow-300">property</span>=<span className="text-emerald-300">"og:site_name"</span> <span className="text-yellow-300">content</span>=<span className="text-emerald-300">"{formData.brand?.name || 'FOOTAZIX'}"</span> <span className="text-pink-400">/&gt;</span></p>
@@ -1181,7 +1181,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="button"
                       disabled={uploadingAsset === 'brandingAssets.ogImage.url'}
                       onClick={() => ogImageInputRef.current?.click()}
-                      className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 transition-all cursor-pointer flex items-center gap-1.5 shadow-lg shadow-blue-600/20"
+                      className="px-4 py-2 rounded-xl text-xs font-bold text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] transition-all cursor-pointer flex items-center gap-1.5 shadow-lg shadow-[0_0_12px_rgba(177,255,0,0.2)]"
                     >
                       {uploadingAsset === 'brandingAssets.ogImage.url' ? (
                         <>
@@ -1209,7 +1209,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       }}
                       className="px-3 py-2 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white bg-[#12121c] border border-white/10 transition-colors cursor-pointer flex items-center gap-1.5"
                     >
-                      {copiedOgUrl ? <Check className="w-3.5 h-3.5 text-blue-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      {copiedOgUrl ? <Check className="w-3.5 h-3.5 text-[#B1FF00]" /> : <Copy className="w-3.5 h-3.5" />}
                       <span>{copiedOgUrl ? 'Copied' : 'Copy URL'}</span>
                     </button>
 
@@ -1276,7 +1276,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                         });
                       }}
                       placeholder="https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/branding/..."
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-black border border-white/10 text-white text-xs font-mono focus:border-blue-500 outline-none"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black border border-white/10 text-white text-xs font-mono focus:border-[#B1FF00] outline-none"
                     />
                   </div>
 
@@ -1301,7 +1301,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                         });
                       }}
                       placeholder="Footazix Content Growth Agency"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-black border border-white/10 text-white text-xs focus:border-blue-500 outline-none"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black border border-white/10 text-white text-xs focus:border-[#B1FF00] outline-none"
                     />
                   </div>
 
@@ -1321,11 +1321,11 @@ export const AdminWebsiteEditor: React.FC = () => {
                     </div>
                     <div className="flex items-center justify-between text-zinc-400">
                       <span>Protocol:</span>
-                      <span className="font-mono text-blue-400 font-semibold">Absolute HTTPS</span>
+                      <span className="font-mono text-[#B1FF00] font-semibold">Absolute HTTPS</span>
                     </div>
                     <div className="flex items-center justify-between text-zinc-400">
                       <span>Twitter Format:</span>
-                      <span className="font-mono text-blue-400 font-semibold">summary_large_image</span>
+                      <span className="font-mono text-[#B1FF00] font-semibold">summary_large_image</span>
                     </div>
                   </div>
                 </div>
@@ -1386,7 +1386,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                         onClick={() => handleChange(`sectionVisibility.${item.key}`, !isVisible)}
                         className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-all ${
                           isVisible
-                            ? 'bg-blue-600 text-white shadow-[0_0_12px_rgba(37,99,235,0.3)]'
+                            ? 'bg-[#B1FF00] text-[#070809] shadow-[0_0_12px_rgba(177,255,0,0.3)]'
                             : 'bg-[#12121c] text-zinc-500 border border-white/10 hover:text-zinc-300'
                         }`}
                       >
@@ -1439,7 +1439,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       className="p-3.5 rounded-xl bg-[#12121c] border border-white/10 flex items-center justify-between"
                     >
                       <div className="flex items-center gap-3">
-                        <span className="w-6 h-6 rounded-full bg-blue-600/20 text-blue-400 text-xs font-mono font-bold flex items-center justify-center border border-blue-500/30">
+                        <span className="w-6 h-6 rounded-full bg-[#B1FF00]/15 text-[#B1FF00] text-xs font-mono font-bold flex items-center justify-center border border-[#B1FF00]/30">
                           {index + 1}
                         </span>
                         <span className="text-xs sm:text-sm font-semibold text-white">
@@ -1499,7 +1499,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   value={formData.header?.ctaText || ''}
                   onChange={(e) => handleChange('header.ctaText', e.target.value)}
                   placeholder="Build with Footazix"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-bold"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-bold"
                 />
               </div>
 
@@ -1514,7 +1514,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="checkbox"
                   checked={formData.header?.showCta !== false}
                   onChange={(e) => handleChange('header.showCta', e.target.checked)}
-                  className="w-5 h-5 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                  className="w-5 h-5 rounded bg-zinc-900 border-white/20 text-[#B1FF00] cursor-pointer"
                 />
               </div>
             </div>
@@ -1533,7 +1533,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleAddNavItem}
-                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 transition-colors flex items-center gap-1 cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] transition-colors flex items-center gap-1 cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add Link</span>
@@ -1572,7 +1572,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                           type="checkbox"
                           checked={item.visible !== false}
                           onChange={(e) => handleUpdateNavItem(item.id, 'visible', e.target.checked)}
-                          className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                          className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-[#B1FF00] cursor-pointer"
                         />
                         <span>Visible</span>
                       </label>
@@ -1618,7 +1618,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="checkbox"
                       checked={formData.hero.showBadge !== false}
                       onChange={(e) => handleChange('hero.showBadge', e.target.checked)}
-                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-[#B1FF00] cursor-pointer"
                     />
                     <span>Show Badge</span>
                   </label>
@@ -1627,7 +1627,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.hero.badgeText}
                   onChange={(e) => handleChange('hero.badgeText', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-mono"
                 />
               </div>
 
@@ -1639,19 +1639,19 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.hero.headlineLine1}
                   onChange={(e) => handleChange('hero.headlineLine1', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-bold"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-bold"
                 />
               </div>
 
               <div>
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
-                  Headline Line 2 (Blue accent text)
+                  Headline Line 2 (Lime accent text)
                 </label>
                 <input
                   type="text"
                   value={formData.hero.headlineLine2}
                   onChange={(e) => handleChange('hero.headlineLine2', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-blue-400 text-sm focus:border-blue-500 outline-none font-bold"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-[#B1FF00] text-sm focus:border-[#B1FF00] outline-none font-bold"
                 />
               </div>
 
@@ -1665,7 +1665,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="checkbox"
                       checked={formData.hero.showSupportingLine !== false}
                       onChange={(e) => handleChange('hero.showSupportingLine', e.target.checked)}
-                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-[#B1FF00] cursor-pointer"
                     />
                     <span>Show Line</span>
                   </label>
@@ -1674,7 +1674,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.hero.supportingLine}
                   onChange={(e) => handleChange('hero.supportingLine', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none"
                 />
               </div>
 
@@ -1688,7 +1688,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="checkbox"
                       checked={formData.hero.showDescription !== false}
                       onChange={(e) => handleChange('hero.showDescription', e.target.checked)}
-                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-[#B1FF00] cursor-pointer"
                     />
                     <span>Show Description</span>
                   </label>
@@ -1697,7 +1697,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   rows={3}
                   value={formData.hero.description}
                   onChange={(e) => handleChange('hero.description', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none resize-none"
                 />
               </div>
 
@@ -1711,7 +1711,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="checkbox"
                       checked={formData.hero.showPrimaryCta !== false}
                       onChange={(e) => handleChange('hero.showPrimaryCta', e.target.checked)}
-                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-[#B1FF00] cursor-pointer"
                     />
                     <span>Show</span>
                   </label>
@@ -1720,7 +1720,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.hero.primaryCta}
                   onChange={(e) => handleChange('hero.primaryCta', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-bold"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-bold"
                 />
               </div>
 
@@ -1734,7 +1734,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="checkbox"
                       checked={formData.hero.showSecondaryCta !== false}
                       onChange={(e) => handleChange('hero.showSecondaryCta', e.target.checked)}
-                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-[#B1FF00] cursor-pointer"
                     />
                     <span>Show</span>
                   </label>
@@ -1743,7 +1743,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.hero.secondaryCta}
                   onChange={(e) => handleChange('hero.secondaryCta', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none"
                 />
               </div>
             </div>
@@ -1774,7 +1774,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   value={formData.vsl.label}
                   onChange={(e) => handleChange('vsl.label', e.target.value)}
                   placeholder="THE FOOTAZIX SYSTEM"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-mono"
                 />
               </div>
 
@@ -1786,7 +1786,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.vsl.heading}
                   onChange={(e) => handleChange('vsl.heading', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-bold"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-bold"
                 />
               </div>
 
@@ -1798,7 +1798,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   rows={2}
                   value={formData.vsl.description}
                   onChange={(e) => handleChange('vsl.description', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none resize-none"
                 />
               </div>
 
@@ -1809,7 +1809,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                 <select
                   value={formData.vsl.videoSource}
                   onChange={(e) => handleChange('vsl.videoSource', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none cursor-pointer"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none cursor-pointer"
                 >
                   <option value="youtube">YouTube Embed (No Cookies)</option>
                   <option value="drive">Google Drive Video Preview</option>
@@ -1826,7 +1826,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.vsl.fallbackMessage || 'VIDEO UNAVAILABLE'}
                   onChange={(e) => handleChange('vsl.fallbackMessage', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-mono"
                 />
               </div>
 
@@ -1840,7 +1840,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setShowVslMediaPicker(true)}
-                      className="px-2.5 py-1 rounded-lg text-xs font-semibold text-blue-400 hover:text-blue-300 bg-blue-600/10 border border-blue-500/20 flex items-center gap-1.5 cursor-pointer"
+                      className="px-2.5 py-1 rounded-lg text-xs font-semibold text-[#B1FF00] hover:text-[#C4FF45] bg-[#B1FF00]/10 border border-[#B1FF00]/20 flex items-center gap-1.5 cursor-pointer"
                     >
                       <FolderOpen className="w-3.5 h-3.5" />
                       <span>Choose from Media Library</span>
@@ -1850,7 +1850,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="button"
                       disabled={isUploadingVslVideo}
                       onClick={() => vslVideoInputRef.current?.click()}
-                      className="px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 disabled:opacity-50 transition-colors flex items-center gap-1.5 cursor-pointer shadow-[0_0_10px_rgba(37,99,235,0.3)]"
+                      className="px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] disabled:opacity-50 transition-colors flex items-center gap-1.5 cursor-pointer shadow-[0_0_10px_rgba(177,255,0,0.3)]"
                     >
                       {isUploadingVslVideo ? (
                         <>
@@ -1880,7 +1880,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     value={formData.vsl.videoUrl}
                     onChange={(e) => handleChange('vsl.videoUrl', e.target.value)}
                     placeholder="https://...supabase.co/storage/v1/object/public/footazix-media/videos/..."
-                    className="flex-1 px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs sm:text-sm font-mono focus:border-blue-500 outline-none"
+                    className="flex-1 px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs sm:text-sm font-mono focus:border-[#B1FF00] outline-none"
                   />
                   {formData.vsl.videoUrl && (
                     <a
@@ -1890,7 +1890,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       className="p-2.5 rounded-xl bg-[#12121c] border border-white/10 text-zinc-400 hover:text-white cursor-pointer"
                       title="Test video link in new tab"
                     >
-                      <ExternalLink className="w-4 h-4 text-blue-400" />
+                      <ExternalLink className="w-4 h-4 text-[#B1FF00]" />
                     </a>
                   )}
                 </div>
@@ -1904,7 +1904,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.vsl.posterUrl}
                   onChange={(e) => handleChange('vsl.posterUrl', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm font-mono focus:border-blue-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm font-mono focus:border-[#B1FF00] outline-none"
                 />
               </div>
 
@@ -1918,7 +1918,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase ${
                       Boolean(formData.vsl?.posterMonochrome || formData.vsl?.monochrome)
                         ? 'bg-zinc-800 text-zinc-300 border border-white/10'
-                        : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                        : 'bg-[#B1FF00]/15 text-[#B1FF00] border border-[#B1FF00]/30'
                     }`}>
                       {Boolean(formData.vsl?.posterMonochrome || formData.vsl?.monochrome) ? 'Monochrome (ON)' : 'Full Color (OFF)'}
                     </span>
@@ -1937,7 +1937,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     }}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-all cursor-pointer ${
                       !Boolean(formData.vsl?.posterMonochrome || formData.vsl?.monochrome)
-                        ? 'bg-blue-600 text-white shadow-[0_0_12px_rgba(37,99,235,0.4)]'
+                        ? 'bg-[#B1FF00] text-[#070809] shadow-[0_0_12px_rgba(177,255,0,0.3)]'
                         : 'bg-zinc-800 text-zinc-400 hover:text-white'
                     }`}
                   >
@@ -1988,14 +1988,14 @@ export const AdminWebsiteEditor: React.FC = () => {
                         onClick={() => handleChange('vsl.aspectRatio', ratio.id)}
                         className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
                           isSelected
-                            ? 'bg-blue-600/20 border-blue-500 text-white shadow-[0_0_12px_rgba(37,99,235,0.25)]'
+                            ? 'bg-[#B1FF00]/15 border-[#B1FF00] text-[#F5F7F2] shadow-[0_0_12px_rgba(177,255,0,0.25)]'
                             : 'bg-[#12121c] border-white/10 text-zinc-400 hover:text-white hover:border-white/20'
                         }`}
                       >
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-mono font-bold text-white">{ratio.label}</span>
                           {isSelected && (
-                            <span className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(37,99,235,0.8)]" />
+                            <span className="w-2 h-2 rounded-full bg-[#B1FF00] shadow-[0_0_6px_rgba(177,255,0,0.8)]" />
                           )}
                         </div>
                         <span className="text-[10px] text-zinc-400 leading-tight">{ratio.desc}</span>
@@ -2031,7 +2031,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.portfolio?.badge || 'PORTFOLIO'}
                   onChange={(e) => handleChange('portfolio.badge', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-mono"
                 />
               </div>
 
@@ -2046,7 +2046,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     handleChange('sectionHeadings.portfolioHeading', e.target.value);
                     handleChange('portfolio.heading', e.target.value);
                   }}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-bold"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-bold"
                 />
               </div>
 
@@ -2061,7 +2061,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     handleChange('sectionHeadings.portfolioSubheading', e.target.value);
                     handleChange('portfolio.subheading', e.target.value);
                   }}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none"
                 />
               </div>
 
@@ -2073,7 +2073,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.portfolio?.cardCtaText || 'INQUIRE ABOUT THIS STYLE'}
                   onChange={(e) => handleChange('portfolio.cardCtaText', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-bold"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-bold"
                 />
               </div>
 
@@ -2085,7 +2085,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.portfolio?.emptyTitle || 'No projects in this category'}
                   onChange={(e) => handleChange('portfolio.emptyTitle', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none"
                 />
               </div>
 
@@ -2102,7 +2102,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="checkbox"
                   checked={formData.portfolio?.showFilters !== false}
                   onChange={(e) => handleChange('portfolio.showFilters', e.target.checked)}
-                  className="w-5 h-5 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                  className="w-5 h-5 rounded bg-zinc-900 border-white/20 text-[#B1FF00] cursor-pointer"
                 />
               </div>
 
@@ -2116,7 +2116,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase ${
                       Boolean(formData.portfolio?.monochrome)
                         ? 'bg-zinc-800 text-zinc-300 border border-white/10'
-                        : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                        : 'bg-[#B1FF00]/15 text-[#B1FF00] border border-[#B1FF00]/30'
                     }`}>
                       {Boolean(formData.portfolio?.monochrome) ? 'Monochrome (ON)' : 'Full Color (OFF)'}
                     </span>
@@ -2132,7 +2132,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     onClick={() => handleChange('portfolio.monochrome', false)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-all cursor-pointer ${
                       !Boolean(formData.portfolio?.monochrome)
-                        ? 'bg-blue-600 text-white shadow-[0_0_12px_rgba(37,99,235,0.4)]'
+                        ? 'bg-[#B1FF00] text-[#070809] shadow-[0_0_12px_rgba(177,255,0,0.3)]'
                         : 'bg-zinc-800 text-zinc-400 hover:text-white'
                     }`}
                   >
@@ -2178,7 +2178,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.rawToReady?.badge || 'THE TRANSFORMATION'}
                   onChange={(e) => handleChange('rawToReady.badge', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-mono"
                 />
               </div>
 
@@ -2190,7 +2190,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.rawToReady?.coreStepBadge || 'CORE STEP'}
                   onChange={(e) => handleChange('rawToReady.coreStepBadge', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono text-blue-400"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-mono text-[#B1FF00]"
                 />
               </div>
 
@@ -2202,7 +2202,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.rawToReady.heading}
                   onChange={(e) => handleChange('rawToReady.heading', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-bold"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-bold"
                 />
               </div>
 
@@ -2214,7 +2214,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.rawToReady.subheading}
                   onChange={(e) => handleChange('rawToReady.subheading', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none"
                 />
               </div>
             </div>
@@ -2228,7 +2228,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                 {(formData.rawToReady?.steps || []).map((step, idx) => (
                   <div key={idx} className="p-4 rounded-xl bg-[#12121c] border border-white/10 space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-mono font-bold text-blue-400">STAGE {step.num}</span>
+                      <span className="text-xs font-mono font-bold text-[#B1FF00]">STAGE {step.num}</span>
                     </div>
 
                     <div>
@@ -2288,7 +2288,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.servicesContent?.badge || 'SERVICES'}
                   onChange={(e) => handleChange('servicesContent.badge', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-mono"
                 />
               </div>
 
@@ -2300,7 +2300,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.servicesContent?.highlightedBadge || 'MAIN SPECIALTY'}
                   onChange={(e) => handleChange('servicesContent.highlightedBadge', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-bold"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-bold"
                 />
               </div>
 
@@ -2315,7 +2315,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     handleChange('sectionHeadings.servicesHeading', e.target.value);
                     handleChange('servicesContent.heading', e.target.value);
                   }}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-bold"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-bold"
                 />
               </div>
 
@@ -2330,7 +2330,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     handleChange('sectionHeadings.servicesSubheading', e.target.value);
                     handleChange('servicesContent.subheading', e.target.value);
                   }}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none"
                 />
               </div>
 
@@ -2340,7 +2340,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     type="checkbox"
                     checked={formData.servicesContent?.showFeatureList !== false}
                     onChange={(e) => handleChange('servicesContent.showFeatureList', e.target.checked)}
-                    className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                    className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-[#B1FF00] cursor-pointer"
                   />
                   <span>Show Feature Checklist on Cards</span>
                 </label>
@@ -2350,7 +2350,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     type="checkbox"
                     checked={formData.servicesContent?.showNumbers !== false}
                     onChange={(e) => handleChange('servicesContent.showNumbers', e.target.checked)}
-                    className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                    className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-[#B1FF00] cursor-pointer"
                   />
                   <span>Show Service Numbers (01, 02, 03)</span>
                 </label>
@@ -2360,7 +2360,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     type="checkbox"
                     checked={formData.servicesContent?.showCta !== false}
                     onChange={(e) => handleChange('servicesContent.showCta', e.target.checked)}
-                    className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                    className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-[#B1FF00] cursor-pointer"
                   />
                   <span>Show Card CTA Buttons</span>
                 </label>
@@ -2392,7 +2392,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.aboutContent?.badge || 'TEAM & PHILOSOPHY'}
                   onChange={(e) => handleChange('aboutContent.badge', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-mono"
                 />
               </div>
 
@@ -2407,7 +2407,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     handleChange('sectionHeadings.teamHeading', e.target.value);
                     handleChange('aboutContent.heading', e.target.value);
                   }}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-bold"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-bold"
                 />
               </div>
 
@@ -2422,7 +2422,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     handleChange('sectionHeadings.teamCopy', e.target.value);
                     handleChange('aboutContent.copy', e.target.value);
                   }}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none resize-none"
                 />
               </div>
 
@@ -2434,7 +2434,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.aboutContent?.socialButtonText || 'Profile'}
                   onChange={(e) => handleChange('aboutContent.socialButtonText', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none"
                 />
               </div>
 
@@ -2446,7 +2446,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.aboutContent?.emptyText || 'No team members published yet.'}
                   onChange={(e) => handleChange('aboutContent.emptyText', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none"
                 />
               </div>
 
@@ -2460,7 +2460,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase ${
                       Boolean(formData.aboutContent?.monochrome)
                         ? 'bg-zinc-800 text-zinc-300 border border-white/10'
-                        : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                        : 'bg-[#B1FF00]/15 text-[#B1FF00] border border-[#B1FF00]/30'
                     }`}>
                       {Boolean(formData.aboutContent?.monochrome) ? 'Monochrome (ON)' : 'Full Color (OFF)'}
                     </span>
@@ -2476,7 +2476,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     onClick={() => handleChange('aboutContent.monochrome', false)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-all cursor-pointer ${
                       !Boolean(formData.aboutContent?.monochrome)
-                        ? 'bg-blue-600 text-white shadow-[0_0_12px_rgba(37,99,235,0.4)]'
+                        ? 'bg-[#B1FF00] text-[#070809] shadow-[0_0_12px_rgba(177,255,0,0.3)]'
                         : 'bg-zinc-800 text-zinc-400 hover:text-white'
                     }`}
                   >
@@ -2521,7 +2521,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   onClick={() => handleChange('sectionVisibility.faq', formData.sectionVisibility.faq === false ? true : false)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold uppercase transition-colors cursor-pointer flex items-center gap-1.5 ${
                     formData.sectionVisibility.faq !== false
-                      ? 'bg-blue-950/60 text-blue-400 border border-blue-500/30'
+                      ? 'bg-[#181C16] text-[#B1FF00] border border-[#B1FF00]/30'
                       : 'bg-zinc-900 text-zinc-400 border border-white/10'
                   }`}
                 >
@@ -2540,7 +2540,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.faqSection?.badge || 'QUESTIONS & ANSWERS'}
                   onChange={(e) => handleChange('faqSection.badge', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-mono"
                 />
               </div>
 
@@ -2552,7 +2552,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.faqSection?.heading || 'FREQUENTLY ASKED QUESTIONS'}
                   onChange={(e) => handleChange('faqSection.heading', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-display font-bold uppercase"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-display font-bold uppercase"
                 />
               </div>
 
@@ -2565,7 +2565,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   value={formData.faqSection?.subheading || ''}
                   onChange={(e) => handleChange('faqSection.subheading', e.target.value)}
                   placeholder="Everything you need to know about our video editing pipeline..."
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none resize-none leading-relaxed"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none resize-none leading-relaxed"
                 />
               </div>
 
@@ -2583,7 +2583,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     onClick={() => handleChange('faqSection.allowMultipleOpen', false)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-all cursor-pointer ${
                       !formData.faqSection?.allowMultipleOpen
-                        ? 'bg-blue-600 text-white'
+                        ? 'bg-[#B1FF00] text-[#070809]'
                         : 'bg-zinc-800 text-zinc-400 hover:text-white'
                     }`}
                   >
@@ -2594,7 +2594,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     onClick={() => handleChange('faqSection.allowMultipleOpen', true)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-all cursor-pointer ${
                       Boolean(formData.faqSection?.allowMultipleOpen)
-                        ? 'bg-blue-600 text-white'
+                        ? 'bg-[#B1FF00] text-[#070809]'
                         : 'bg-zinc-800 text-zinc-400 hover:text-white'
                     }`}
                   >
@@ -2614,7 +2614,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     onClick={() => handleChange('faqSection.ctaVisible', formData.faqSection?.ctaVisible === false)}
                     className={`px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold uppercase cursor-pointer ${
                       formData.faqSection?.ctaVisible !== false
-                        ? 'bg-blue-600/20 text-blue-300 border border-blue-500/30'
+                        ? 'bg-[#B1FF00]/15 text-[#B1FF00] border border-[#B1FF00]/30'
                         : 'bg-zinc-800 text-zinc-400'
                     }`}
                   >
@@ -2631,7 +2631,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="text"
                       value={formData.faqSection?.ctaText || 'HAVE A CUSTOM QUESTION? REACH OUT →'}
                       onChange={(e) => handleChange('faqSection.ctaText', e.target.value)}
-                      className="w-full px-3.5 py-2 rounded-xl bg-[#090910] border border-white/10 text-white text-xs font-mono outline-none focus:border-blue-500"
+                      className="w-full px-3.5 py-2 rounded-xl bg-[#090910] border border-white/10 text-white text-xs font-mono outline-none focus:border-[#B1FF00]"
                     />
                   </div>
 
@@ -2644,7 +2644,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       value={formData.faqSection?.ctaAction || 'inquiry'}
                       onChange={(e) => handleChange('faqSection.ctaAction', e.target.value)}
                       placeholder="inquiry, #contact, or external URL"
-                      className="w-full px-3.5 py-2 rounded-xl bg-[#090910] border border-white/10 text-white text-xs font-mono outline-none focus:border-blue-500"
+                      className="w-full px-3.5 py-2 rounded-xl bg-[#090910] border border-white/10 text-white text-xs font-mono outline-none focus:border-[#B1FF00]"
                     />
                   </div>
                 </div>
@@ -2676,7 +2676,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.finalCta?.badge || "LET'S TALK"}
                   onChange={(e) => handleChange('finalCta.badge', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-mono"
                 />
               </div>
 
@@ -2691,7 +2691,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     handleChange('sectionHeadings.finalCtaHeadline', e.target.value);
                     handleChange('finalCta.heading', e.target.value);
                   }}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-bold"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-bold"
                 />
               </div>
 
@@ -2706,7 +2706,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     handleChange('sectionHeadings.finalCtaSupporting', e.target.value);
                     handleChange('finalCta.supporting', e.target.value);
                   }}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none"
                 />
               </div>
 
@@ -2720,7 +2720,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="checkbox"
                       checked={formData.finalCta?.showPrimaryCta !== false}
                       onChange={(e) => handleChange('finalCta.showPrimaryCta', e.target.checked)}
-                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-[#B1FF00] cursor-pointer"
                     />
                     <span>Show</span>
                   </label>
@@ -2729,7 +2729,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.finalCta?.primaryCta || 'BUILD WITH FOOTAZIX'}
                   onChange={(e) => handleChange('finalCta.primaryCta', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-bold"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-bold"
                 />
               </div>
 
@@ -2743,7 +2743,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="checkbox"
                       checked={formData.finalCta?.showSecondaryCta !== false}
                       onChange={(e) => handleChange('finalCta.showSecondaryCta', e.target.checked)}
-                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-[#B1FF00] cursor-pointer"
                     />
                     <span>Show</span>
                   </label>
@@ -2752,7 +2752,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.finalCta?.secondaryCta || 'INSTAGRAM'}
                   onChange={(e) => handleChange('finalCta.secondaryCta', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-semibold"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-semibold"
                 />
               </div>
             </div>
@@ -2781,7 +2781,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   onClick={() => handleChange('sectionVisibility.footer', formData.sectionVisibility.footer === false ? true : false)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold uppercase transition-colors cursor-pointer flex items-center gap-1.5 ${
                     formData.sectionVisibility.footer !== false
-                      ? 'bg-blue-950/60 text-blue-400 border border-blue-500/30'
+                      ? 'bg-[#181C16] text-[#B1FF00] border border-[#B1FF00]/30'
                       : 'bg-zinc-900 text-zinc-400 border border-white/10'
                   }`}
                 >
@@ -2792,10 +2792,10 @@ export const AdminWebsiteEditor: React.FC = () => {
             </div>
 
             {/* Developer Credit & Copyright Box — Special Highlight */}
-            <div className="p-5 rounded-2xl bg-[#0e0e18] border border-blue-500/30 space-y-4 shadow-lg shadow-blue-500/5">
+            <div className="p-5 rounded-2xl bg-[#0e0e18] border border-[#B1FF00]/30 space-y-4 shadow-lg shadow-[0_0_12px_rgba(177,255,0,0.05)]">
               <div className="flex items-center justify-between border-b border-white/10 pb-3">
                 <div className="flex items-center gap-2.5">
-                  <span className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
+                  <span className="w-2 h-2 rounded-full bg-[#B1FF00] shadow-[0_0_8px_rgba(177,255,0,0.8)]" />
                   <span className="text-sm font-bold text-white">
                     Developer Credit & Copyright Bar
                   </span>
@@ -2806,7 +2806,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="checkbox"
                       checked={formData.footer?.showCopyright !== false}
                       onChange={(e) => handleChange('footer.showCopyright', e.target.checked)}
-                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-[#B1FF00] cursor-pointer"
                     />
                     <span>Show Copyright</span>
                   </label>
@@ -2815,7 +2815,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                       type="checkbox"
                       checked={formData.footer?.showDeveloperCredit !== false}
                       onChange={(e) => handleChange('footer.showDeveloperCredit', e.target.checked)}
-                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                      className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-[#B1FF00] cursor-pointer"
                     />
                     <span>Show Developer Credit</span>
                   </label>
@@ -2825,7 +2825,7 @@ export const AdminWebsiteEditor: React.FC = () => {
               {/* Live Preview Bar */}
               <div className="p-3.5 rounded-xl bg-black border border-white/10 font-mono text-xs flex flex-wrap items-center gap-2 justify-between">
                 <div className="flex items-center gap-2 flex-wrap text-zinc-400">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#B1FF00] bg-[#B1FF00]/10 px-2 py-0.5 rounded border border-[#B1FF00]/20">
                     Live Preview
                   </span>
                   <span>{formData.footer?.copyrightText || '© Footazix'}</span>
@@ -2837,10 +2837,10 @@ export const AdminWebsiteEditor: React.FC = () => {
                         href={formData.footer?.developerUrl || 'https://www.instagram.com/sanamatum_creates?stkn=MXVjbzVtamQwaGJveg=='}
                         target={formData.footer?.developerNewTab !== false ? '_blank' : undefined}
                         rel={formData.footer?.developerNewTab !== false ? 'noopener noreferrer' : undefined}
-                        className="text-zinc-200 hover:text-blue-400 underline underline-offset-2 flex items-center gap-1 font-semibold"
+                        className="text-[#F5F7F2] hover:text-[#B1FF00] underline underline-offset-2 flex items-center gap-1 font-semibold"
                       >
                         <span>{formData.footer?.developerName || 'Sanamatum Ningthoujam'}</span>
-                        <ExternalLink className="w-2.5 h-2.5 text-blue-400" />
+                        <ExternalLink className="w-2.5 h-2.5 text-[#B1FF00]" />
                       </a>
                     </>
                   )}
@@ -2859,7 +2859,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     value={formData.footer?.copyrightText ?? '© Footazix'}
                     onChange={(e) => handleChange('footer.copyrightText', e.target.value)}
                     placeholder="© Footazix"
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-mono"
                   />
                 </div>
 
@@ -2872,7 +2872,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     value={formData.footer?.developedByLabel ?? 'Developed by'}
                     onChange={(e) => handleChange('footer.developedByLabel', e.target.value)}
                     placeholder="Developed by"
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-mono"
                   />
                 </div>
 
@@ -2885,7 +2885,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     value={formData.footer?.developerName ?? 'Sanamatum Ningthoujam'}
                     onChange={(e) => handleChange('footer.developerName', e.target.value)}
                     placeholder="Sanamatum Ningthoujam"
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-semibold"
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-semibold"
                   />
                 </div>
 
@@ -2899,7 +2899,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                         type="checkbox"
                         checked={formData.footer?.developerNewTab !== false}
                         onChange={(e) => handleChange('footer.developerNewTab', e.target.checked)}
-                        className="w-3.5 h-3.5 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                        className="w-3.5 h-3.5 rounded bg-zinc-900 border-white/20 text-[#B1FF00] cursor-pointer"
                       />
                       <span>Open in new tab</span>
                     </label>
@@ -2909,7 +2909,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     value={formData.footer?.developerUrl ?? 'https://www.instagram.com/sanamatum_creates?stkn=MXVjbzVtamQwaGJveg=='}
                     onChange={(e) => handleChange('footer.developerUrl', e.target.value)}
                     placeholder="https://www.instagram.com/sanamatum_creates?stkn=MXVjbzVtamQwaGJveg=="
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs focus:border-blue-500 outline-none font-mono"
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs focus:border-[#B1FF00] outline-none font-mono"
                   />
                 </div>
               </div>
@@ -2928,7 +2928,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     handleChange('footer.description', e.target.value);
                     handleChange('footer.tagline', e.target.value);
                   }}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-mono"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-mono"
                 />
               </div>
 
@@ -2940,7 +2940,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.footer?.backToTopText || 'Back to top'}
                   onChange={(e) => handleChange('footer.backToTopText', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none"
                 />
               </div>
 
@@ -2952,7 +2952,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.footer?.contactText || 'Contact'}
                   onChange={(e) => handleChange('footer.contactText', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none"
                 />
               </div>
 
@@ -2964,7 +2964,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.footer?.termsLabel || 'Terms & Conditions'}
                   onChange={(e) => handleChange('footer.termsLabel', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none"
                 />
               </div>
 
@@ -2976,7 +2976,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.footer?.privacyLabel || 'Privacy Policy'}
                   onChange={(e) => handleChange('footer.privacyLabel', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none"
                 />
               </div>
             </div>
@@ -3013,7 +3013,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   rows={8}
                   value={formData.legal?.terms.content || ''}
                   onChange={(e) => handleChange('legal.terms.content', e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-black border border-white/10 text-white text-xs font-mono focus:border-blue-500 outline-none resize-y leading-relaxed"
+                  className="w-full px-4 py-3 rounded-xl bg-black border border-white/10 text-white text-xs font-mono focus:border-[#B1FF00] outline-none resize-y leading-relaxed"
                 />
               </div>
 
@@ -3032,7 +3032,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   rows={8}
                   value={formData.legal?.privacy.content || ''}
                   onChange={(e) => handleChange('legal.privacy.content', e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-black border border-white/10 text-white text-xs font-mono focus:border-blue-500 outline-none resize-y leading-relaxed"
+                  className="w-full px-4 py-3 rounded-xl bg-black border border-white/10 text-white text-xs font-mono focus:border-[#B1FF00] outline-none resize-y leading-relaxed"
                 />
               </div>
             </div>
@@ -3062,7 +3062,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.seo?.siteTitle || ''}
                   onChange={(e) => handleChange('seo.siteTitle', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none font-bold"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none font-bold"
                 />
                 <span className="text-[10px] text-zinc-500 mt-1 block">Recommended: 30-60 characters for optimal Google search rendering</span>
               </div>
@@ -3075,7 +3075,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   rows={3}
                   value={formData.seo?.metaDescription || ''}
                   onChange={(e) => handleChange('seo.metaDescription', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none resize-none"
                 />
                 <span className="text-[10px] text-zinc-500 mt-1 block">Recommended: 120-160 characters</span>
               </div>
@@ -3088,7 +3088,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.seo?.canonicalUrl || 'https://footazix.site'}
                   onChange={(e) => handleChange('seo.canonicalUrl', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm font-mono focus:border-blue-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm font-mono focus:border-[#B1FF00] outline-none"
                 />
               </div>
 
@@ -3101,7 +3101,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   value={formData.seo?.keywords || ''}
                   onChange={(e) => handleChange('seo.keywords', e.target.value)}
                   placeholder="video editing, reels, shorts, footazix"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none"
                 />
               </div>
 
@@ -3113,7 +3113,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.seo?.ogTitle || ''}
                   onChange={(e) => handleChange('seo.ogTitle', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none"
                 />
               </div>
 
@@ -3125,7 +3125,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   type="text"
                   value={formData.seo?.ogDescription || ''}
                   onChange={(e) => handleChange('seo.ogDescription', e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-blue-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm focus:border-[#B1FF00] outline-none"
                 />
               </div>
 
@@ -3142,7 +3142,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-bold text-white uppercase tracking-wider">Universal OG Image</span>
-                      <span className="px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 text-[9px] font-mono font-bold">SINGLE SOURCE OF TRUTH</span>
+                      <span className="px-1.5 py-0.5 rounded bg-[#B1FF00]/15 text-[#B1FF00] text-[9px] font-mono font-bold">SINGLE SOURCE OF TRUTH</span>
                     </div>
                     <span className="text-[11px] text-zinc-400 block line-clamp-1 font-mono">
                       {formData.brandingAssets?.ogImage?.url || 'Default Footazix Brand Card'}
@@ -3152,7 +3152,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setActiveTab('branding')}
-                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-blue-400 hover:text-white bg-blue-600/20 hover:bg-blue-600 border border-blue-500/30 transition-colors shrink-0 cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-[#B1FF00] hover:text-[#C4FF45] bg-[#B1FF00]/15 hover:bg-[#B1FF00] border border-[#B1FF00]/30 transition-colors shrink-0 cursor-pointer"
                 >
                   Manage Image in Branding →
                 </button>
@@ -3191,7 +3191,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                 <button
                   type="button"
                   onClick={confirmReset}
-                  className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-colors cursor-pointer"
+                  className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] transition-colors cursor-pointer"
                 >
                   Confirm Reset
                 </button>
@@ -3215,7 +3215,7 @@ export const AdminWebsiteEditor: React.FC = () => {
           >
             <div className="flex items-center justify-between pb-3 border-b border-white/10">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <Video className="w-4 h-4 text-blue-400" />
+                <Video className="w-4 h-4 text-[#B1FF00]" />
                 <span>Select Video from Supabase Media Library</span>
               </h3>
               <button
@@ -3260,10 +3260,10 @@ export const AdminWebsiteEditor: React.FC = () => {
                         });
                         setTimeout(() => setToastMessage(null), 3000);
                       }}
-                      className="p-3 rounded-xl bg-[#12121c] hover:bg-zinc-800 border border-white/5 hover:border-blue-500/40 flex items-center justify-between gap-3 cursor-pointer transition-colors"
+                      className="p-3 rounded-xl bg-[#12121c] hover:bg-zinc-800 border border-white/5 hover:border-[#B1FF00]/40 flex items-center justify-between gap-3 cursor-pointer transition-colors"
                     >
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-10 h-10 rounded-lg bg-blue-950/40 text-blue-400 border border-blue-500/30 flex items-center justify-center shrink-0">
+                        <div className="w-10 h-10 rounded-lg bg-[#181C16] text-[#B1FF00] border border-[#B1FF00]/30 flex items-center justify-center shrink-0">
                           <Video className="w-4 h-4" />
                         </div>
                         <div className="min-w-0">
@@ -3278,7 +3278,7 @@ export const AdminWebsiteEditor: React.FC = () => {
 
                       <button
                         type="button"
-                        className="px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 shrink-0"
+                        className="px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] shrink-0"
                       >
                         Select
                       </button>

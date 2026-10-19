@@ -34,27 +34,27 @@ export const About: React.FC = () => {
     aboutConfig?.emptyText || 'No team members published yet. Add team members in the Admin CMS.';
 
   return (
-    <section id="about" className="py-20 sm:py-28 bg-[#07070b] border-t border-b border-white/5 relative font-sans">
+    <section id="about" className="py-20 sm:py-28 bg-[#0D0F10] border-t border-b border-[#292E25] relative font-sans">
       <div className="max-w-6xl mx-auto px-6">
         {/* Section Header */}
         <div className="max-w-3xl mb-14 text-left">
           {showBadge && (
-            <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
+            <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#B1FF00] mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#B1FF00] shadow-[0_0_8px_rgba(177,255,0,0.8)]" />
               <span className="font-mono text-[11px]">{badgeText}</span>
             </div>
           )}
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-white tracking-tight mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-[#F5F7F2] tracking-tight mb-4">
             {headingText}
           </h2>
-          <p className="text-base sm:text-lg text-zinc-300 font-normal leading-relaxed">
+          <p className="text-base sm:text-lg text-[#F5F7F2] font-normal leading-relaxed">
             {copyText}
           </p>
         </div>
 
         {/* Dynamic Team Members Grid */}
         {visibleTeam.length === 0 ? (
-          <div className="p-8 text-center text-zinc-400 text-sm rounded-xl border border-white/10 bg-[#090910]">
+          <div className="p-8 text-center text-[#A7AEA0] text-sm rounded-xl border border-[#292E25] bg-[#121512]">
             {emptyText}
           </div>
         ) : (
@@ -66,13 +66,13 @@ export const About: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-50px' }}
                 transition={{ duration: 0.5, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="rounded-2xl p-6 bg-[#090910] border border-white/10 hover:border-blue-500/40 transition-all duration-300 relative overflow-hidden shadow-xl flex flex-col justify-between group"
+                className="rounded-2xl p-6 bg-[#121512] border border-[#292E25] hover:border-[#B1FF00]/40 transition-all duration-300 relative overflow-hidden shadow-xl flex flex-col justify-between group"
               >
                 <div>
                   {/* Photo & Role Header */}
                   <div className="flex items-center gap-4 mb-4">
                     {showPhotos && (
-                      <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-zinc-900 border border-blue-500/30 shrink-0">
+                      <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-zinc-900 border border-[#B1FF00]/30 shrink-0">
                         <img
                           src={member.photo || '/assets/founder.jpg'}
                           alt={member.name}
@@ -83,16 +83,16 @@ export const About: React.FC = () => {
                       </div>
                     )}
                     <div>
-                      <h3 className="text-lg font-display font-extrabold text-white tracking-tight">
+                      <h3 className="text-lg font-display font-extrabold text-[#F5F7F2] tracking-tight">
                         <span className="inline-flex items-center gap-1.5 align-baseline">
                           <span>{member.name}</span>
                           <VerifiedTeamBadge size="md" />
                         </span>
                       </h3>
-                      <p className="text-xs font-semibold text-blue-400">
+                      <p className="text-xs font-semibold text-[#B1FF00]">
                         {member.role}
                       </p>
-                      <p className="text-[11px] text-zinc-400 mt-0.5 font-mono">
+                      <p className="text-[11px] text-[#A7AEA0] mt-0.5 font-mono">
                         {content.brand?.name || 'Footazix'}
                       </p>
                     </div>
@@ -100,7 +100,7 @@ export const About: React.FC = () => {
 
                   {/* Bio / Description */}
                   {member.description && (
-                    <p className="text-xs text-zinc-400 leading-relaxed mb-4 font-normal">
+                    <p className="text-xs text-[#A7AEA0] leading-relaxed mb-4 font-normal">
                       {member.description}
                     </p>
                   )}
@@ -108,15 +108,15 @@ export const About: React.FC = () => {
 
                 {/* Social Link / Email footer */}
                 {(member.socialLink || member.email) && (
-                  <div className="pt-3 border-t border-white/10 flex items-center justify-between text-xs text-zinc-400">
+                  <div className="pt-3 border-t border-[#292E25] flex items-center justify-between text-xs text-[#A7AEA0]">
                     {showSocialLinks && member.socialLink ? (
                       <a
                         href={member.socialLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-zinc-300 hover:text-blue-400 transition-colors"
+                        className="inline-flex items-center gap-1.5 text-[#F5F7F2] hover:text-[#B1FF00] transition-colors"
                       >
-                        <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
+                        <ExternalLink className="w-3.5 h-3.5 text-[#B1FF00]" />
                         <span>{socialButtonText}</span>
                       </a>
                     ) : (
@@ -124,8 +124,8 @@ export const About: React.FC = () => {
                     )}
 
                     {showEmails && member.email && (
-                      <span className="text-[11px] text-zinc-400 font-mono flex items-center gap-1">
-                        <Mail className="w-3 h-3 text-zinc-400" />
+                      <span className="text-[11px] text-[#A7AEA0] font-mono flex items-center gap-1">
+                        <Mail className="w-3 h-3 text-[#A7AEA0]" />
                         <span>{member.email}</span>
                       </span>
                     )}

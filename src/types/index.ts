@@ -462,3 +462,6 @@ export interface AdminUser {
   name: string;
   role: 'owner' | 'editor';
 }
+
+export * from './clientPortal';
+

@@ -26,7 +26,7 @@ export const INITIAL_WEBSITE_CONTENT: WebsiteContent = {
     email: 'footazix@gmail.com',
     tagline: 'Turning Raw Footage Into Content Worth Watching.',
     supportingLine: 'Video Editing • Content • Growth',
-    accentColor: '#2563eb', // Core Electric Cobalt Blue
+    accentColor: '#B1FF00', // Signature Lime Green
   },
   brandingAssets: {
     headerLogo: {

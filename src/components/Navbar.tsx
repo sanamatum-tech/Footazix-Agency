@@ -99,7 +99,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 font-sans ${
         scrolled
-          ? 'bg-[#050508]/92 backdrop-blur-md border-b border-white/10 py-3.5 shadow-2xl shadow-black/60'
+          ? 'bg-[#070809]/92 backdrop-blur-md border-b border-[#292E25] py-3.5 shadow-2xl shadow-black/80'
           : 'bg-transparent py-5'
       }`}
     >
@@ -126,16 +126,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="hidden md:flex items-center gap-7 lg:gap-8 text-xs font-semibold uppercase tracking-wider text-zinc-400"
+            className="hidden md:flex items-center gap-7 lg:gap-8 text-xs font-semibold uppercase tracking-wider text-[#A7AEA0]"
           >
             {navLinks.map((link) => (
               <button
                 key={link.id || link.label}
                 onClick={() => handleLinkClick(link.href)}
-                className="hover:text-white transition-colors cursor-pointer py-1 relative text-left group"
+                className="hover:text-[#F5F7F2] transition-colors cursor-pointer py-1 relative text-left group"
               >
                 <span>{link.label}</span>
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 transition-all duration-200 group-hover:w-full" />
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#B1FF00] transition-all duration-200 group-hover:w-full" />
               </button>
             ))}
           </motion.nav>
@@ -154,9 +154,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${content.brand?.name || 'Footazix'} Instagram`}
-              className="hidden sm:inline-flex items-center justify-center p-2 rounded-xl text-zinc-400 hover:text-white bg-[#12121c] border border-white/10 hover:border-blue-500/40 transition-colors"
+              className="hidden sm:inline-flex items-center justify-center p-2 rounded-xl text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#0D0F10] border border-[#292E25] hover:border-[#B1FF00]/40 transition-colors"
             >
-              <Instagram className="w-4 h-4 text-blue-400" />
+              <Instagram className="w-4 h-4 text-[#B1FF00]" />
             </a>
           )}
 
@@ -165,17 +165,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => onOpenContact()}
-              className="hidden sm:inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-all duration-200 shadow-[0_0_18px_rgba(37,99,235,0.35)] cursor-pointer group"
+              className="hidden sm:inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] transition-all duration-200 shadow-[0_0_18px_rgba(177,255,0,0.3)] cursor-pointer group"
             >
               <span>{ctaText}</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform text-[#070809]" />
             </motion.button>
           )}
 
           {/* Mobile menu trigger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-xl text-zinc-400 hover:text-white bg-[#12121c] border border-white/10 transition-colors cursor-pointer"
+            className="md:hidden p-2 rounded-xl text-[#A7AEA0] hover:text-white bg-[#0D0F10] border border-[#292E25] transition-colors cursor-pointer"
             aria-label="Toggle Navigation Menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -191,31 +191,31 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25 }}
-            className="md:hidden border-b border-white/10 bg-[#050508]/98 backdrop-blur-xl overflow-hidden px-6 py-6 space-y-4"
+            className="md:hidden border-b border-[#292E25] bg-[#070809]/98 backdrop-blur-xl overflow-hidden px-6 py-6 space-y-4"
           >
-            <div className="flex flex-col space-y-3 text-sm font-semibold uppercase tracking-wider text-zinc-300">
+            <div className="flex flex-col space-y-3 text-sm font-semibold uppercase tracking-wider text-[#F5F7F2]">
               {navLinks.map((link) => (
                 <button
                   key={link.id || link.label}
                   onClick={() => handleLinkClick(link.href)}
-                  className="text-left py-2 hover:text-blue-400 transition-colors cursor-pointer"
+                  className="text-left py-2 hover:text-[#B1FF00] transition-colors cursor-pointer"
                 >
                   {link.label}
                 </button>
               ))}
             </div>
 
-            <div className="pt-4 border-t border-white/10 flex flex-col gap-3">
+            <div className="pt-4 border-t border-[#292E25] flex flex-col gap-3">
               {showCta && (
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
                     onOpenContact();
                   }}
-                  className="w-full py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-all duration-200 shadow-[0_0_16px_rgba(37,99,235,0.35)] flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] transition-all duration-200 shadow-[0_0_16px_rgba(177,255,0,0.3)] flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>{ctaText}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <ArrowRight className="w-3.5 h-3.5 text-[#070809]" />
                 </button>
               )}
 
@@ -224,9 +224,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                   href={content.brand.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider text-zinc-300 bg-[#12121c] border border-white/10 hover:text-white transition-colors flex items-center justify-center gap-2"
+                  className="w-full py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider text-[#A7AEA0] bg-[#0D0F10] border border-[#292E25] hover:text-[#F5F7F2] transition-colors flex items-center justify-center gap-2"
                 >
-                  <Instagram className="w-3.5 h-3.5 text-blue-400" />
+                  <Instagram className="w-3.5 h-3.5 text-[#B1FF00]" />
                   <span>Instagram</span>
                 </a>
               )}

@@ -394,8 +394,8 @@ NOTIFY pgrst, 'reload config';`;
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl bg-[#090910] border border-white/10 shadow-xl">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
-            <span className="text-[10px] font-mono uppercase tracking-widest text-blue-400 font-bold">
+            <span className="w-2 h-2 rounded-full bg-[#B1FF00] shadow-[0_0_8px_rgba(177,255,0,0.8)]" />
+            <span className="text-[10px] font-mono uppercase tracking-widest text-[#B1FF00] font-bold">
               PORTFOLIO CMS CONTROL
             </span>
           </div>
@@ -415,10 +415,10 @@ NOTIFY pgrst, 'reload config';`;
           <button
             type="button"
             onClick={() => setIsSqlModalOpen(true)}
-            className="px-3 py-2 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white bg-[#12121c] border border-white/10 hover:border-blue-500/30 transition-all flex items-center gap-1.5 cursor-pointer"
+            className="px-3 py-2 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white bg-[#12121c] border border-white/10 hover:border-[#B1FF00]/30 transition-all flex items-center gap-1.5 cursor-pointer"
             title="Supabase Database & RLS Settings"
           >
-            <Database className="w-3.5 h-3.5 text-blue-400" />
+            <Database className="w-3.5 h-3.5 text-[#B1FF00]" />
             <span className="hidden sm:inline">Supabase SQL</span>
           </button>
 
@@ -427,7 +427,7 @@ NOTIFY pgrst, 'reload config';`;
             <button
               onClick={() => setViewMode('list')}
               className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                viewMode === 'list' ? 'bg-blue-600 text-white' : 'text-zinc-400 hover:text-white'
+                viewMode === 'list' ? 'bg-[#B1FF00] text-[#070809]' : 'text-zinc-400 hover:text-white'
               }`}
               title="List view"
             >
@@ -436,7 +436,7 @@ NOTIFY pgrst, 'reload config';`;
             <button
               onClick={() => setViewMode('grid')}
               className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                viewMode === 'grid' ? 'bg-blue-600 text-white' : 'text-zinc-400 hover:text-white'
+                viewMode === 'grid' ? 'bg-[#B1FF00] text-[#070809]' : 'text-zinc-400 hover:text-white'
               }`}
               title="Grid view"
             >
@@ -447,7 +447,7 @@ NOTIFY pgrst, 'reload config';`;
           {/* Create Button */}
           <button
             onClick={openAddModal}
-            className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 active:scale-95 transition-all shadow-[0_0_16px_rgba(37,99,235,0.3)] cursor-pointer flex items-center gap-1.5"
+            className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] active:scale-95 transition-all shadow-[0_0_16px_rgba(177,255,0,0.3)] cursor-pointer flex items-center gap-1.5"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Create Project</span>
@@ -462,14 +462,14 @@ NOTIFY pgrst, 'reload config';`;
             <span className="text-[10px] font-mono uppercase text-zinc-400 block">Total Work</span>
             <span className="text-base font-bold text-white tabular-nums">{projects.length}</span>
           </div>
-          <FolderKanban className="w-4 h-4 text-blue-400" />
+          <FolderKanban className="w-4 h-4 text-[#B1FF00]" />
         </div>
         <div className="p-3.5 rounded-xl bg-[#090910] border border-white/10 flex items-center justify-between">
           <div>
             <span className="text-[10px] font-mono uppercase text-zinc-400 block">Live & Visible</span>
-            <span className="text-base font-bold text-blue-400 tabular-nums">{publishedCount}</span>
+            <span className="text-base font-bold text-[#B1FF00] tabular-nums">{publishedCount}</span>
           </div>
-          <Eye className="w-4 h-4 text-blue-400" />
+          <Eye className="w-4 h-4 text-[#B1FF00]" />
         </div>
         <div className="p-3.5 rounded-xl bg-[#090910] border border-white/10 flex items-center justify-between">
           <div>
@@ -496,13 +496,13 @@ NOTIFY pgrst, 'reload config';`;
             exit={{ opacity: 0, y: -6 }}
             className={`p-3.5 rounded-xl border flex items-center justify-between gap-3 text-xs font-medium ${
               statusMessage.type === 'success'
-                ? 'bg-blue-950/40 border-blue-500/40 text-blue-200'
+                ? 'bg-[#181C16] border-[#B1FF00]/40 text-[#F5F7F2]'
                 : 'bg-red-950/40 border-red-500/40 text-red-200'
             }`}
           >
             <div className="flex items-center gap-2">
               {statusMessage.type === 'success' ? (
-                <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-[#B1FF00] shrink-0" />
               ) : (
                 <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
               )}
@@ -527,7 +527,7 @@ NOTIFY pgrst, 'reload config';`;
             placeholder="Search by title, client, description..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-lg bg-[#12121c] border border-white/10 text-white text-xs placeholder-zinc-500 outline-none focus:border-blue-500"
+            className="w-full pl-9 pr-4 py-2 rounded-lg bg-[#12121c] border border-white/10 text-white text-xs placeholder-zinc-500 outline-none focus:border-[#B1FF00]"
           />
         </div>
 
@@ -537,7 +537,7 @@ NOTIFY pgrst, 'reload config';`;
             onClick={() => setCategoryFilter('all')}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
               categoryFilter === 'all'
-                ? 'bg-blue-600 text-white'
+                ? 'bg-[#B1FF00] text-[#070809]'
                 : 'text-zinc-400 hover:text-white bg-[#12121c] border border-white/5'
             }`}
           >
@@ -549,7 +549,7 @@ NOTIFY pgrst, 'reload config';`;
               onClick={() => setCategoryFilter(cat)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
                 categoryFilter === cat
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-[#B1FF00] text-[#070809]'
                   : 'text-zinc-400 hover:text-white bg-[#12121c] border border-white/5'
               }`}
             >
@@ -571,7 +571,7 @@ NOTIFY pgrst, 'reload config';`;
           </p>
           <button
             onClick={openAddModal}
-            className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-colors cursor-pointer"
+            className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] transition-colors cursor-pointer"
           >
             + Create First Project
           </button>
@@ -630,7 +630,7 @@ NOTIFY pgrst, 'reload config';`;
                   {/* Info & Aspect Ratio Tags */}
                   <div className="min-w-0 space-y-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-[10px] font-mono uppercase text-blue-400 font-semibold px-2 py-0.5 rounded bg-blue-950/60 border border-blue-500/30">
+                      <span className="text-[10px] font-mono uppercase text-[#B1FF00] font-semibold px-2 py-0.5 rounded bg-[#181C16] border border-[#B1FF00]/30">
                         {project.category}
                       </span>
                       <h3 className="text-sm font-bold text-white truncate">
@@ -654,7 +654,7 @@ NOTIFY pgrst, 'reload config';`;
                         className={`px-1.5 py-0.5 rounded font-mono text-[10px] font-bold ${
                           project.monochrome
                             ? 'bg-zinc-800 text-zinc-300 border border-white/10'
-                            : 'bg-blue-950/60 text-blue-300 border border-blue-500/30'
+                            : 'bg-[#181C16] text-[#B1FF00] border border-[#B1FF00]/30'
                         }`}
                       >
                         {project.monochrome ? 'Monochrome' : 'Full Color'}
@@ -673,14 +673,14 @@ NOTIFY pgrst, 'reload config';`;
                     onClick={(e) => handleTogglePublish(project, e)}
                     className={`px-2.5 py-1 rounded-lg text-xs font-mono uppercase font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
                       project.status === 'published'
-                        ? 'bg-blue-950/60 text-blue-400 border border-blue-500/30'
+                        ? 'bg-[#181C16] text-[#B1FF00] border border-[#B1FF00]/30'
                         : 'bg-zinc-900 text-zinc-400 border border-white/10'
                     }`}
                     title="Toggle Published / Draft"
                   >
                     {project.status === 'published' ? (
                       <>
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#B1FF00]" />
                         <span>Published</span>
                       </>
                     ) : (
@@ -696,14 +696,14 @@ NOTIFY pgrst, 'reload config';`;
                     onClick={(e) => handleToggleVisible(project, e)}
                     className={`px-2.5 py-1 rounded-lg text-xs font-mono uppercase font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
                       project.visible !== false
-                        ? 'bg-blue-950/60 text-blue-300 border border-blue-500/30'
+                        ? 'bg-[#181C16] text-[#B1FF00] border border-[#B1FF00]/30'
                         : 'bg-zinc-900 text-zinc-500 border border-white/10'
                     }`}
                     title="Toggle Visible / Hidden on public site"
                   >
                     {project.visible !== false ? (
                       <>
-                        <Eye className="w-3 h-3 text-blue-400" />
+                        <Eye className="w-3 h-3 text-[#B1FF00]" />
                         <span>Visible</span>
                       </>
                     ) : (
@@ -757,7 +757,7 @@ NOTIFY pgrst, 'reload config';`;
                     }`}
                   />
                   <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 flex-wrap">
-                    <span className="text-[10px] font-mono uppercase text-blue-400 font-semibold px-2 py-0.5 rounded bg-black/75 backdrop-blur-sm border border-blue-500/40">
+                    <span className="text-[10px] font-mono uppercase text-[#B1FF00] font-semibold px-2 py-0.5 rounded bg-black/75 backdrop-blur-sm border border-[#B1FF00]/40">
                       {project.category}
                     </span>
                     <span className="text-[9px] font-mono uppercase text-zinc-300 px-1.5 py-0.5 rounded bg-black/75 border border-white/10">
@@ -767,7 +767,7 @@ NOTIFY pgrst, 'reload config';`;
                       className={`text-[9px] font-mono uppercase px-1.5 py-0.5 rounded font-bold ${
                         project.monochrome
                           ? 'bg-zinc-800 text-zinc-300 border border-white/10'
-                          : 'bg-blue-950/80 text-blue-300 border border-blue-500/40'
+                          : 'bg-[#181C16] text-[#B1FF00] border border-[#B1FF00]/40'
                       }`}
                     >
                       {project.monochrome ? 'Mono' : 'Color'}
@@ -777,7 +777,7 @@ NOTIFY pgrst, 'reload config';`;
                     <span
                       className={`text-[9px] font-mono uppercase px-2 py-0.5 rounded font-bold ${
                         project.status === 'published'
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-[#B1FF00] text-[#070809]'
                           : 'bg-black/75 text-zinc-400'
                       }`}
                     >
@@ -861,7 +861,7 @@ NOTIFY pgrst, 'reload config';`;
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-3.5 border-b border-white/10">
               <div>
-                <span className="text-[10px] font-mono uppercase text-blue-400 tracking-wider font-bold">
+                <span className="text-[10px] font-mono uppercase text-[#B1FF00] tracking-wider font-bold">
                   PROJECT SPECIFICATION
                 </span>
                 <h3 className="text-base sm:text-lg font-bold text-white">
@@ -891,7 +891,7 @@ NOTIFY pgrst, 'reload config';`;
                       placeholder="e.g. High-Retention Creator Reel"
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-blue-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-[#B1FF00]"
                     />
                   </div>
 
@@ -904,7 +904,7 @@ NOTIFY pgrst, 'reload config';`;
                       <select
                         value={category}
                         onChange={(e) => setCategory(e.target.value as ProjectCategory)}
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-blue-500 cursor-pointer"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-[#B1FF00] cursor-pointer"
                       >
                         {CATEGORIES.map((c) => (
                           <option key={c} value={c}>
@@ -923,7 +923,7 @@ NOTIFY pgrst, 'reload config';`;
                         placeholder="e.g. Modern Creator"
                         value={client}
                         onChange={(e) => setClient(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-blue-500"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-[#B1FF00]"
                       />
                     </div>
                   </div>
@@ -939,7 +939,7 @@ NOTIFY pgrst, 'reload config';`;
                       placeholder="Describe the editing mechanics, pacing, visual resets, sound design..."
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      className="w-full px-3.5 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs leading-relaxed outline-none focus:border-blue-500 resize-none"
+                      className="w-full px-3.5 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs leading-relaxed outline-none focus:border-[#B1FF00] resize-none"
                     />
                   </div>
 
@@ -947,7 +947,7 @@ NOTIFY pgrst, 'reload config';`;
                   <div className="p-3.5 rounded-xl bg-[#12121c] border border-white/10 space-y-2">
                     <div className="flex items-center justify-between">
                       <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
-                        <Film className="w-3.5 h-3.5 text-blue-400" />
+                        <Film className="w-3.5 h-3.5 text-[#B1FF00]" />
                         <span>Video Source (YouTube / Shorts / MP4)</span>
                       </label>
 
@@ -963,7 +963,7 @@ NOTIFY pgrst, 'reload config';`;
                         <button
                           type="button"
                           onClick={() => setShowMediaPickerModal(true)}
-                          className="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider text-blue-400 hover:text-white bg-blue-950/40 border border-blue-500/30 transition-colors flex items-center gap-1 cursor-pointer"
+                          className="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider text-[#B1FF00] hover:text-[#070809] hover:bg-[#B1FF00] bg-[#B1FF00]/10 border border-[#B1FF00]/30 transition-colors flex items-center gap-1 cursor-pointer"
                         >
                           <FolderOpen className="w-3 h-3" />
                           <span>Choose from Media</span>
@@ -972,7 +972,7 @@ NOTIFY pgrst, 'reload config';`;
                           type="button"
                           disabled={uploadingField === 'video'}
                           onClick={() => videoFileInputRef.current?.click()}
-                          className="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider text-blue-400 hover:text-white bg-blue-950/40 border border-blue-500/30 transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-50"
+                          className="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider text-[#B1FF00] hover:text-[#070809] hover:bg-[#B1FF00] bg-[#B1FF00]/10 border border-[#B1FF00]/30 transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-50"
                         >
                           {uploadingField === 'video' ? (
                             <>
@@ -994,7 +994,7 @@ NOTIFY pgrst, 'reload config';`;
                       placeholder="https://youtube.com/shorts/... or https://...mp4"
                       value={videoUrl}
                       onChange={(e) => setVideoUrl(e.target.value)}
-                      className="w-full px-3.5 py-2 rounded-lg bg-black border border-white/10 text-white text-xs font-mono outline-none focus:border-blue-500"
+                      className="w-full px-3.5 py-2 rounded-lg bg-black border border-white/10 text-white text-xs font-mono outline-none focus:border-[#B1FF00]"
                     />
                     <span className="text-[10px] text-zinc-500 block">
                       Supports YouTube standard, YouTube Shorts, Vimeo, or direct MP4 links from Supabase storage.
@@ -1005,7 +1005,7 @@ NOTIFY pgrst, 'reload config';`;
                   <div className="p-3.5 rounded-xl bg-[#12121c] border border-white/10 space-y-2">
                     <div className="flex items-center justify-between">
                       <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
-                        <ImageIcon className="w-3.5 h-3.5 text-blue-400" />
+                        <ImageIcon className="w-3.5 h-3.5 text-[#B1FF00]" />
                         <span>Cover Thumbnail URL *</span>
                       </label>
 
@@ -1021,7 +1021,7 @@ NOTIFY pgrst, 'reload config';`;
                         type="button"
                         disabled={uploadingField === 'cover'}
                         onClick={() => thumbnailFileInputRef.current?.click()}
-                        className="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider text-blue-400 hover:text-white bg-blue-950/40 border border-blue-500/30 transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-50"
+                        className="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider text-[#B1FF00] hover:text-[#070809] hover:bg-[#B1FF00] bg-[#B1FF00]/10 border border-[#B1FF00]/30 transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-50"
                       >
                         {uploadingField === 'cover' ? (
                           <>
@@ -1043,7 +1043,7 @@ NOTIFY pgrst, 'reload config';`;
                       placeholder="/assets/portfolio/project-01/cover.jpg or https://..."
                       value={coverImage}
                       onChange={(e) => setCoverImage(e.target.value)}
-                      className="w-full px-3.5 py-2 rounded-lg bg-black border border-white/10 text-white text-xs font-mono outline-none focus:border-blue-500"
+                      className="w-full px-3.5 py-2 rounded-lg bg-black border border-white/10 text-white text-xs font-mono outline-none focus:border-[#B1FF00]"
                     />
                   </div>
 
@@ -1051,7 +1051,7 @@ NOTIFY pgrst, 'reload config';`;
                   <div>
                     <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5 flex items-center justify-between">
                       <span>Video Aspect Ratio (Public Player)</span>
-                      <span className="text-[10px] font-mono text-blue-400">{videoAspectRatio}</span>
+                      <span className="text-[10px] font-mono text-[#B1FF00]">{videoAspectRatio}</span>
                     </label>
                     <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
                       {ASPECT_RATIO_OPTIONS.map((opt) => (
@@ -1061,7 +1061,7 @@ NOTIFY pgrst, 'reload config';`;
                           onClick={() => setVideoAspectRatio(opt.id)}
                           className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${
                             videoAspectRatio === opt.id
-                              ? 'bg-blue-600 border-blue-400 text-white shadow-sm'
+                              ? 'bg-[#B1FF00] border-[#B1FF00] text-[#070809] shadow-sm'
                               : 'bg-[#12121c] border-white/10 text-zinc-400 hover:text-white'
                           }`}
                         >
@@ -1076,7 +1076,7 @@ NOTIFY pgrst, 'reload config';`;
                   <div>
                     <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5 flex items-center justify-between">
                       <span>Thumbnail Aspect Ratio (Public Card)</span>
-                      <span className="text-[10px] font-mono text-blue-400">{thumbnailAspectRatio}</span>
+                      <span className="text-[10px] font-mono text-[#B1FF00]">{thumbnailAspectRatio}</span>
                     </label>
                     <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
                       {ASPECT_RATIO_OPTIONS.map((opt) => (
@@ -1086,7 +1086,7 @@ NOTIFY pgrst, 'reload config';`;
                           onClick={() => setThumbnailAspectRatio(opt.id)}
                           className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${
                             thumbnailAspectRatio === opt.id
-                              ? 'bg-blue-600 border-blue-400 text-white shadow-sm'
+                              ? 'bg-[#B1FF00] border-[#B1FF00] text-[#070809] shadow-sm'
                               : 'bg-[#12121c] border-white/10 text-zinc-400 hover:text-white'
                           }`}
                         >
@@ -1107,7 +1107,7 @@ NOTIFY pgrst, 'reload config';`;
                         <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
                           monochrome
                             ? 'bg-zinc-800 text-zinc-300 border border-white/10'
-                            : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                            : 'bg-[#B1FF00]/15 text-[#B1FF00] border border-[#B1FF00]/30'
                         }`}>
                           {monochrome ? 'Monochrome (ON)' : 'Full Color (OFF)'}
                         </span>
@@ -1123,7 +1123,7 @@ NOTIFY pgrst, 'reload config';`;
                         onClick={() => setMonochrome(false)}
                         className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-all cursor-pointer ${
                           !monochrome
-                            ? 'bg-blue-600 text-white shadow-[0_0_12px_rgba(37,99,235,0.4)]'
+                            ? 'bg-[#B1FF00] text-[#070809] shadow-[0_0_12px_rgba(177,255,0,0.3)]'
                             : 'bg-zinc-800 text-zinc-400 hover:text-white'
                         }`}
                       >
@@ -1154,7 +1154,7 @@ NOTIFY pgrst, 'reload config';`;
                         min="1"
                         value={displayOrder}
                         onChange={(e) => setDisplayOrder(parseInt(e.target.value, 10) || 1)}
-                        className="w-full px-3 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs outline-none focus:border-blue-500 font-mono"
+                        className="w-full px-3 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs outline-none focus:border-[#B1FF00] font-mono"
                       />
                     </div>
 
@@ -1165,7 +1165,7 @@ NOTIFY pgrst, 'reload config';`;
                       <select
                         value={status}
                         onChange={(e) => setStatus(e.target.value as 'published' | 'draft')}
-                        className="w-full px-3 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs outline-none focus:border-blue-500 cursor-pointer"
+                        className="w-full px-3 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs outline-none focus:border-[#B1FF00] cursor-pointer"
                       >
                         <option value="published">Published</option>
                         <option value="draft">Draft</option>
@@ -1179,7 +1179,7 @@ NOTIFY pgrst, 'reload config';`;
                       <select
                         value={visible ? 'true' : 'false'}
                         onChange={(e) => setVisible(e.target.value === 'true')}
-                        className="w-full px-3 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs outline-none focus:border-blue-500 cursor-pointer"
+                        className="w-full px-3 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs outline-none focus:border-[#B1FF00] cursor-pointer"
                       >
                         <option value="true">Visible on website</option>
                         <option value="false">Hidden from website</option>
@@ -1192,7 +1192,7 @@ NOTIFY pgrst, 'reload config';`;
                 <div className="lg:col-span-5 space-y-4 bg-[#07070d] p-4 rounded-xl border border-white/10">
                   <div className="flex items-center justify-between pb-2 border-b border-white/10">
                     <span className="text-[11px] font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+                      <Sparkles className="w-3.5 h-3.5 text-[#B1FF00]" />
                       <span>Live Aspect Preview</span>
                     </span>
 
@@ -1201,7 +1201,7 @@ NOTIFY pgrst, 'reload config';`;
                         type="button"
                         onClick={() => setPreviewTab('thumbnail')}
                         className={`px-2.5 py-1 rounded cursor-pointer ${
-                          previewTab === 'thumbnail' ? 'bg-blue-600 text-white' : 'text-zinc-400'
+                          previewTab === 'thumbnail' ? 'bg-[#B1FF00] text-[#070809]' : 'text-zinc-400'
                         }`}
                       >
                         Thumbnail ({thumbnailAspectRatio})
@@ -1210,7 +1210,7 @@ NOTIFY pgrst, 'reload config';`;
                         type="button"
                         onClick={() => setPreviewTab('video')}
                         className={`px-2.5 py-1 rounded cursor-pointer ${
-                          previewTab === 'video' ? 'bg-blue-600 text-white' : 'text-zinc-400'
+                          previewTab === 'video' ? 'bg-[#B1FF00] text-[#070809]' : 'text-zinc-400'
                         }`}
                       >
                         Video ({videoAspectRatio})
@@ -1249,11 +1249,11 @@ NOTIFY pgrst, 'reload config';`;
                         <div
                           className={`relative w-full ${getAspectClass(
                             videoAspectRatio
-                          )} rounded-lg overflow-hidden bg-zinc-950 border border-blue-500/40 shadow-xl flex items-center justify-center mx-auto`}
+                          )} rounded-lg overflow-hidden bg-zinc-950 border border-[#B1FF00]/40 shadow-xl flex items-center justify-center mx-auto`}
                         >
                           {videoUrl ? (
                             <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center bg-zinc-900">
-                              <Play className="w-8 h-8 text-blue-500 fill-blue-500/20 mb-1" />
+                              <Play className="w-8 h-8 text-[#B1FF00] fill-[#B1FF00]/20 mb-1" />
                               <span className="text-[10px] font-mono text-white truncate max-w-[180px]">
                                 {videoUrl}
                               </span>
@@ -1276,7 +1276,7 @@ NOTIFY pgrst, 'reload config';`;
 
                   {/* Summary Card Preview */}
                   <div className="p-3 rounded-lg bg-[#12121c] border border-white/5 space-y-1 text-xs">
-                    <span className="text-[10px] font-mono uppercase text-blue-400 block font-bold">CARD PREVIEW SUMMARY</span>
+                    <span className="text-[10px] font-mono uppercase text-[#B1FF00] block font-bold">CARD PREVIEW SUMMARY</span>
                     <h4 className="text-white font-bold truncate">{title || 'Untitled Project'}</h4>
                     <span className="text-[11px] text-zinc-400 block truncate">{client || 'Client Name'}</span>
                     <p className="text-[11px] text-zinc-500 line-clamp-2">{description || 'Project description preview.'}</p>
@@ -1296,7 +1296,7 @@ NOTIFY pgrst, 'reload config';`;
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-6 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 disabled:opacity-50 shadow-[0_0_16px_rgba(37,99,235,0.3)] transition-all cursor-pointer flex items-center gap-2"
+                  className="px-6 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] disabled:opacity-50 shadow-[0_0_16px_rgba(177,255,0,0.3)] transition-all cursor-pointer flex items-center gap-2"
                 >
                   {isSaving ? (
                     <>
@@ -1358,7 +1358,7 @@ NOTIFY pgrst, 'reload config';`;
           >
             <div className="flex items-center justify-between pb-3 border-b border-white/10">
               <div>
-                <span className="text-[10px] font-mono text-blue-400 font-bold uppercase">SUPABASE DATABASE SETUP</span>
+                <span className="text-[10px] font-mono text-[#B1FF00] font-bold uppercase">SUPABASE DATABASE SETUP</span>
                 <h3 className="text-base font-bold text-white">Portfolio Aspect Ratios & RLS Migration</h3>
               </div>
               <button
@@ -1370,7 +1370,7 @@ NOTIFY pgrst, 'reload config';`;
             </div>
 
             <p className="text-xs text-zinc-300 leading-relaxed">
-              To allow seamless additions and edits to the <span className="font-mono text-blue-400">projects</span> table directly in Supabase with custom video & thumbnail aspect ratios and visibility flags, run this migration in your Supabase SQL Editor.
+              To allow seamless additions and edits to the <span className="font-mono text-[#B1FF00]">projects</span> table directly in Supabase with custom video & thumbnail aspect ratios and visibility flags, run this migration in your Supabase SQL Editor.
             </p>
 
             <div className="relative">
@@ -1426,7 +1426,7 @@ NOTIFY pgrst, 'reload config';`}
 
               <button
                 onClick={copySqlToClipboard}
-                className="absolute top-3 right-3 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white flex items-center gap-1.5 shadow-md cursor-pointer"
+                className="absolute top-3 right-3 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] text-[#070809] flex items-center gap-1.5 shadow-md cursor-pointer"
               >
                 {hasCopiedSql ? (
                   <>
@@ -1448,7 +1448,7 @@ NOTIFY pgrst, 'reload config';`}
                   href="https://supabase.com/dashboard/project/gdwlkqrzcixjajzvcwvg/sql"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1.5"
+                  className="text-xs text-[#B1FF00] hover:text-[#C4FF45] font-semibold flex items-center gap-1.5"
                 >
                   <span>Open Supabase SQL Editor</span>
                   <ExternalLink className="w-3.5 h-3.5" />
@@ -1458,10 +1458,10 @@ NOTIFY pgrst, 'reload config';`}
                   type="button"
                   onClick={() => checkHealth(true)}
                   disabled={isCheckingHealth}
-                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-zinc-300 hover:text-white bg-[#12121c] border border-white/10 hover:border-blue-500/30 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-zinc-300 hover:text-white bg-[#12121c] border border-white/10 hover:border-[#B1FF00]/30 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                   title="Check if physical columns have been created and schema cache reloaded"
                 >
-                  <RefreshCw className={`w-3 h-3 text-blue-400 ${isCheckingHealth ? 'animate-spin' : ''}`} />
+                  <RefreshCw className={`w-3 h-3 text-[#B1FF00] ${isCheckingHealth ? 'animate-spin' : ''}`} />
                   <span>Re-check Schema</span>
                 </button>
               </div>
@@ -1472,7 +1472,7 @@ NOTIFY pgrst, 'reload config';`}
                   checkHealth(true);
                   setIsSqlModalOpen(false);
                 }}
-                className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 cursor-pointer"
+                className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] cursor-pointer"
               >
                 Done
               </button>
@@ -1495,7 +1495,7 @@ NOTIFY pgrst, 'reload config';`}
           >
             <div className="flex items-center justify-between pb-3 border-b border-white/10">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <Film className="w-4 h-4 text-blue-400" />
+                <Film className="w-4 h-4 text-[#B1FF00]" />
                 <span>Select Video from Supabase Media Library</span>
               </h3>
               <button
@@ -1539,10 +1539,10 @@ NOTIFY pgrst, 'reload config';`}
                         });
                         setTimeout(() => setStatusMessage(null), 3000);
                       }}
-                      className="p-3 rounded-xl bg-[#12121c] hover:bg-zinc-800 border border-white/5 hover:border-blue-500/40 flex items-center justify-between gap-3 cursor-pointer transition-colors"
+                      className="p-3 rounded-xl bg-[#12121c] hover:bg-zinc-800 border border-white/5 hover:border-[#B1FF00]/40 flex items-center justify-between gap-3 cursor-pointer transition-colors"
                     >
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-10 h-10 rounded-lg bg-blue-950/40 text-blue-400 border border-blue-500/30 flex items-center justify-center shrink-0">
+                        <div className="w-10 h-10 rounded-lg bg-[#181C16] text-[#B1FF00] border border-[#B1FF00]/30 flex items-center justify-center shrink-0">
                           <Film className="w-4 h-4" />
                         </div>
                         <div className="min-w-0">
@@ -1557,7 +1557,7 @@ NOTIFY pgrst, 'reload config';`}
 
                       <button
                         type="button"
-                        className="px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 shrink-0"
+                        className="px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] shrink-0"
                       >
                         Select
                       </button>

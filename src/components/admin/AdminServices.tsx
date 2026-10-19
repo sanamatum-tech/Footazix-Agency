@@ -128,31 +128,31 @@ export const AdminServices: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto pb-16">
+    <div className="space-y-6 max-w-5xl mx-auto pb-16 font-sans">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl bg-[#090910] border border-white/10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl bg-[#0D0F10] border border-[#292E25]">
         <div>
-          <h2 className="text-base sm:text-lg font-display font-extrabold text-white tracking-tight flex items-center gap-2">
+          <h2 className="text-base sm:text-lg font-display font-extrabold text-[#F5F7F2] tracking-tight flex items-center gap-2">
             <span>Services CMS</span>
-            <span className="text-xs font-mono font-normal text-zinc-400">
+            <span className="text-xs font-mono font-normal text-[#A7AEA0]">
               ({services.length} active)
             </span>
           </h2>
-          <p className="text-xs text-zinc-400 mt-0.5">
+          <p className="text-xs text-[#A7AEA0] mt-0.5">
             Manage your service offerings, feature bullet points, and CTA actions shown on the public site.
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
           {statusMessage && (
-            <span className="text-xs text-blue-400 font-medium animate-in fade-in">
+            <span className="text-xs text-[#B1FF00] font-medium animate-in fade-in">
               {statusMessage}
             </span>
           )}
 
           <button
             onClick={openAdd}
-            className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 active:scale-95 transition-all shadow-[0_0_16px_rgba(37,99,235,0.3)] cursor-pointer flex items-center gap-1.5"
+            className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] active:scale-95 transition-all shadow-[0_0_16px_rgba(177,255,0,0.3)] cursor-pointer flex items-center gap-1.5"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Add Service</span>
@@ -165,15 +165,15 @@ export const AdminServices: React.FC = () => {
         {services.map((service, idx) => (
           <div
             key={service.id}
-            className="p-4 sm:p-5 rounded-xl bg-[#090910] border border-white/10 hover:border-white/20 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 group"
+            className="p-4 sm:p-5 rounded-xl bg-[#0D0F10] border border-[#292E25] hover:border-[#B1FF00]/40 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 group"
           >
             <div className="flex items-center gap-4 min-w-0">
               {/* Reorder Buttons */}
-              <div className="flex flex-col gap-0.5 text-zinc-500">
+              <div className="flex flex-col gap-0.5 text-[#737B6B]">
                 <button
                   disabled={idx === 0}
                   onClick={() => handleMove(idx, 'up')}
-                  className="p-1 rounded hover:text-white hover:bg-zinc-800 disabled:opacity-20 cursor-pointer"
+                  className="p-1 rounded hover:text-[#F5F7F2] hover:bg-zinc-800 disabled:opacity-20 cursor-pointer"
                   title="Move up"
                   aria-label="Move up"
                 >
@@ -182,7 +182,7 @@ export const AdminServices: React.FC = () => {
                 <button
                   disabled={idx === services.length - 1}
                   onClick={() => handleMove(idx, 'down')}
-                  className="p-1 rounded hover:text-white hover:bg-zinc-800 disabled:opacity-20 cursor-pointer"
+                  className="p-1 rounded hover:text-[#F5F7F2] hover:bg-zinc-800 disabled:opacity-20 cursor-pointer"
                   title="Move down"
                   aria-label="Move down"
                 >
@@ -191,37 +191,37 @@ export const AdminServices: React.FC = () => {
               </div>
 
               {/* Number Badge */}
-              <div className="w-11 h-11 rounded-xl bg-[#12121c] border border-white/10 text-blue-400 font-mono font-bold text-sm flex items-center justify-center shrink-0">
+              <div className="w-11 h-11 rounded-xl bg-[#121512] border border-[#292E25] text-[#B1FF00] font-mono font-bold text-sm flex items-center justify-center shrink-0">
                 {service.number}
               </div>
 
               {/* Info */}
               <div className="min-w-0 space-y-1">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-bold text-white truncate">
+                  <h3 className="text-sm font-bold text-[#F5F7F2] truncate">
                     {service.title}
                   </h3>
                   {service.highlighted && (
-                    <span className="text-[10px] font-mono text-blue-400 font-semibold px-2 py-0.5 rounded bg-blue-950/60 border border-blue-500/30 flex items-center gap-1">
+                    <span className="text-[10px] font-mono text-[#B1FF00] font-semibold px-2 py-0.5 rounded bg-[#B1FF00]/10 border border-[#B1FF00]/30 flex items-center gap-1">
                       <Sparkles className="w-2.5 h-2.5" />
                       Featured
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-zinc-400 line-clamp-1 max-w-xl">
+                <p className="text-xs text-[#A7AEA0] line-clamp-1 max-w-xl">
                   {service.description}
                 </p>
                 <div className="flex flex-wrap gap-1.5 pt-0.5">
                   {service.features.slice(0, 3).map((f) => (
                     <span
                       key={f}
-                      className="text-[10px] text-zinc-400 px-2 py-0.5 rounded bg-[#12121c] border border-white/5 font-normal"
+                      className="text-[10px] text-[#A7AEA0] px-2 py-0.5 rounded bg-[#121512] border border-[#292E25] font-normal"
                     >
                       {f}
                     </span>
                   ))}
                   {service.features.length > 3 && (
-                    <span className="text-[10px] text-zinc-500 font-mono">
+                    <span className="text-[10px] text-[#737B6B] font-mono">
                       +{service.features.length - 3} more
                     </span>
                   )}
@@ -235,19 +235,19 @@ export const AdminServices: React.FC = () => {
                 onClick={() => handleToggleVisible(service)}
                 className={`px-2.5 py-1 rounded-lg text-xs font-mono uppercase font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
                   service.visible !== false
-                    ? 'bg-blue-950/60 text-blue-400 border border-blue-500/30'
-                    : 'bg-zinc-900 text-zinc-400 border border-white/10'
+                    ? 'bg-[#B1FF00]/10 text-[#B1FF00] border border-[#B1FF00]/30'
+                    : 'bg-[#121512] text-[#737B6B] border border-[#292E25]'
                 }`}
                 title="Toggle Visibility"
               >
                 {service.visible !== false ? (
                   <>
-                    <Eye className="w-3 h-3 text-blue-400" />
+                    <Eye className="w-3 h-3 text-[#B1FF00]" />
                     <span>Visible</span>
                   </>
                 ) : (
                   <>
-                    <EyeOff className="w-3 h-3 text-zinc-400" />
+                    <EyeOff className="w-3 h-3 text-[#737B6B]" />
                     <span>Hidden</span>
                   </>
                 )}
@@ -255,7 +255,7 @@ export const AdminServices: React.FC = () => {
 
               <button
                 onClick={() => openEdit(service)}
-                className="p-2 rounded-lg text-zinc-300 hover:text-white bg-[#12121c] border border-white/10 hover:border-white/20 transition-colors cursor-pointer"
+                className="p-2 rounded-lg text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#121512] border border-[#292E25] hover:border-[#B1FF00]/40 transition-colors cursor-pointer"
                 title="Edit service"
                 aria-label="Edit service"
               >
@@ -264,7 +264,7 @@ export const AdminServices: React.FC = () => {
 
               <button
                 onClick={() => setIsDeletingId(service.id)}
-                className="p-2 rounded-lg text-zinc-400 hover:text-red-400 bg-[#12121c] border border-white/10 hover:border-red-500/30 transition-colors cursor-pointer"
+                className="p-2 rounded-lg text-[#737B6B] hover:text-red-400 bg-[#121512] border border-[#292E25] hover:border-red-500/30 transition-colors cursor-pointer"
                 title="Delete service"
                 aria-label="Delete service"
               >
@@ -283,16 +283,16 @@ export const AdminServices: React.FC = () => {
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
         >
           <div
-            className="w-full max-w-lg bg-[#0b0b14] border border-white/15 rounded-2xl p-6 sm:p-7 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto"
+            className="w-full max-w-lg bg-[#0D0F10] border border-[#292E25] rounded-2xl p-6 sm:p-7 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <h3 className="text-base font-bold text-white">
+            <div className="flex items-center justify-between pb-3 border-b border-[#292E25]">
+              <h3 className="text-base font-bold text-[#F5F7F2]">
                 {editingService ? 'Edit Service' : 'Add Service'}
               </h3>
               <button
                 onClick={closeModal}
-                className="p-1 rounded-lg text-zinc-400 hover:text-white bg-[#12121c]"
+                className="p-1 rounded-lg text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#121512] border border-[#292E25]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -301,7 +301,7 @@ export const AdminServices: React.FC = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-[#A7AEA0] mb-1">
                     Index *
                   </label>
                   <input
@@ -310,12 +310,12 @@ export const AdminServices: React.FC = () => {
                     placeholder="01"
                     value={number}
                     onChange={(e) => setNumber(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm font-mono outline-none focus:border-blue-500"
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-sm font-mono outline-none focus:border-[#B1FF00]"
                   />
                 </div>
 
                 <div className="sm:col-span-3">
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-[#A7AEA0] mb-1">
                     Service Title *
                   </label>
                   <input
@@ -324,13 +324,13 @@ export const AdminServices: React.FC = () => {
                     placeholder="e.g. VIDEO EDITING"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-blue-500"
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-sm outline-none focus:border-[#B1FF00]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#A7AEA0] mb-1">
                   Description
                 </label>
                 <textarea
@@ -338,12 +338,12 @@ export const AdminServices: React.FC = () => {
                   placeholder="High-retention short-form and long-form video editing engineered to capture attention..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-blue-500 leading-relaxed"
+                  className="w-full px-3.5 py-2 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-sm outline-none focus:border-[#B1FF00] leading-relaxed resize-y"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#A7AEA0] mb-1">
                   Deliverable Features (One per line)
                 </label>
                 <textarea
@@ -351,55 +351,55 @@ export const AdminServices: React.FC = () => {
                   placeholder="Pacing & Retention Hooks&#10;Motion Graphics & Subtitles&#10;Sound Design"
                   value={featuresStr}
                   onChange={(e) => setFeaturesStr(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs font-mono outline-none focus:border-blue-500 leading-relaxed"
+                  className="w-full px-3.5 py-2 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-xs font-mono outline-none focus:border-[#B1FF00] leading-relaxed resize-y"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#A7AEA0] mb-1">
                   CTA Button Text
                 </label>
                 <input
                   type="text"
                   value={ctaText}
                   onChange={(e) => setCtaText(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs outline-none focus:border-blue-500"
+                  className="w-full px-3.5 py-2 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-xs outline-none focus:border-[#B1FF00]"
                 />
               </div>
 
               <div className="flex items-center gap-6 pt-1">
-                <label className="flex items-center gap-2 cursor-pointer text-xs text-zinc-300">
+                <label className="flex items-center gap-2 cursor-pointer text-xs text-[#A7AEA0]">
                   <input
                     type="checkbox"
                     checked={highlighted}
                     onChange={(e) => setHighlighted(e.target.checked)}
-                    className="rounded border-zinc-700 bg-zinc-900 text-blue-600"
+                    className="rounded border-[#292E25] bg-zinc-900 text-[#B1FF00] focus:ring-[#B1FF00] accent-[#B1FF00]"
                   />
                   <span>Featured Badge</span>
                 </label>
 
-                <label className="flex items-center gap-2 cursor-pointer text-xs text-zinc-300">
+                <label className="flex items-center gap-2 cursor-pointer text-xs text-[#A7AEA0]">
                   <input
                     type="checkbox"
                     checked={visible}
                     onChange={(e) => setVisible(e.target.checked)}
-                    className="rounded border-zinc-700 bg-zinc-900 text-blue-600"
+                    className="rounded border-[#292E25] bg-zinc-900 text-[#B1FF00] focus:ring-[#B1FF00] accent-[#B1FF00]"
                   />
                   <span>Visible on site</span>
                 </label>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#292E25]">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white bg-[#12121c] border border-white/10"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#121512] border border-[#292E25]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 shadow-[0_0_16px_rgba(37,99,235,0.3)] transition-colors"
+                  className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] shadow-[0_0_16px_rgba(177,255,0,0.3)] transition-colors"
                 >
                   {editingService ? 'Save Service' : 'Create Service'}
                 </button>
@@ -416,16 +416,16 @@ export const AdminServices: React.FC = () => {
           aria-modal="true"
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
         >
-          <div className="w-full max-w-md bg-[#0b0b14] border border-white/15 rounded-2xl p-6 space-y-4 shadow-2xl">
-            <h3 className="text-base font-bold text-white">Delete Service Offering?</h3>
-            <p className="text-xs text-zinc-400">
+          <div className="w-full max-w-md bg-[#0D0F10] border border-[#292E25] rounded-2xl p-6 space-y-4 shadow-2xl">
+            <h3 className="text-base font-bold text-[#F5F7F2]">Delete Service Offering?</h3>
+            <p className="text-xs text-[#A7AEA0]">
               Are you sure you want to delete this service? It will be removed from the public website and Supabase.
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => setIsDeletingId(null)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white bg-[#12121c] border border-white/10"
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#121512] border border-[#292E25]"
               >
                 Cancel
               </button>

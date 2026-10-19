@@ -221,46 +221,46 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
   };
 
   return (
-    <section id="system" className="py-20 sm:py-28 bg-[#050508] relative font-sans">
+    <section id="system" className="py-20 sm:py-28 bg-[#070809] relative font-sans">
       <div className="max-w-5xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">
           {showBadge && (
-            <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
+            <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#B1FF00] mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#B1FF00] shadow-[0_0_8px_rgba(177,255,0,0.8)]" />
               <span className="font-mono text-[11px]">{vsl.label || 'THE FOOTAZIX SYSTEM'}</span>
             </div>
           )}
 
           {showHeading && (
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-white tracking-tight mb-3">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-[#F5F7F2] tracking-tight mb-3">
               {vsl.heading || 'SEE HOW FOOTAZIX TRANSFORMS CONTENT.'}
             </h2>
           )}
 
           {showDescription && (
-            <p className="text-sm sm:text-base text-zinc-400 font-normal max-w-xl mx-auto leading-relaxed">
+            <p className="text-sm sm:text-base text-[#A7AEA0] font-normal max-w-xl mx-auto leading-relaxed">
               {vsl.description || 'See how we transform raw footage into content built for attention.'}
             </p>
           )}
         </div>
 
-        {/* Video Player Container with Premium Travelling Blue Border */}
+        {/* Video Player Container with Premium Travelling Lime Border */}
         <div className={`w-full ${wrapperClass}`}>
           <div className="relative group/vsl p-[1.5px] rounded-2xl sm:rounded-3xl transition-all duration-500">
-            {/* Ambient Soft Outer Glow - Refined, subtle, deep blue matching Footazix branding */}
+            {/* Ambient Soft Outer Glow - Refined, subtle, matching Footazix lime signature */}
             <div
               aria-hidden="true"
-              className="absolute -inset-1 sm:-inset-1.5 rounded-2xl sm:rounded-3xl bg-blue-600/20 blur-xl opacity-40 group-hover/vsl:opacity-70 transition-opacity duration-700 pointer-events-none -z-10 motion-reduce:hidden"
+              className="absolute -inset-1 sm:-inset-1.5 rounded-2xl sm:rounded-3xl bg-[#B1FF00]/15 blur-xl opacity-40 group-hover/vsl:opacity-70 transition-opacity duration-700 pointer-events-none -z-10 motion-reduce:hidden"
             />
 
-            {/* Base Thin Elegant Blue Border */}
+            {/* Base Thin Elegant Lime Border */}
             <div
               aria-hidden="true"
-              className="absolute inset-0 rounded-2xl sm:rounded-3xl border border-blue-500/30 pointer-events-none shadow-[inset_0_0_12px_rgba(37,99,235,0.06)]"
+              className="absolute inset-0 rounded-2xl sm:rounded-3xl border border-[#B1FF00]/30 pointer-events-none shadow-[inset_0_0_12px_rgba(177,255,0,0.06)]"
             />
 
-            {/* Subtle Animated Blue Highlight Travelling Around Border */}
+            {/* Subtle Animated Lime Highlight Travelling Around Border */}
             <div
               aria-hidden="true"
               className="absolute inset-0 rounded-2xl sm:rounded-3xl overflow-hidden pointer-events-none"
@@ -271,19 +271,19 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
             {/* Refined Corner Lighting Accents - Following exact rounded corners */}
             <div
               aria-hidden="true"
-              className="absolute top-0 left-0 w-6 h-6 sm:w-8 sm:h-8 rounded-tl-2xl sm:rounded-tl-3xl border-t border-l border-blue-400/60 pointer-events-none drop-shadow-[0_0_8px_rgba(59,130,246,0.5)] z-20"
+              className="absolute top-0 left-0 w-6 h-6 sm:w-8 sm:h-8 rounded-tl-2xl sm:rounded-tl-3xl border-t border-l border-[#B1FF00]/60 pointer-events-none drop-shadow-[0_0_8px_rgba(177,255,0,0.5)] z-20"
             />
             <div
               aria-hidden="true"
-              className="absolute top-0 right-0 w-6 h-6 sm:w-8 sm:h-8 rounded-tr-2xl sm:rounded-tr-3xl border-t border-r border-blue-400/60 pointer-events-none drop-shadow-[0_0_8px_rgba(59,130,246,0.5)] z-20"
+              className="absolute top-0 right-0 w-6 h-6 sm:w-8 sm:h-8 rounded-tr-2xl sm:rounded-tr-3xl border-t border-r border-[#B1FF00]/60 pointer-events-none drop-shadow-[0_0_8px_rgba(177,255,0,0.5)] z-20"
             />
             <div
               aria-hidden="true"
-              className="absolute bottom-0 left-0 w-6 h-6 sm:w-8 sm:h-8 rounded-bl-2xl sm:rounded-bl-3xl border-b border-l border-blue-400/60 pointer-events-none drop-shadow-[0_0_8px_rgba(59,130,246,0.5)] z-20"
+              className="absolute bottom-0 left-0 w-6 h-6 sm:w-8 sm:h-8 rounded-bl-2xl sm:rounded-bl-3xl border-b border-l border-[#B1FF00]/60 pointer-events-none drop-shadow-[0_0_8px_rgba(177,255,0,0.5)] z-20"
             />
             <div
               aria-hidden="true"
-              className="absolute bottom-0 right-0 w-6 h-6 sm:w-8 sm:h-8 rounded-br-2xl sm:rounded-br-3xl border-b border-r border-blue-400/60 pointer-events-none drop-shadow-[0_0_8px_rgba(59,130,246,0.5)] z-20"
+              className="absolute bottom-0 right-0 w-6 h-6 sm:w-8 sm:h-8 rounded-br-2xl sm:rounded-br-3xl border-b border-r border-[#B1FF00]/60 pointer-events-none drop-shadow-[0_0_8px_rgba(177,255,0,0.5)] z-20"
             />
 
             {/* Video Player Container */}
@@ -291,235 +291,235 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
               ref={containerRef}
               className={`relative w-full ${aspectClass} rounded-[calc(1rem-1.5px)] sm:rounded-[calc(1.5rem-1.5px)] overflow-hidden bg-black shadow-2xl group transition-all duration-300 z-10`}
             >
-          {/* 1. YouTube Source */}
-          {vsl.videoSource === 'youtube' && vsl.videoUrl ? (
-            isPlaying ? (
-              <iframe
-                src={getYouTubeEmbedUrl(vsl.videoUrl)}
-                title={vsl.heading}
-                className="w-full h-full border-0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-              />
-            ) : (
-              <div
-                onClick={() => setIsPlaying(true)}
-                className="relative w-full h-full cursor-pointer group"
-              >
-                <img
-                  src={vsl.posterUrl || '/assets/vsl/vsl-poster.jpg'}
-                  alt={vsl.heading}
-                  className={`w-full h-full object-cover ${isMonochrome ? 'grayscale contrast-110' : ''} group-hover:scale-[1.02] transition-all duration-500`}
-                />
-                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-blue-600/90 text-white flex items-center justify-center pl-1 glow-blue-sm group-hover:scale-110 transition-transform">
-                    <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-white" />
-                  </div>
-                </div>
-              </div>
-            )
-          ) : null}
-
-          {/* 2. Google Drive Source */}
-          {vsl.videoSource === 'drive' && vsl.videoUrl ? (
-            isPlaying ? (
-              <iframe
-                src={getGoogleDriveEmbedUrl(vsl.videoUrl)}
-                title={vsl.heading}
-                className="w-full h-full border-0"
-                allow="autoplay"
-                allowFullScreen
-              />
-            ) : (
-              <div
-                onClick={() => setIsPlaying(true)}
-                className="relative w-full h-full cursor-pointer group"
-              >
-                <img
-                  src={vsl.posterUrl || '/assets/vsl/vsl-poster.jpg'}
-                  alt={vsl.heading}
-                  className={`w-full h-full object-cover ${isMonochrome ? 'grayscale contrast-110' : ''} group-hover:scale-[1.02] transition-all duration-500`}
-                />
-                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-blue-600/90 text-white flex items-center justify-center pl-1 glow-blue-sm group-hover:scale-110 transition-transform">
-                    <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-white" />
-                  </div>
-                </div>
-              </div>
-            )
-          ) : null}
-
-          {/* 3. Direct Upload or Local Video Source */}
-          {(vsl.videoSource === 'direct' || vsl.videoSource === 'local' || !vsl.videoSource) && (
-            <>
-              <video
-                ref={videoRef}
-                key={vsl.videoUrl || 'footazix-direct-vsl'}
-                src={vsl.videoUrl || '/assets/vsl/footazix-vsl.mp4'}
-                poster={vsl.posterUrl || '/assets/vsl/vsl-poster.jpg'}
-                className={`w-full h-full object-cover ${!isPlaying && isMonochrome ? 'grayscale contrast-110' : ''}`}
-                playsInline
-                preload="metadata"
-                crossOrigin="anonymous"
-                onTimeUpdate={handleTimeUpdate}
-                onLoadedMetadata={handleLoadedMetadata}
-                onEnded={() => {
-                  setIsPlaying(false);
-                  setIsBuffering(false);
-                }}
-                onWaiting={() => setIsBuffering(true)}
-                onPlaying={() => {
-                  setIsBuffering(false);
-                  setIsPlaying(true);
-                  setVideoError(false);
-                }}
-                onCanPlay={() => {
-                  setIsBuffering(false);
-                  setVideoError(false);
-                }}
-                onError={() => {
-                  setIsBuffering(false);
-                  setVideoError(true);
-                  setErrorMessage(vsl.fallbackMessage || 'Video failed to load from storage. Check that the file URL is accessible and in a supported browser format (e.g. MP4).');
-                }}
-                onClick={handlePlayToggle}
-              >
-                {vsl.videoUrl && <source src={vsl.videoUrl} type="video/mp4" />}
-                <source src="/assets/vsl/footazix-vsl.mp4" type="video/mp4" />
-                {hasCaptionsConfigured && showCaptions && (
-                  <track
-                    kind="subtitles"
-                    src={vsl.captionUrl}
-                    srcLang="en"
-                    label="English"
-                    default
+              {/* 1. YouTube Source */}
+              {vsl.videoSource === 'youtube' && vsl.videoUrl ? (
+                isPlaying ? (
+                  <iframe
+                    src={getYouTubeEmbedUrl(vsl.videoUrl)}
+                    title={vsl.heading}
+                    className="w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
                   />
-                )}
-              </video>
-
-              {/* Buffering Indicator */}
-              {isBuffering && isPlaying && (
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center pointer-events-none z-10">
-                  <div className="p-3 rounded-full bg-black/70 border border-white/10 text-blue-400">
-                    <Loader2 className="w-8 h-8 animate-spin" />
+                ) : (
+                  <div
+                    onClick={() => setIsPlaying(true)}
+                    className="relative w-full h-full cursor-pointer group"
+                  >
+                    <img
+                      src={vsl.posterUrl || '/assets/vsl/vsl-poster.jpg'}
+                      alt={vsl.heading}
+                      className={`w-full h-full object-cover ${isMonochrome ? 'grayscale contrast-110' : ''} group-hover:scale-[1.02] transition-all duration-500`}
+                    />
+                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#B1FF00] text-[#070809] flex items-center justify-center pl-1 glow-lime-sm group-hover:scale-110 active:scale-95 transition-transform">
+                        <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-[#070809] text-[#070809]" />
+                      </div>
+                    </div>
                   </div>
-                </div>
-              )}
+                )
+              ) : null}
 
-              {/* Poster Play Overlay if not playing and no error */}
-              {!isPlaying && !videoError && (
-                <div
-                  onClick={handlePlayToggle}
-                  className="absolute inset-0 bg-black/45 hover:bg-black/30 transition-colors flex items-center justify-center cursor-pointer"
-                >
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-blue-600 text-white flex items-center justify-center pl-1 glow-blue-sm hover:scale-110 active:scale-95 transition-transform duration-200">
-                    <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-white" />
-                  </div>
-                </div>
-              )}
-
-              {/* Custom Dark Glass Controls Bar */}
-              <div
-                className={`absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 via-black/60 to-transparent transition-opacity duration-300 z-10 ${
-                  isPlaying ? 'opacity-0 group-hover:opacity-100' : 'opacity-100'
-                }`}
-              >
-                {/* Timeline Scrubber */}
-                <div className="relative mb-3">
-                  <input
-                    type="range"
-                    min="0"
-                    max={duration || 100}
-                    step="0.1"
-                    value={currentTime}
-                    onChange={handleSeek}
-                    className="w-full h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-blue-500 hover:h-1.5 transition-all"
+              {/* 2. Google Drive Source */}
+              {vsl.videoSource === 'drive' && vsl.videoUrl ? (
+                isPlaying ? (
+                  <iframe
+                    src={getGoogleDriveEmbedUrl(vsl.videoUrl)}
+                    title={vsl.heading}
+                    className="w-full h-full border-0"
+                    allow="autoplay"
+                    allowFullScreen
                   />
-                </div>
-
-                <div className="flex items-center justify-between text-xs text-zinc-300">
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={handlePlayToggle}
-                      className="p-1 hover:text-white transition-colors cursor-pointer"
-                      aria-label={isPlaying ? 'Pause' : 'Play'}
-                    >
-                      {isPlaying ? (
-                        <Pause className="w-5 h-5 text-white" />
-                      ) : (
-                        <Play className="w-5 h-5 text-white fill-white" />
-                      )}
-                    </button>
-
-                    <button
-                      onClick={toggleMute}
-                      className="p-1 hover:text-white transition-colors cursor-pointer"
-                      aria-label={isMuted ? 'Unmute' : 'Mute'}
-                    >
-                      {isMuted ? (
-                        <VolumeX className="w-5 h-5 text-zinc-400 hover:text-white" />
-                      ) : (
-                        <Volume2 className="w-5 h-5 text-zinc-300 hover:text-white" />
-                      )}
-                    </button>
-
-                    <span className="font-mono text-[11px] text-zinc-400">
-                      {formatTime(currentTime)} / {formatTime(duration)}
-                    </span>
+                ) : (
+                  <div
+                    onClick={() => setIsPlaying(true)}
+                    className="relative w-full h-full cursor-pointer group"
+                  >
+                    <img
+                      src={vsl.posterUrl || '/assets/vsl/vsl-poster.jpg'}
+                      alt={vsl.heading}
+                      className={`w-full h-full object-cover ${isMonochrome ? 'grayscale contrast-110' : ''} group-hover:scale-[1.02] transition-all duration-500`}
+                    />
+                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#B1FF00] text-[#070809] flex items-center justify-center pl-1 glow-lime-sm group-hover:scale-110 active:scale-95 transition-transform">
+                        <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-[#070809] text-[#070809]" />
+                      </div>
+                    </div>
                   </div>
+                )
+              ) : null}
 
-                  <div className="flex items-center gap-3">
-                    {hasCaptionsConfigured && (
-                      <button
-                        onClick={() => setShowCaptions(!showCaptions)}
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-colors cursor-pointer border ${
-                          showCaptions
-                            ? 'bg-blue-600 text-white border-blue-500'
-                            : 'bg-zinc-900 text-zinc-400 border-white/10 hover:text-white'
-                        }`}
-                        title="Toggle Captions"
-                      >
-                        CC
-                      </button>
+              {/* 3. Direct Upload or Local Video Source */}
+              {(vsl.videoSource === 'direct' || vsl.videoSource === 'local' || !vsl.videoSource) && (
+                <>
+                  <video
+                    ref={videoRef}
+                    key={vsl.videoUrl || 'footazix-direct-vsl'}
+                    src={vsl.videoUrl || '/assets/vsl/footazix-vsl.mp4'}
+                    poster={vsl.posterUrl || '/assets/vsl/vsl-poster.jpg'}
+                    className={`w-full h-full object-cover ${!isPlaying && isMonochrome ? 'grayscale contrast-110' : ''}`}
+                    playsInline
+                    preload="metadata"
+                    crossOrigin="anonymous"
+                    onTimeUpdate={handleTimeUpdate}
+                    onLoadedMetadata={handleLoadedMetadata}
+                    onEnded={() => {
+                      setIsPlaying(false);
+                      setIsBuffering(false);
+                    }}
+                    onWaiting={() => setIsBuffering(true)}
+                    onPlaying={() => {
+                      setIsBuffering(false);
+                      setIsPlaying(true);
+                      setVideoError(false);
+                    }}
+                    onCanPlay={() => {
+                      setIsBuffering(false);
+                      setVideoError(false);
+                    }}
+                    onError={() => {
+                      setIsBuffering(false);
+                      setVideoError(true);
+                      setErrorMessage(vsl.fallbackMessage || 'Video failed to load from storage. Check that the file URL is accessible and in a supported browser format (e.g. MP4).');
+                    }}
+                    onClick={handlePlayToggle}
+                  >
+                    {vsl.videoUrl && <source src={vsl.videoUrl} type="video/mp4" />}
+                    <source src="/assets/vsl/footazix-vsl.mp4" type="video/mp4" />
+                    {hasCaptionsConfigured && showCaptions && (
+                      <track
+                        kind="subtitles"
+                        src={vsl.captionUrl}
+                        srcLang="en"
+                        label="English"
+                        default
+                      />
                     )}
+                  </video>
 
-                    <button
-                      onClick={toggleFullscreen}
-                      className="p-1 hover:text-white transition-colors cursor-pointer"
-                      aria-label="Toggle Fullscreen"
+                  {/* Buffering Indicator */}
+                  {isBuffering && isPlaying && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center pointer-events-none z-10">
+                      <div className="p-3 rounded-full bg-black/70 border border-[#292E25] text-[#B1FF00]">
+                        <Loader2 className="w-8 h-8 animate-spin" />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Poster Play Overlay if not playing and no error */}
+                  {!isPlaying && !videoError && (
+                    <div
+                      onClick={handlePlayToggle}
+                      className="absolute inset-0 bg-black/45 hover:bg-black/30 transition-colors flex items-center justify-center cursor-pointer"
                     >
-                      <Maximize className="w-4 h-4 text-zinc-300 hover:text-white" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#B1FF00] text-[#070809] flex items-center justify-center pl-1 glow-lime-sm hover:scale-110 active:scale-95 transition-transform duration-200">
+                        <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-[#070809] text-[#070809]" />
+                      </div>
+                    </div>
+                  )}
 
-          {/* Missing/Failed Video Notice with Retry Action */}
-          {videoError && (
-            <div className="absolute inset-0 bg-[#07070d]/95 flex flex-col items-center justify-center p-6 text-center z-20">
-              <div className="w-12 h-12 rounded-full bg-red-600/10 border border-red-500/30 flex items-center justify-center text-red-400 mb-3">
-                <AlertCircle className="w-6 h-6" />
-              </div>
-              <p className="text-xs sm:text-sm font-display font-bold text-white tracking-widest uppercase mb-1">
-                {vsl.fallbackMessage || 'VIDEO UNAVAILABLE'}
-              </p>
-              <p className="text-xs text-zinc-400 max-w-sm mb-4">
-                {errorMessage || 'The Footazix system reel could not be loaded.'}
-              </p>
-              <button
-                type="button"
-                onClick={handleRetryVideo}
-                className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-colors cursor-pointer flex items-center gap-1.5"
-              >
-                <span>Retry Playback</span>
-              </button>
+                  {/* Custom Dark Glass Controls Bar */}
+                  <div
+                    className={`absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 via-black/60 to-transparent transition-opacity duration-300 z-10 ${
+                      isPlaying ? 'opacity-0 group-hover:opacity-100' : 'opacity-100'
+                    }`}
+                  >
+                    {/* Timeline Scrubber */}
+                    <div className="relative mb-3">
+                      <input
+                        type="range"
+                        min="0"
+                        max={duration || 100}
+                        step="0.1"
+                        value={currentTime}
+                        onChange={handleSeek}
+                        className="w-full h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[#B1FF00] hover:h-1.5 transition-all"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs text-[#F5F7F2]">
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={handlePlayToggle}
+                          className="p-1 hover:text-[#B1FF00] transition-colors cursor-pointer"
+                          aria-label={isPlaying ? 'Pause' : 'Play'}
+                        >
+                          {isPlaying ? (
+                            <Pause className="w-5 h-5 text-white" />
+                          ) : (
+                            <Play className="w-5 h-5 text-white fill-white" />
+                          )}
+                        </button>
+
+                        <button
+                          onClick={toggleMute}
+                          className="p-1 hover:text-[#B1FF00] transition-colors cursor-pointer"
+                          aria-label={isMuted ? 'Unmute' : 'Mute'}
+                        >
+                          {isMuted ? (
+                            <VolumeX className="w-5 h-5 text-[#A7AEA0] hover:text-white" />
+                          ) : (
+                            <Volume2 className="w-5 h-5 text-[#F5F7F2] hover:text-[#B1FF00]" />
+                          )}
+                        </button>
+
+                        <span className="font-mono text-[11px] text-[#A7AEA0]">
+                          {formatTime(currentTime)} / {formatTime(duration)}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        {hasCaptionsConfigured && (
+                          <button
+                            onClick={() => setShowCaptions(!showCaptions)}
+                            className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-colors cursor-pointer border ${
+                              showCaptions
+                                ? 'bg-[#B1FF00] text-[#070809] border-[#B1FF00]'
+                                : 'bg-[#0D0F10] text-[#A7AEA0] border-[#292E25] hover:text-white'
+                            }`}
+                            title="Toggle Captions"
+                          >
+                            CC
+                          </button>
+                        )}
+
+                        <button
+                          onClick={toggleFullscreen}
+                          className="p-1 hover:text-[#B1FF00] transition-colors cursor-pointer"
+                          aria-label="Toggle Fullscreen"
+                        >
+                          <Maximize className="w-4 h-4 text-[#F5F7F2] hover:text-[#B1FF00]" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* Missing/Failed Video Notice with Retry Action */}
+              {videoError && (
+                <div className="absolute inset-0 bg-[#070809]/95 flex flex-col items-center justify-center p-6 text-center z-20">
+                  <div className="w-12 h-12 rounded-full bg-red-600/10 border border-red-500/30 flex items-center justify-center text-red-400 mb-3">
+                    <AlertCircle className="w-6 h-6" />
+                  </div>
+                  <p className="text-xs sm:text-sm font-display font-bold text-white tracking-widest uppercase mb-1">
+                    {vsl.fallbackMessage || 'VIDEO UNAVAILABLE'}
+                  </p>
+                  <p className="text-xs text-[#A7AEA0] max-w-sm mb-4">
+                    {errorMessage || 'The Footazix system reel could not be loaded.'}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleRetryVideo}
+                    className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] transition-colors cursor-pointer flex items-center gap-1.5"
+                  >
+                    <span>Retry Playback</span>
+                  </button>
+                </div>
+              )}
             </div>
-          )}
           </div>
         </div>
-      </div>
 
         {/* Optional Section CTA */}
         {vsl.showCta && vsl.ctaText && (
@@ -533,10 +533,10 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }
               }}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20 cursor-pointer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] transition-colors shadow-lg shadow-[#B1FF00]/20 cursor-pointer"
             >
               <span>{vsl.ctaText}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3.5 h-3.5 text-[#070809]" />
             </button>
           </div>
         )}

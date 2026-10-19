@@ -130,31 +130,31 @@ export const AdminTeam: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto pb-16">
+    <div className="space-y-6 max-w-5xl mx-auto pb-16 font-sans">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl bg-[#090910] border border-white/10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl bg-[#0D0F10] border border-[#292E25]">
         <div>
-          <h2 className="text-base sm:text-lg font-display font-extrabold text-white tracking-tight flex items-center gap-2">
+          <h2 className="text-base sm:text-lg font-display font-extrabold text-[#F5F7F2] tracking-tight flex items-center gap-2">
             <span>Team Members</span>
-            <span className="text-xs font-mono font-normal text-zinc-400">
+            <span className="text-xs font-mono font-normal text-[#A7AEA0]">
               ({team.length} members)
             </span>
           </h2>
-          <p className="text-xs text-zinc-400 mt-0.5">
+          <p className="text-xs text-[#A7AEA0] mt-0.5">
             Manage creative video editors, strategists, and creative leads displayed on the About section.
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
           {statusMessage && (
-            <span className="text-xs text-blue-400 font-medium animate-in fade-in">
+            <span className="text-xs text-[#B1FF00] font-medium animate-in fade-in">
               {statusMessage}
             </span>
           )}
 
           <button
             onClick={openAdd}
-            className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 active:scale-95 transition-all shadow-[0_0_16px_rgba(37,99,235,0.3)] cursor-pointer flex items-center gap-1.5"
+            className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] active:scale-95 transition-all shadow-[0_0_16px_rgba(177,255,0,0.3)] cursor-pointer flex items-center gap-1.5"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Add Team Member</span>
@@ -164,15 +164,15 @@ export const AdminTeam: React.FC = () => {
 
       {/* Team Cards List */}
       {team.length === 0 ? (
-        <div className="p-12 text-center rounded-2xl bg-[#090910] border border-white/10 space-y-3">
-          <UsersRound className="w-8 h-8 text-zinc-600 mx-auto" />
-          <h3 className="text-sm font-bold text-white">No team members</h3>
-          <p className="text-xs text-zinc-400">
+        <div className="p-12 text-center rounded-2xl bg-[#0D0F10] border border-[#292E25] space-y-3">
+          <UsersRound className="w-8 h-8 text-[#737B6B] mx-auto" />
+          <h3 className="text-sm font-bold text-[#F5F7F2]">No team members</h3>
+          <p className="text-xs text-[#A7AEA0]">
             Click Add Team Member to feature editors, founders, or strategists.
           </p>
           <button
             onClick={openAdd}
-            className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500"
+            className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45]"
           >
             + Add First Member
           </button>
@@ -182,15 +182,15 @@ export const AdminTeam: React.FC = () => {
           {team.map((member, idx) => (
             <div
               key={member.id}
-              className="p-4 sm:p-5 rounded-xl bg-[#090910] border border-white/10 hover:border-white/20 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 group"
+              className="p-4 sm:p-5 rounded-xl bg-[#0D0F10] border border-[#292E25] hover:border-[#B1FF00]/40 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 group"
             >
               <div className="flex items-center gap-3.5 min-w-0">
                 {/* Reorder Buttons */}
-                <div className="flex flex-col gap-0.5 text-zinc-500">
+                <div className="flex flex-col gap-0.5 text-[#737B6B]">
                   <button
                     disabled={idx === 0}
                     onClick={() => handleMove(idx, 'up')}
-                    className="p-1 rounded hover:text-white hover:bg-zinc-800 disabled:opacity-20 cursor-pointer"
+                    className="p-1 rounded hover:text-[#F5F7F2] hover:bg-zinc-800 disabled:opacity-20 cursor-pointer"
                     title="Move up"
                     aria-label="Move up"
                   >
@@ -199,7 +199,7 @@ export const AdminTeam: React.FC = () => {
                   <button
                     disabled={idx === team.length - 1}
                     onClick={() => handleMove(idx, 'down')}
-                    className="p-1 rounded hover:text-white hover:bg-zinc-800 disabled:opacity-20 cursor-pointer"
+                    className="p-1 rounded hover:text-[#F5F7F2] hover:bg-zinc-800 disabled:opacity-20 cursor-pointer"
                     title="Move down"
                     aria-label="Move down"
                   >
@@ -208,7 +208,7 @@ export const AdminTeam: React.FC = () => {
                 </div>
 
                 {/* Avatar */}
-                <div className="w-14 h-14 rounded-full overflow-hidden bg-zinc-900 shrink-0 border border-white/10 relative">
+                <div className="w-14 h-14 rounded-full overflow-hidden bg-zinc-900 shrink-0 border border-[#292E25] relative">
                   <img
                     src={member.photo}
                     alt={member.name}
@@ -221,36 +221,36 @@ export const AdminTeam: React.FC = () => {
                 {/* Info */}
                 <div className="min-w-0 space-y-0.5">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="text-sm font-bold text-white truncate flex items-center gap-1.5">
+                    <h3 className="text-sm font-bold text-[#F5F7F2] truncate flex items-center gap-1.5">
                       <span>{member.name}</span>
                       <VerifiedTeamBadge size="sm" />
                     </h3>
-                    <span className="text-[10px] font-mono text-blue-400 font-semibold px-2 py-0.5 rounded bg-blue-950/60 border border-blue-500/30">
+                    <span className="text-[10px] font-mono text-[#B1FF00] font-semibold px-2 py-0.5 rounded bg-[#B1FF00]/10 border border-[#B1FF00]/30">
                       {member.role}
                     </span>
                     <span
                       className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
                         member.monochrome
-                          ? 'bg-zinc-800 text-zinc-300 border border-white/10'
-                          : 'bg-blue-950/60 text-blue-300 border border-blue-500/30'
+                          ? 'bg-[#181C16] text-[#A7AEA0] border border-[#292E25]'
+                          : 'bg-[#B1FF00]/10 text-[#B1FF00] border border-[#B1FF00]/30'
                       }`}
                     >
                       {member.monochrome ? 'Monochrome' : 'Full Color'}
                     </span>
                   </div>
-                  <p className="text-xs text-zinc-400 line-clamp-1 max-w-xl">
+                  <p className="text-xs text-[#A7AEA0] line-clamp-1 max-w-xl">
                     {member.description}
                   </p>
-                  <div className="flex items-center gap-3 text-[10px] text-zinc-400 font-mono pt-0.5">
+                  <div className="flex items-center gap-3 text-[10px] text-[#A7AEA0] font-mono pt-0.5">
                     {member.email && (
                       <span className="flex items-center gap-1">
-                        <Mail className="w-3 h-3 text-zinc-400" />
+                        <Mail className="w-3 h-3 text-[#737B6B]" />
                         {member.email}
                       </span>
                     )}
                     {member.socialLink && (
                       <span className="flex items-center gap-1">
-                        <ExternalLink className="w-3 h-3 text-zinc-400" />
+                        <ExternalLink className="w-3 h-3 text-[#737B6B]" />
                         Social Link
                       </span>
                     )}
@@ -264,19 +264,19 @@ export const AdminTeam: React.FC = () => {
                   onClick={() => handleToggleVisible(member)}
                   className={`px-2.5 py-1 rounded-lg text-xs font-mono uppercase font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
                     member.visible !== false
-                      ? 'bg-blue-950/60 text-blue-400 border border-blue-500/30'
-                      : 'bg-zinc-900 text-zinc-400 border border-white/10'
+                      ? 'bg-[#B1FF00]/10 text-[#B1FF00] border border-[#B1FF00]/30'
+                      : 'bg-[#121512] text-[#737B6B] border border-[#292E25]'
                   }`}
                   title="Toggle Visibility"
                 >
                   {member.visible !== false ? (
                     <>
-                      <Eye className="w-3 h-3 text-blue-400" />
+                      <Eye className="w-3 h-3 text-[#B1FF00]" />
                       <span>Visible</span>
                     </>
                   ) : (
                     <>
-                      <EyeOff className="w-3 h-3 text-zinc-400" />
+                      <EyeOff className="w-3 h-3 text-[#737B6B]" />
                       <span>Hidden</span>
                     </>
                   )}
@@ -284,7 +284,7 @@ export const AdminTeam: React.FC = () => {
 
                 <button
                   onClick={() => openEdit(member)}
-                  className="p-2 rounded-lg text-zinc-300 hover:text-white bg-[#12121c] border border-white/10 hover:border-white/20 transition-colors cursor-pointer"
+                  className="p-2 rounded-lg text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#121512] border border-[#292E25] hover:border-[#B1FF00]/40 transition-colors cursor-pointer"
                   title="Edit member"
                   aria-label="Edit member"
                 >
@@ -293,7 +293,7 @@ export const AdminTeam: React.FC = () => {
 
                 <button
                   onClick={() => setIsDeletingId(member.id)}
-                  className="p-2 rounded-lg text-zinc-400 hover:text-red-400 bg-[#12121c] border border-white/10 hover:border-red-500/30 transition-colors cursor-pointer"
+                  className="p-2 rounded-lg text-[#737B6B] hover:text-red-400 bg-[#121512] border border-[#292E25] hover:border-red-500/30 transition-colors cursor-pointer"
                   title="Delete member"
                   aria-label="Delete member"
                 >
@@ -313,16 +313,16 @@ export const AdminTeam: React.FC = () => {
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
         >
           <div
-            className="w-full max-w-lg bg-[#0b0b14] border border-white/15 rounded-2xl p-6 sm:p-7 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto"
+            className="w-full max-w-lg bg-[#0D0F10] border border-[#292E25] rounded-2xl p-6 sm:p-7 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <h3 className="text-base font-bold text-white">
+            <div className="flex items-center justify-between pb-3 border-b border-[#292E25]">
+              <h3 className="text-base font-bold text-[#F5F7F2]">
                 {editingMember ? 'Edit Team Member' : 'Add Team Member'}
               </h3>
               <button
                 onClick={closeModal}
-                className="p-1 rounded-lg text-zinc-400 hover:text-white bg-[#12121c]"
+                className="p-1 rounded-lg text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#121512]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -331,7 +331,7 @@ export const AdminTeam: React.FC = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-[#A7AEA0] mb-1">
                     Name *
                   </label>
                   <input
@@ -340,12 +340,12 @@ export const AdminTeam: React.FC = () => {
                     placeholder="e.g. Sanamatum"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-blue-500"
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-sm outline-none focus:border-[#B1FF00]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-[#A7AEA0] mb-1">
                     Role *
                   </label>
                   <input
@@ -354,13 +354,13 @@ export const AdminTeam: React.FC = () => {
                     placeholder="e.g. Founder & Creative Lead"
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-blue-500"
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-sm outline-none focus:border-[#B1FF00]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#A7AEA0] mb-1">
                   Bio / Description
                 </label>
                 <textarea
@@ -368,13 +368,13 @@ export const AdminTeam: React.FC = () => {
                   placeholder="Directing creative video editing workflows and high-retention content..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-blue-500 leading-relaxed"
+                  className="w-full px-3.5 py-2 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-sm outline-none focus:border-[#B1FF00] leading-relaxed resize-y"
                 />
               </div>
 
               <div className="space-y-3">
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-[#A7AEA0] mb-1">
                     Photo URL
                   </label>
                   <input
@@ -382,28 +382,28 @@ export const AdminTeam: React.FC = () => {
                     placeholder="/assets/founder.jpg"
                     value={photo}
                     onChange={(e) => setPhoto(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs font-mono outline-none focus:border-blue-500"
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-xs font-mono outline-none focus:border-[#B1FF00]"
                   />
                 </div>
 
                 {/* Team Member Photo Color Mode Toggle */}
-                <div className="p-3.5 rounded-xl bg-[#0d0d16] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="p-3.5 rounded-xl bg-[#121512] border border-[#292E25] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold uppercase tracking-wider text-white">
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#F5F7F2]">
                         Photo Color Mode
                       </span>
                       <span
                         className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
                           monochrome
                             ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                            : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                            : 'bg-[#B1FF00]/15 text-[#B1FF00] border border-[#B1FF00]/30'
                         }`}
                       >
                         {monochrome ? 'Monochrome (ON)' : 'Full Color (OFF)'}
                       </span>
                     </div>
-                    <p className="text-[11px] text-zinc-400 mt-0.5">
+                    <p className="text-[11px] text-[#A7AEA0] mt-0.5">
                       OFF = original full-color image · ON = professional monochrome/grayscale effect
                     </p>
                   </div>
@@ -414,8 +414,8 @@ export const AdminTeam: React.FC = () => {
                       onClick={() => setMonochrome(false)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-all cursor-pointer ${
                         !monochrome
-                          ? 'bg-blue-600 text-white shadow-[0_0_12px_rgba(37,99,235,0.4)]'
-                          : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                          ? 'bg-[#B1FF00] text-[#070809] shadow-[0_0_12px_rgba(177,255,0,0.4)]'
+                          : 'bg-[#181C16] text-[#A7AEA0] hover:text-[#F5F7F2]'
                       }`}
                     >
                       Full Color (OFF)
@@ -426,7 +426,7 @@ export const AdminTeam: React.FC = () => {
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-all cursor-pointer ${
                         monochrome
                           ? 'bg-zinc-200 text-zinc-950 font-extrabold shadow-sm'
-                          : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                          : 'bg-[#181C16] text-[#A7AEA0] hover:text-[#F5F7F2]'
                       }`}
                     >
                       Monochrome (ON)
@@ -436,8 +436,8 @@ export const AdminTeam: React.FC = () => {
 
                 {/* Live Photo Preview */}
                 {photo && (
-                  <div className="flex items-center gap-3 p-2.5 rounded-xl bg-[#090910] border border-white/5">
-                    <div className="w-12 h-12 rounded-xl overflow-hidden bg-black shrink-0 border border-white/10">
+                  <div className="flex items-center gap-3 p-2.5 rounded-xl bg-[#0D0F10] border border-[#292E25]">
+                    <div className="w-12 h-12 rounded-xl overflow-hidden bg-black shrink-0 border border-[#292E25]">
                       <img
                         src={photo}
                         alt="Photo preview"
@@ -445,8 +445,8 @@ export const AdminTeam: React.FC = () => {
                       />
                     </div>
                     <div className="text-xs">
-                      <span className="text-white font-semibold block">Live Preview</span>
-                      <span className="text-zinc-400 text-[11px] font-mono">
+                      <span className="text-[#F5F7F2] font-semibold block">Live Preview</span>
+                      <span className="text-[#A7AEA0] text-[11px] font-mono">
                         {monochrome ? 'Monochrome effect applied' : 'Full color (original)'}
                       </span>
                     </div>
@@ -456,7 +456,7 @@ export const AdminTeam: React.FC = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-[#A7AEA0] mb-1">
                     Social Link / Profile
                   </label>
                   <input
@@ -464,12 +464,12 @@ export const AdminTeam: React.FC = () => {
                     placeholder="https://instagram.com/..."
                     value={socialLink}
                     onChange={(e) => setSocialLink(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs outline-none focus:border-blue-500"
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-xs outline-none focus:border-[#B1FF00]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-[#A7AEA0] mb-1">
                     Email
                   </label>
                   <input
@@ -477,7 +477,7 @@ export const AdminTeam: React.FC = () => {
                     placeholder="footazix@gmail.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs outline-none focus:border-blue-500"
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-xs outline-none focus:border-[#B1FF00]"
                   />
                 </div>
               </div>
@@ -488,24 +488,24 @@ export const AdminTeam: React.FC = () => {
                   id="member-vis"
                   checked={visible}
                   onChange={(e) => setVisible(e.target.checked)}
-                  className="rounded border-zinc-700 bg-zinc-900 text-blue-600"
+                  className="rounded border-[#292E25] bg-zinc-900 text-[#B1FF00] focus:ring-[#B1FF00] accent-[#B1FF00]"
                 />
-                <label htmlFor="member-vis" className="text-xs text-zinc-300 cursor-pointer">
+                <label htmlFor="member-vis" className="text-xs text-[#A7AEA0] cursor-pointer">
                   Visible on public website About section
                 </label>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#292E25]">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white bg-[#12121c] border border-white/10"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#121512] border border-[#292E25]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 shadow-[0_0_16px_rgba(37,99,235,0.3)] transition-colors"
+                  className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] shadow-[0_0_16px_rgba(177,255,0,0.3)] transition-colors"
                 >
                   {editingMember ? 'Save Changes' : 'Add Member'}
                 </button>
@@ -522,16 +522,16 @@ export const AdminTeam: React.FC = () => {
           aria-modal="true"
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
         >
-          <div className="w-full max-w-md bg-[#0b0b14] border border-white/15 rounded-2xl p-6 space-y-4 shadow-2xl">
-            <h3 className="text-base font-bold text-white">Delete Team Member?</h3>
-            <p className="text-xs text-zinc-400">
+          <div className="w-full max-w-md bg-[#0D0F10] border border-[#292E25] rounded-2xl p-6 space-y-4 shadow-2xl">
+            <h3 className="text-base font-bold text-[#F5F7F2]">Delete Team Member?</h3>
+            <p className="text-xs text-[#A7AEA0]">
               Are you sure you want to remove this team member? This will delete the record from Supabase.
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => setIsDeletingId(null)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white bg-[#12121c] border border-white/10"
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#121512] border border-[#292E25]"
               >
                 Cancel
               </button>

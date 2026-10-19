@@ -5,7 +5,7 @@ import { LockKeyhole, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export const AdminLogin: React.FC = () => {
-  const { login, navigateToPublic, content } = useApp();
+  const { login, navigateToPublic } = useApp();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -37,7 +37,7 @@ export const AdminLogin: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#050508] text-white flex flex-col justify-between py-6 px-4 sm:px-6 selection:bg-blue-600 selection:text-white font-sans antialiased">
+    <div className="min-h-screen bg-[#070809] text-[#F5F7F2] flex flex-col justify-between py-6 px-4 sm:px-6 selection:bg-[#B1FF00] selection:text-[#070809] font-sans antialiased">
       {/* Top Header */}
       <header className="w-full max-w-5xl mx-auto flex items-center justify-between pt-2 pb-4">
         {/* Top-left: Brand Logo with official FootazixLogo */}
@@ -47,12 +47,12 @@ export const AdminLogin: React.FC = () => {
           className="inline-flex items-center group cursor-pointer hover:opacity-90 transition-opacity"
           aria-label="Return to Footazix homepage"
         >
-            <FootazixLogo className="w-[125px] sm:w-[145px] h-auto object-contain" />
+          <FootazixLogo className="w-[125px] sm:w-[145px] h-auto object-contain" />
         </button>
 
         {/* Top-right: Subtle Secure Access Indicator */}
-        <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-mono uppercase tracking-wider text-zinc-400 select-none">
-          <LockKeyhole className="w-3.5 h-3.5 text-zinc-400 shrink-0" strokeWidth={1.8} />
+        <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-mono uppercase tracking-wider text-[#A7AEA0] select-none">
+          <LockKeyhole className="w-3.5 h-3.5 text-[#B1FF00] shrink-0" strokeWidth={1.8} />
           <span>SECURE ACCESS</span>
         </div>
       </header>
@@ -67,28 +67,28 @@ export const AdminLogin: React.FC = () => {
         >
           <div className="text-center">
             {/* Small lock icon */}
-            <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-blue-950/40 border border-blue-500/25 mb-4 shadow-[0_0_16px_rgba(37,99,235,0.15)]">
-              <LockKeyhole className="w-4 h-4 text-blue-500" strokeWidth={2} />
+            <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-[#181C16] border border-[#B1FF00]/25 mb-4 shadow-[0_0_16px_rgba(177,255,0,0.15)]">
+              <LockKeyhole className="w-4 h-4 text-[#B1FF00]" strokeWidth={2} />
             </div>
 
-            <div className="text-[11px] font-bold uppercase tracking-[0.25em] text-zinc-400 mb-1">
+            <div className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#A7AEA0] mb-1">
               FOOTAZIX
             </div>
-            <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-blue-400 mb-3">
+            <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#B1FF00] mb-3">
               PRIVATE STUDIO
             </div>
 
-            <h1 className="text-xl sm:text-2xl font-display font-extrabold text-white tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-display font-extrabold text-[#F5F7F2] tracking-tight">
               Studio Management Portal
             </h1>
 
-            <p className="mt-2 text-xs text-zinc-400 max-w-xs mx-auto leading-relaxed">
+            <p className="mt-2 text-xs text-[#A7AEA0] max-w-xs mx-auto leading-relaxed">
               Secure access to the Footazix content management system.
             </p>
           </div>
 
           {/* Login Card */}
-          <div className="bg-[#0b0b12] border border-white/10 rounded-2xl p-6 sm:p-7 shadow-2xl backdrop-blur-sm">
+          <div className="bg-[#121512] border border-[#292E25] rounded-2xl p-6 sm:p-7 shadow-2xl backdrop-blur-sm">
             <form onSubmit={handleSubmit} className="space-y-4" noValidate>
               {/* Clean, Non-technical Error Alert */}
               <AnimatePresence>
@@ -109,7 +109,7 @@ export const AdminLogin: React.FC = () => {
               <div>
                 <label
                   htmlFor="studio-email"
-                  className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-2"
+                  className="block text-[11px] font-bold uppercase tracking-wider text-[#A7AEA0] mb-2"
                 >
                   Email Address
                 </label>
@@ -122,7 +122,7 @@ export const AdminLogin: React.FC = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email address"
                   disabled={isSubmitting}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all disabled:opacity-50"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#0D0F10] border border-[#292E25] text-[#F5F7F2] placeholder-[#737B6B] text-sm focus:outline-none focus:border-[#B1FF00] focus:ring-1 focus:ring-[#B1FF00] transition-all disabled:opacity-50"
                 />
               </div>
 
@@ -130,7 +130,7 @@ export const AdminLogin: React.FC = () => {
               <div>
                 <label
                   htmlFor="studio-password"
-                  className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-2"
+                  className="block text-[11px] font-bold uppercase tracking-wider text-[#A7AEA0] mb-2"
                 >
                   Password
                 </label>
@@ -144,14 +144,14 @@ export const AdminLogin: React.FC = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Password"
                     disabled={isSubmitting}
-                    className="w-full pl-4 pr-11 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all disabled:opacity-50"
+                    className="w-full pl-4 pr-11 py-2.5 rounded-xl bg-[#0D0F10] border border-[#292E25] text-[#F5F7F2] placeholder-[#737B6B] text-sm focus:outline-none focus:border-[#B1FF00] focus:ring-1 focus:ring-[#B1FF00] transition-all disabled:opacity-50"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                     tabIndex={-1}
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#A7AEA0] hover:text-[#F5F7F2] transition-colors cursor-pointer"
                   >
                     {showPassword ? (
                       <EyeOff className="w-4 h-4" strokeWidth={1.8} />
@@ -166,11 +166,11 @@ export const AdminLogin: React.FC = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full mt-3 py-3 px-6 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200 shadow-[0_0_20px_rgba(37,99,235,0.35)] cursor-pointer flex items-center justify-center gap-2"
+                className="w-full mt-3 py-3 px-6 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200 shadow-[0_0_20px_rgba(177,255,0,0.35)] cursor-pointer flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-[#070809]" />
                     <span>SIGNING IN...</span>
                   </>
                 ) : (
@@ -184,7 +184,7 @@ export const AdminLogin: React.FC = () => {
 
       {/* Footer: Discreet Private Studio Access */}
       <footer className="w-full text-center pb-2 pt-4">
-        <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-400 select-none">
+        <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#737B6B] select-none">
           PRIVATE STUDIO ACCESS
         </span>
       </footer>

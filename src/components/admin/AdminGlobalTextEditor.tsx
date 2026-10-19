@@ -956,23 +956,23 @@ export const AdminGlobalTextEditor: React.FC<{ embedded?: boolean }> = ({ embedd
   return (
     <div className="space-y-6 max-w-6xl mx-auto pb-16 font-sans">
       {/* Top Header Card with Quick Stats & Actions */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl bg-[#090910] border border-white/10 sticky top-20 z-20 backdrop-blur-md bg-[#090910]/95 shadow-xl">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl bg-[#0D0F10] border border-[#292E25] sticky top-20 z-20 backdrop-blur-md bg-[#0D0F10]/95 shadow-xl">
         <div>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+            <div className="w-7 h-7 rounded-lg bg-[#B1FF00]/10 border border-[#B1FF00]/30 flex items-center justify-center text-[#B1FF00]">
               <Type className="w-4 h-4" />
             </div>
-            <h2 className="text-base sm:text-lg font-display font-extrabold text-white tracking-tight flex items-center gap-2">
+            <h2 className="text-base sm:text-lg font-display font-extrabold text-[#F5F7F2] tracking-tight flex items-center gap-2">
               <span>Global Website Text Editor</span>
               {hasUnsavedChanges && (
                 <span
-                  className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse shadow-[0_0_8px_rgba(37,99,235,0.8)]"
+                  className="w-2.5 h-2.5 rounded-full bg-[#B1FF00] animate-pulse shadow-[0_0_8px_rgba(177,255,0,0.8)]"
                   title="Unsaved changes pending"
                 />
               )}
             </h2>
           </div>
-          <p className="text-xs text-zinc-400 mt-1 max-w-xl">
+          <p className="text-xs text-[#A7AEA0] mt-1 max-w-xl">
             Edit all visible website text, section titles, buttons, descriptions, and hyperlinks with zero code changes. Supabase is the single source of truth.
           </p>
         </div>
@@ -982,7 +982,7 @@ export const AdminGlobalTextEditor: React.FC<{ embedded?: boolean }> = ({ embedd
             <button
               type="button"
               onClick={handleReset}
-              className="px-3.5 py-2 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white bg-[#12121c] border border-white/10 hover:border-white/20 transition-colors flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-2 rounded-xl text-xs font-semibold text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#121512] border border-[#292E25] hover:border-[#B1FF00]/40 transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Discard Changes</span>
@@ -992,17 +992,17 @@ export const AdminGlobalTextEditor: React.FC<{ embedded?: boolean }> = ({ embedd
           <button
             type="button"
             onClick={navigateToPublic}
-            className="px-3.5 py-2 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white bg-[#12121c] border border-white/10 hover:border-white/20 transition-colors flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-2 rounded-xl text-xs font-semibold text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#121512] border border-[#292E25] hover:border-[#B1FF00]/40 transition-colors flex items-center gap-1.5 cursor-pointer"
           >
             <span>Live Site</span>
-            <ExternalLink className="w-3.5 h-3.5 text-zinc-400" />
+            <ExternalLink className="w-3.5 h-3.5 text-[#737B6B]" />
           </button>
 
           <button
             type="button"
             onClick={() => handleSave()}
             disabled={saveStatus === 'saving'}
-            className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 active:scale-95 disabled:opacity-50 transition-all shadow-[0_0_16px_rgba(37,99,235,0.35)] cursor-pointer flex items-center gap-2"
+            className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] active:scale-95 disabled:opacity-50 transition-all shadow-[0_0_16px_rgba(177,255,0,0.35)] cursor-pointer flex items-center gap-2"
           >
             {saveStatus === 'saving' ? (
               <>
@@ -1028,12 +1028,12 @@ export const AdminGlobalTextEditor: React.FC<{ embedded?: boolean }> = ({ embedd
             exit={{ opacity: 0, y: -8 }}
             className={`p-3.5 rounded-xl border flex items-center gap-2.5 text-xs font-medium ${
               toastMessage.type === 'success'
-                ? 'bg-blue-950/40 border-blue-500/40 text-blue-200'
+                ? 'bg-[#181C16] border-[#B1FF00]/40 text-[#F5F7F2]'
                 : 'bg-red-950/40 border-red-500/40 text-red-200'
             }`}
           >
             {toastMessage.type === 'success' ? (
-              <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-[#B1FF00] shrink-0" />
             ) : (
               <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
             )}
@@ -1043,22 +1043,22 @@ export const AdminGlobalTextEditor: React.FC<{ embedded?: boolean }> = ({ embedd
       </AnimatePresence>
 
       {/* Search Bar & Section Filters */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-[#090910] border border-white/10 space-y-4">
+      <div className="p-4 sm:p-5 rounded-2xl bg-[#0D0F10] border border-[#292E25] space-y-4">
         {/* Search Input */}
         <div className="relative">
-          <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#737B6B] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search any text element by keyword, label, heading, or link URL..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs placeholder-zinc-500 focus:border-blue-500 outline-none transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-xs placeholder-[#737B6B] focus:border-[#B1FF00] outline-none transition-colors"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white text-xs font-mono"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#737B6B] hover:text-[#F5F7F2] text-xs font-mono"
             >
               CLEAR
             </button>
@@ -1082,15 +1082,15 @@ export const AdminGlobalTextEditor: React.FC<{ embedded?: boolean }> = ({ embedd
                 onClick={() => setActiveSectionFilter(tab.id)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-blue-600/20 text-white border border-blue-500/40 shadow-[0_0_10px_rgba(37,99,235,0.15)]'
-                    : 'text-zinc-400 hover:text-white hover:bg-white/[0.04] border border-transparent'
+                    ? 'bg-[#B1FF00]/15 text-[#F5F7F2] border border-[#B1FF00]/40 shadow-[0_0_10px_rgba(177,255,0,0.15)]'
+                    : 'text-[#A7AEA0] hover:text-[#F5F7F2] hover:bg-white/[0.04] border border-transparent'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-blue-400' : 'text-zinc-400'}`} />
+                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#B1FF00]' : 'text-[#737B6B]'}`} />
                 <span>{tab.label}</span>
                 <span
                   className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${
-                    isActive ? 'bg-blue-500/20 text-blue-300' : 'bg-zinc-800 text-zinc-400'
+                    isActive ? 'bg-[#B1FF00]/20 text-[#B1FF00]' : 'bg-[#181C16] text-[#A7AEA0]'
                   }`}
                 >
                   {count}
@@ -1102,11 +1102,11 @@ export const AdminGlobalTextEditor: React.FC<{ embedded?: boolean }> = ({ embedd
       </div>
 
       {/* Elements Count and Live Summary Bar */}
-      <div className="flex items-center justify-between text-xs text-zinc-400 px-1 font-mono">
+      <div className="flex items-center justify-between text-xs text-[#A7AEA0] px-1 font-mono">
         <span>
           Showing {filteredElements.length} of {textElements.length} text elements
         </span>
-        <span className="text-[11px] text-zinc-500">
+        <span className="text-[11px] text-[#737B6B]">
           Changes synchronize directly to Supabase
         </span>
       </div>
@@ -1124,22 +1124,22 @@ export const AdminGlobalTextEditor: React.FC<{ embedded?: boolean }> = ({ embedd
               key={el.id}
               className={`p-5 rounded-2xl border transition-all duration-200 ${
                 !isVisible
-                  ? 'bg-[#090910]/60 border-white/5 opacity-75'
-                  : 'bg-[#090910] border-white/10 hover:border-white/20'
+                  ? 'bg-[#0D0F10]/60 border-[#292E25]/50 opacity-75'
+                  : 'bg-[#0D0F10] border-[#292E25] hover:border-[#B1FF00]/40'
               }`}
             >
               {/* Element Header: Label, Section Badge & Controls */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/5 mb-3.5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#292E25] mb-3.5">
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-bold text-white tracking-wide">
+                    <span className="text-xs font-bold text-[#F5F7F2] tracking-wide">
                       {el.label}
                     </span>
-                    <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-blue-950/60 border border-blue-500/20 text-blue-300 font-semibold">
+                    <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-[#B1FF00]/10 border border-[#B1FF00]/30 text-[#B1FF00] font-semibold">
                       {el.sectionLabel}
                     </span>
                   </div>
-                  <p className="text-[11px] text-zinc-400 mt-0.5">{el.description}</p>
+                  <p className="text-[11px] text-[#A7AEA0] mt-0.5">{el.description}</p>
                 </div>
 
                 <div className="flex items-center gap-3 self-start sm:self-auto">
@@ -1150,16 +1150,16 @@ export const AdminGlobalTextEditor: React.FC<{ embedded?: boolean }> = ({ embedd
                         type="checkbox"
                         checked={isVisible}
                         onChange={(e) => setValue(el.visibilityPath!, e.target.checked)}
-                        className="w-3.5 h-3.5 rounded bg-zinc-900 border-white/20 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                        className="w-3.5 h-3.5 rounded bg-zinc-900 border-[#292E25] text-[#B1FF00] focus:ring-[#B1FF00] accent-[#B1FF00] cursor-pointer"
                       />
-                      <span className={isVisible ? 'text-zinc-200' : 'text-zinc-500'}>
+                      <span className={isVisible ? 'text-[#F5F7F2]' : 'text-[#737B6B]'}>
                         {isVisible ? (
-                          <span className="inline-flex items-center gap-1 text-blue-400">
+                          <span className="inline-flex items-center gap-1 text-[#B1FF00]">
                             <Eye className="w-3 h-3" />
                             <span>Visible</span>
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-zinc-500">
+                          <span className="inline-flex items-center gap-1 text-[#737B6B]">
                             <EyeOff className="w-3 h-3" />
                             <span>Hidden</span>
                           </span>
@@ -1173,7 +1173,7 @@ export const AdminGlobalTextEditor: React.FC<{ embedded?: boolean }> = ({ embedd
               {/* Text Input / Textarea */}
               <div className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-mono uppercase tracking-wider text-zinc-400 mb-1.5 font-bold">
+                  <label className="block text-[10px] font-mono uppercase tracking-wider text-[#A7AEA0] mb-1.5 font-bold">
                     Text Content
                   </label>
                   {el.multiline ? (
@@ -1182,7 +1182,7 @@ export const AdminGlobalTextEditor: React.FC<{ embedded?: boolean }> = ({ embedd
                       value={textValue}
                       onChange={(e) => setValue(el.textPath, e.target.value)}
                       placeholder={el.placeholder}
-                      className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs sm:text-sm focus:border-blue-500 outline-none leading-relaxed transition-colors resize-y"
+                      className="w-full px-4 py-2.5 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-xs sm:text-sm focus:border-[#B1FF00] outline-none leading-relaxed transition-colors resize-y"
                     />
                   ) : (
                     <input
@@ -1190,27 +1190,27 @@ export const AdminGlobalTextEditor: React.FC<{ embedded?: boolean }> = ({ embedd
                       value={textValue}
                       onChange={(e) => setValue(el.textPath, e.target.value)}
                       placeholder={el.placeholder}
-                      className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-xs sm:text-sm focus:border-blue-500 outline-none font-medium transition-colors"
+                      className="w-full px-4 py-2.5 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-xs sm:text-sm focus:border-[#B1FF00] outline-none font-medium transition-colors"
                     />
                   )}
                 </div>
 
                 {/* Optional Hyperlink & Open in New Tab Row */}
                 {el.supportsLink && el.linkPath && (
-                  <div className="p-3 rounded-xl bg-[#12121c] border border-white/5 space-y-2">
+                  <div className="p-3 rounded-xl bg-[#121512] border border-[#292E25] space-y-2">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                      <label className="text-[10px] font-mono uppercase tracking-wider text-blue-300 font-bold flex items-center gap-1.5">
+                      <label className="text-[10px] font-mono uppercase tracking-wider text-[#B1FF00] font-bold flex items-center gap-1.5">
                         <Link className="w-3 h-3" />
                         <span>Hyperlink URL</span>
                       </label>
 
                       {el.newTabPath && (
-                        <label className="flex items-center gap-1.5 text-[11px] text-zinc-400 cursor-pointer">
+                        <label className="flex items-center gap-1.5 text-[11px] text-[#A7AEA0] cursor-pointer">
                           <input
                             type="checkbox"
                             checked={openInNewTab}
                             onChange={(e) => setValue(el.newTabPath!, e.target.checked)}
-                            className="w-3 h-3 rounded bg-zinc-900 border-white/20 text-blue-600 cursor-pointer"
+                            className="w-3 h-3 rounded bg-zinc-900 border-[#292E25] text-[#B1FF00] accent-[#B1FF00] cursor-pointer"
                           />
                           <span>Open link in new tab (target="_blank")</span>
                         </label>
@@ -1223,14 +1223,14 @@ export const AdminGlobalTextEditor: React.FC<{ embedded?: boolean }> = ({ embedd
                         value={linkValue || ''}
                         onChange={(e) => setValue(el.linkPath!, e.target.value)}
                         placeholder="https://... or #section"
-                        className="flex-1 px-3 py-1.5 rounded-lg bg-black/60 border border-white/10 text-white text-xs font-mono focus:border-blue-500 outline-none"
+                        className="flex-1 px-3 py-1.5 rounded-lg bg-black/60 border border-[#292E25] text-[#F5F7F2] text-xs font-mono focus:border-[#B1FF00] outline-none"
                       />
                       {linkValue && (
                         <a
                           href={linkValue}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-2 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white border border-white/10 transition-colors"
+                          className="p-2 rounded-lg bg-[#181C16] text-[#A7AEA0] hover:text-[#B1FF00] border border-[#292E25] transition-colors"
                           title="Test Hyperlink"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
@@ -1248,16 +1248,16 @@ export const AdminGlobalTextEditor: React.FC<{ embedded?: boolean }> = ({ embedd
       {/* Floating Save Reminder when changes are active */}
       {hasUnsavedChanges && (
         <div className="fixed bottom-6 right-6 z-40 animate-in fade-in slide-in-from-bottom-4 duration-200">
-          <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-[#090910] border border-blue-500/40 shadow-2xl backdrop-blur-md">
-            <span className="text-xs text-blue-300 font-medium pl-1 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+          <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-[#0D0F10] border border-[#B1FF00]/40 shadow-2xl backdrop-blur-md">
+            <span className="text-xs text-[#B1FF00] font-medium pl-1 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#B1FF00] animate-pulse" />
               <span>Unsaved text changes</span>
             </span>
             <button
               type="button"
               onClick={() => handleSave()}
               disabled={saveStatus === 'saving'}
-              className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 active:scale-95 transition-all shadow-[0_0_12px_rgba(37,99,235,0.4)] cursor-pointer flex items-center gap-1.5"
+              className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] active:scale-95 transition-all shadow-[0_0_12px_rgba(177,255,0,0.4)] cursor-pointer flex items-center gap-1.5"
             >
               {saveStatus === 'saving' ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />

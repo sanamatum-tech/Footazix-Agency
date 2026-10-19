@@ -64,27 +64,27 @@ export const FootazixHero3D: React.FC<FootazixHero3DProps> = ({ className = '' }
 
       // Primary dark metallic titanium material
       const titaniumMaterial = new THREE.MeshStandardMaterial({
-        color: new THREE.Color(0x121319),
+        color: new THREE.Color(0x121512),
         metalness: 0.94,
         roughness: 0.18,
         wireframe: false,
       });
 
-      // Accent cobalt edge material
-      const accentCobaltMaterial = new THREE.MeshStandardMaterial({
-        color: new THREE.Color(0x0f172a),
-        emissive: new THREE.Color(0x1d4ed8),
-        emissiveIntensity: 0.35,
+      // Accent lime edge material
+      const accentLimeMaterial = new THREE.MeshStandardMaterial({
+        color: new THREE.Color(0x181C16),
+        emissive: new THREE.Color(0x96DB00),
+        emissiveIntensity: 0.45,
         metalness: 0.88,
         roughness: 0.22,
       });
 
       // Subtle wireframe halo
       const wireMaterial = new THREE.MeshBasicMaterial({
-        color: new THREE.Color(0x3b82f6),
+        color: new THREE.Color(0xB1FF00),
         wireframe: true,
         transparent: true,
-        opacity: 0.18,
+        opacity: 0.22,
       });
 
       // 1. Central faceted monolith prism (Octahedron with chamfered scale)
@@ -94,7 +94,7 @@ export const FootazixHero3D: React.FC<FootazixHero3DProps> = ({ className = '' }
 
       // 2. Outer intersecting orbital ring (representing editorial cutting / timeline focus)
       const ringGeometry = new THREE.TorusGeometry(1.85, 0.04, 16, 100);
-      const ringMesh = new THREE.Mesh(ringGeometry, accentCobaltMaterial);
+      const ringMesh = new THREE.Mesh(ringGeometry, accentLimeMaterial);
       ringMesh.rotation.x = Math.PI / 3;
       mainGroup.add(ringMesh);
 
@@ -107,7 +107,7 @@ export const FootazixHero3D: React.FC<FootazixHero3DProps> = ({ className = '' }
       const nodeGeometry = new THREE.BoxGeometry(0.12, 0.12, 0.12);
       for (let i = 0; i < 4; i++) {
         const angle = (i / 4) * Math.PI * 2;
-        const node = new THREE.Mesh(nodeGeometry, accentCobaltMaterial);
+        const node = new THREE.Mesh(nodeGeometry, accentLimeMaterial);
         node.position.set(Math.cos(angle) * 1.85, Math.sin(angle) * 1.85, 0);
         ringMesh.add(node);
       }
@@ -122,13 +122,13 @@ export const FootazixHero3D: React.FC<FootazixHero3DProps> = ({ className = '' }
       keyLight.position.set(4, 5, 4);
       scene.add(keyLight);
 
-      // Vibrant Electric Cobalt Rim / Fill Light
-      const blueRimLight = new THREE.PointLight(0x2563eb, 3.5, 15);
-      blueRimLight.position.set(-3, -2, 3);
-      scene.add(blueRimLight);
+      // Vibrant Signature Lime Rim / Fill Light
+      const limeRimLight = new THREE.PointLight(0xB1FF00, 3.2, 15);
+      limeRimLight.position.set(-3, -2, 3);
+      scene.add(limeRimLight);
 
       // Dynamic cursor tracking light
-      const cursorLight = new THREE.PointLight(0x60a5fa, 1.2, 10);
+      const cursorLight = new THREE.PointLight(0xC4FF45, 1.2, 10);
       cursorLight.position.set(0, 0, 3);
       scene.add(cursorLight);
 
@@ -189,8 +189,8 @@ export const FootazixHero3D: React.FC<FootazixHero3DProps> = ({ className = '' }
         ringMesh.rotation.z += 0.004;
         secondaryRingMesh.rotation.x -= 0.003;
 
-        // Subtle pulsing of the blue rim light
-        blueRimLight.intensity = 3.2 + Math.sin(elapsedTime * 1.5) * 0.6;
+        // Subtle pulsing of the lime rim light
+        limeRimLight.intensity = 3.2 + Math.sin(elapsedTime * 1.5) * 0.6;
 
         renderer.render(scene, camera);
       };
@@ -209,7 +209,7 @@ export const FootazixHero3D: React.FC<FootazixHero3DProps> = ({ className = '' }
         secondaryRingGeometry.dispose();
         nodeGeometry.dispose();
         titaniumMaterial.dispose();
-        accentCobaltMaterial.dispose();
+        accentLimeMaterial.dispose();
         wireMaterial.dispose();
         renderer.dispose();
         if (currentMount.contains(renderer.domElement)) {
@@ -231,11 +231,11 @@ export const FootazixHero3D: React.FC<FootazixHero3DProps> = ({ className = '' }
       {(!hasWebGL || isLowPower) && (
         <div className="relative w-72 h-72 flex items-center justify-center">
           {/* High-end CSS metallic fallback */}
-          <div className="absolute inset-0 rounded-full border border-blue-500/20 animate-spin [animation-duration:30s]" />
-          <div className="absolute inset-4 rounded-2xl border border-blue-500/30 rotate-45 transform-gpu transition-transform" />
-          <div className="w-40 h-40 rounded-xl bg-gradient-to-br from-zinc-800 via-zinc-950 to-blue-950 border border-white/10 shadow-2xl flex items-center justify-center glow-blue-sm">
-            <div className="w-16 h-16 border-2 border-blue-500/80 rotate-12 flex items-center justify-center">
-              <span className="text-blue-400 font-display font-bold text-xs tracking-widest">FX</span>
+          <div className="absolute inset-0 rounded-full border border-[#B1FF00]/20 animate-spin [animation-duration:30s]" />
+          <div className="absolute inset-4 rounded-2xl border border-[#B1FF00]/30 rotate-45 transform-gpu transition-transform" />
+          <div className="w-40 h-40 rounded-xl bg-gradient-to-br from-zinc-800 via-[#121512] to-[#181C16] border border-white/10 shadow-2xl flex items-center justify-center glow-lime-sm">
+            <div className="w-16 h-16 border-2 border-[#B1FF00]/80 rotate-12 flex items-center justify-center">
+              <span className="text-[#B1FF00] font-display font-bold text-xs tracking-widest">FX</span>
             </div>
           </div>
         </div>

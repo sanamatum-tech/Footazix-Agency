@@ -205,43 +205,43 @@ export const AdminInquiries: React.FC = () => {
     setTimeout(() => setToast(null), 2500);
   };
 
-  // Strictly neutral & blue palette (anti-green, anti-purple rule)
+  // Status badges using lime green #B1FF00 and dark neutrals
   const getStatusBadge = (status: InquiryStatus) => {
     switch (status) {
       case 'new':
-        return 'bg-blue-600/25 text-blue-300 border-blue-500/40';
+        return 'bg-[#B1FF00]/15 text-[#B1FF00] border-[#B1FF00]/40';
       case 'contacted':
-        return 'bg-zinc-800 text-zinc-200 border-white/10';
+        return 'bg-[#181C16] text-[#F5F7F2] border-[#292E25]';
       case 'in_progress':
-        return 'bg-blue-950/70 text-blue-300 border-blue-500/30';
+        return 'bg-[#B1FF00]/10 text-[#B1FF00] border-[#B1FF00]/30';
       case 'completed':
-        return 'bg-zinc-900 text-zinc-300 border-white/15';
+        return 'bg-[#121512] text-[#A7AEA0] border-[#292E25]';
       case 'archived':
-        return 'bg-zinc-900/60 text-zinc-500 border-white/5';
+        return 'bg-[#121512]/60 text-[#737B6B] border-[#292E25]/50';
       default:
-        return 'bg-zinc-900 text-zinc-400 border-white/10';
+        return 'bg-[#121512] text-[#A7AEA0] border-[#292E25]';
     }
   };
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-16">
+    <div className="space-y-6 max-w-6xl mx-auto pb-16 font-sans">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl bg-[#090910] border border-white/10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl bg-[#0D0F10] border border-[#292E25]">
         <div>
-          <h2 className="text-base sm:text-lg font-display font-extrabold text-white tracking-tight flex items-center gap-2">
+          <h2 className="text-base sm:text-lg font-display font-extrabold text-[#F5F7F2] tracking-tight flex items-center gap-2">
             <span>Project Inquiries</span>
-            <span className="text-xs font-mono font-normal text-zinc-400">
+            <span className="text-xs font-mono font-normal text-[#A7AEA0]">
               ({inquiries.length} total)
             </span>
           </h2>
-          <p className="text-xs text-zinc-400 mt-0.5">
+          <p className="text-xs text-[#A7AEA0] mt-0.5">
             Private CRM of client project briefs submitted via the public website.
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
           {toast && (
-            <span className="text-xs text-blue-400 font-medium animate-in fade-in flex items-center gap-1.5">
+            <span className="text-xs text-[#B1FF00] font-medium animate-in fade-in flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span>{toast}</span>
             </span>
@@ -250,10 +250,10 @@ export const AdminInquiries: React.FC = () => {
           <button
             type="button"
             onClick={handleExportCSV}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-zinc-300 bg-[#12121c] hover:bg-[#1a1a29] border border-white/10 hover:text-white transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#F5F7F2] bg-[#121512] hover:bg-[#181C16] border border-[#292E25] hover:border-[#B1FF00]/40 transition-colors cursor-pointer"
             title="Export inquiries to CSV for spreadsheet analysis"
           >
-            <Download className="w-3.5 h-3.5 text-blue-400" />
+            <Download className="w-3.5 h-3.5 text-[#B1FF00]" />
             <span>Export CSV</span>
           </button>
 
@@ -261,25 +261,25 @@ export const AdminInquiries: React.FC = () => {
             type="button"
             onClick={() => handleRefresh(true)}
             disabled={isRefreshing}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-zinc-300 bg-[#12121c] hover:bg-[#1a1a29] border border-white/10 hover:text-white transition-colors cursor-pointer disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#F5F7F2] bg-[#121512] hover:bg-[#181C16] border border-[#292E25] hover:border-[#B1FF00]/40 transition-colors cursor-pointer disabled:opacity-50"
             title="Fetch latest client submissions from Supabase"
           >
-            <RefreshCw className={`w-3.5 h-3.5 text-blue-400 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 text-[#B1FF00] ${isRefreshing ? 'animate-spin' : ''}`} />
             <span>{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>
           </button>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-4 rounded-xl bg-[#090910] border border-white/10">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-4 rounded-xl bg-[#0D0F10] border border-[#292E25]">
         <div className="relative flex-1 max-w-sm">
-          <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-3.5 h-3.5 text-[#737B6B] absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search by client name, email, company..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-lg bg-[#12121c] border border-white/10 text-white text-xs placeholder-zinc-500 outline-none focus:border-blue-500"
+            className="w-full pl-9 pr-4 py-2 rounded-lg bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-xs placeholder-[#737B6B] outline-none focus:border-[#B1FF00] transition-colors"
           />
         </div>
 
@@ -291,8 +291,8 @@ export const AdminInquiries: React.FC = () => {
               onClick={() => setSelectedFilter(f)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider whitespace-nowrap transition-colors ${
                 selectedFilter === f
-                  ? 'bg-blue-600 text-white shadow-[0_0_12px_rgba(37,99,235,0.3)]'
-                  : 'text-zinc-400 hover:text-white bg-[#12121c] border border-white/5'
+                  ? 'bg-[#B1FF00] text-[#070809] font-bold shadow-[0_0_12px_rgba(177,255,0,0.3)]'
+                  : 'text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#121512] border border-[#292E25]'
               }`}
             >
               {f.replace('_', ' ')}
@@ -302,12 +302,12 @@ export const AdminInquiries: React.FC = () => {
       </div>
 
       {/* CRM Table */}
-      <div className="rounded-2xl bg-[#090910] border border-white/10 overflow-hidden shadow-xl">
+      <div className="rounded-2xl bg-[#0D0F10] border border-[#292E25] overflow-hidden shadow-xl">
         {filtered.length === 0 ? (
-          <div className="p-12 text-center text-zinc-500 text-xs space-y-2">
-            <Inbox className="w-8 h-8 text-zinc-600 mx-auto" />
-            <h3 className="text-sm font-bold text-white">No inquiries found</h3>
-            <p className="text-xs text-zinc-400">
+          <div className="p-12 text-center text-[#737B6B] text-xs space-y-2">
+            <Inbox className="w-8 h-8 text-[#737B6B] mx-auto" />
+            <h3 className="text-sm font-bold text-[#F5F7F2]">No inquiries found</h3>
+            <p className="text-xs text-[#A7AEA0]">
               {searchQuery || selectedFilter !== 'ALL'
                 ? 'Try clearing your search query or status filter.'
                 : 'Client inquiries submitted via the website form will appear here.'}
@@ -317,7 +317,7 @@ export const AdminInquiries: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-white/10 bg-[#0d0d16] text-[10px] font-mono uppercase tracking-wider text-zinc-400">
+                <tr className="border-b border-[#292E25] bg-[#070809] text-[10px] font-mono uppercase tracking-wider text-[#A7AEA0]">
                   <th className="py-3.5 px-4">Name</th>
                   <th className="py-3.5 px-4 hidden md:table-cell">Company</th>
                   <th className="py-3.5 px-4">Service</th>
@@ -327,25 +327,25 @@ export const AdminInquiries: React.FC = () => {
                   <th className="py-3.5 px-4 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5 text-xs">
+              <tbody className="divide-y divide-[#292E25] text-xs">
                 {filtered.map((inq) => (
                   <tr
                     key={inq.id}
                     onClick={() => handleOpenDetail(inq)}
                     className="hover:bg-white/[0.02] transition-colors cursor-pointer group"
                   >
-                    <td className="py-3 px-4 font-bold text-white whitespace-nowrap">
+                    <td className="py-3 px-4 font-bold text-[#F5F7F2] whitespace-nowrap">
                       {inq.name}
                     </td>
-                    <td className="py-3 px-4 text-zinc-400 hidden md:table-cell whitespace-nowrap">
+                    <td className="py-3 px-4 text-[#A7AEA0] hidden md:table-cell whitespace-nowrap">
                       {inq.company || '—'}
                     </td>
                     <td className="py-3 px-4">
-                      <span className="text-blue-400 font-medium truncate block max-w-[160px]">
+                      <span className="text-[#B1FF00] font-medium truncate block max-w-[160px]">
                         {inq.services.join(', ')}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-zinc-400 font-mono hidden sm:table-cell whitespace-nowrap">
+                    <td className="py-3 px-4 text-[#A7AEA0] font-mono hidden sm:table-cell whitespace-nowrap">
                       {inq.email}
                     </td>
                     <td className="py-3 px-4 whitespace-nowrap">
@@ -357,7 +357,7 @@ export const AdminInquiries: React.FC = () => {
                         {inq.status.replace('_', ' ')}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-zinc-400 font-mono text-[11px] hidden lg:table-cell whitespace-nowrap">
+                    <td className="py-3 px-4 text-[#737B6B] font-mono text-[11px] hidden lg:table-cell whitespace-nowrap">
                       {inq.createdAt}
                     </td>
                     <td className="py-3 px-4 text-right whitespace-nowrap">
@@ -366,10 +366,10 @@ export const AdminInquiries: React.FC = () => {
                           e.stopPropagation();
                           handleOpenDetail(inq);
                         }}
-                        className="px-2.5 py-1 rounded-lg text-xs font-semibold text-zinc-300 bg-[#12121c] group-hover:text-white border border-white/10 inline-flex items-center gap-1"
+                        className="px-2.5 py-1 rounded-lg text-xs font-semibold text-[#F5F7F2] bg-[#121512] group-hover:text-[#B1FF00] border border-[#292E25] hover:border-[#B1FF00]/40 inline-flex items-center gap-1 transition-colors"
                       >
                         <span>View</span>
-                        <ChevronRight className="w-3 h-3 text-zinc-400" />
+                        <ChevronRight className="w-3 h-3 text-[#737B6B]" />
                       </button>
                     </td>
                   </tr>
@@ -389,10 +389,10 @@ export const AdminInquiries: React.FC = () => {
           onClick={() => setActiveInquiry(null)}
         >
           <div
-            className="w-full max-w-xl bg-[#0b0b14] border border-white/15 rounded-2xl p-6 sm:p-7 space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto"
+            className="w-full max-w-xl bg-[#0D0F10] border border-[#292E25] rounded-2xl p-6 sm:p-7 space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between pb-3 border-b border-white/10">
+            <div className="flex items-start justify-between pb-3 border-b border-[#292E25]">
               <div>
                 <span
                   className={`text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${getStatusBadge(
@@ -401,71 +401,71 @@ export const AdminInquiries: React.FC = () => {
                 >
                   {activeInquiry.status.replace('_', ' ')}
                 </span>
-                <h3 className="text-lg font-bold text-white mt-2">
+                <h3 className="text-lg font-bold text-[#F5F7F2] mt-2">
                   {activeInquiry.name}
                 </h3>
                 {activeInquiry.company && (
-                  <p className="text-xs text-zinc-400">{activeInquiry.company}</p>
+                  <p className="text-xs text-[#A7AEA0]">{activeInquiry.company}</p>
                 )}
               </div>
               <button
                 onClick={() => setActiveInquiry(null)}
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-white bg-[#12121c]"
+                className="p-1.5 rounded-lg text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#121512] border border-[#292E25]"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Contact details */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-xl bg-[#12121c] text-xs">
-              <div className="flex items-center justify-between gap-2 text-zinc-300">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-xl bg-[#121512] border border-[#292E25] text-xs">
+              <div className="flex items-center justify-between gap-2 text-[#F5F7F2]">
                 <div className="flex items-center gap-2 truncate">
-                  <Mail className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                  <a href={`mailto:${activeInquiry.email}`} className="hover:underline truncate text-white font-medium">
+                  <Mail className="w-3.5 h-3.5 text-[#B1FF00] shrink-0" />
+                  <a href={`mailto:${activeInquiry.email}`} className="hover:underline truncate text-[#F5F7F2] font-medium">
                     {activeInquiry.email}
                   </a>
                 </div>
                 <button
                   type="button"
                   onClick={() => handleCopy(activeInquiry.email, 'email')}
-                  className="px-2 py-0.5 rounded text-[10px] text-zinc-400 hover:text-white bg-zinc-800/80 hover:bg-zinc-700 transition-colors inline-flex items-center gap-1 shrink-0"
+                  className="px-2 py-0.5 rounded text-[10px] text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#181C16] hover:bg-zinc-800 transition-colors inline-flex items-center gap-1 shrink-0"
                   title="Copy email to clipboard"
                 >
                   {copiedField === 'email' ? (
                     <>
-                      <Check className="w-3 h-3 text-blue-400" />
-                      <span className="text-blue-400">Copied</span>
+                      <Check className="w-3 h-3 text-[#B1FF00]" />
+                      <span className="text-[#B1FF00]">Copied</span>
                     </>
                   ) : (
                     <>
-                      <Copy className="w-3 h-3 text-zinc-400" />
+                      <Copy className="w-3 h-3 text-[#737B6B]" />
                       <span>Copy</span>
                     </>
                   )}
                 </button>
               </div>
               {activeInquiry.phone && (
-                <div className="flex items-center justify-between gap-2 text-zinc-300">
+                <div className="flex items-center justify-between gap-2 text-[#F5F7F2]">
                   <div className="flex items-center gap-2 truncate">
-                    <Phone className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                    <a href={`tel:${activeInquiry.phone}`} className="hover:underline text-white font-medium">
+                    <Phone className="w-3.5 h-3.5 text-[#B1FF00] shrink-0" />
+                    <a href={`tel:${activeInquiry.phone}`} className="hover:underline text-[#F5F7F2] font-medium">
                       {activeInquiry.phone}
                     </a>
                   </div>
                   <button
                     type="button"
                     onClick={() => handleCopy(activeInquiry.phone!, 'phone')}
-                    className="px-2 py-0.5 rounded text-[10px] text-zinc-400 hover:text-white bg-zinc-800/80 hover:bg-zinc-700 transition-colors inline-flex items-center gap-1 shrink-0"
+                    className="px-2 py-0.5 rounded text-[10px] text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#181C16] hover:bg-zinc-800 transition-colors inline-flex items-center gap-1 shrink-0"
                     title="Copy phone to clipboard"
                   >
                     {copiedField === 'phone' ? (
                       <>
-                        <Check className="w-3 h-3 text-blue-400" />
-                        <span className="text-blue-400">Copied</span>
+                        <Check className="w-3 h-3 text-[#B1FF00]" />
+                        <span className="text-[#B1FF00]">Copied</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="w-3 h-3 text-zinc-400" />
+                        <Copy className="w-3 h-3 text-[#737B6B]" />
                         <span>Copy</span>
                       </>
                     )}
@@ -473,27 +473,27 @@ export const AdminInquiries: React.FC = () => {
                 </div>
               )}
               {activeInquiry.budget && (
-                <div className="flex items-center gap-2 text-zinc-300">
-                  <DollarSign className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                <div className="flex items-center gap-2 text-[#F5F7F2]">
+                  <DollarSign className="w-3.5 h-3.5 text-[#B1FF00] shrink-0" />
                   <span>Budget: {activeInquiry.budget}</span>
                 </div>
               )}
-              <div className="flex items-center gap-2 text-zinc-400 font-mono text-[11px]">
-                <Clock className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+              <div className="flex items-center gap-2 text-[#737B6B] font-mono text-[11px]">
+                <Clock className="w-3.5 h-3.5 text-[#737B6B] shrink-0" />
                 <span>{activeInquiry.createdAt}</span>
               </div>
             </div>
 
             {/* Requested services */}
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block mb-1.5">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#A7AEA0] block mb-1.5">
                 Requested Services
               </span>
               <div className="flex flex-wrap gap-1.5">
                 {activeInquiry.services.map((s) => (
                   <span
                     key={s}
-                    className="px-2.5 py-1 rounded-lg bg-[#12121c] border border-white/10 text-white text-xs font-medium"
+                    className="px-2.5 py-1 rounded-lg bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-xs font-medium"
                   >
                     {s}
                   </span>
@@ -503,17 +503,17 @@ export const AdminInquiries: React.FC = () => {
 
             {/* Project Details */}
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block mb-1.5">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#A7AEA0] block mb-1.5">
                 Project Details / Brief
               </span>
-              <div className="p-4 rounded-xl bg-[#12121c] text-zinc-200 text-xs leading-relaxed whitespace-pre-wrap font-normal">
+              <div className="p-4 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-xs leading-relaxed whitespace-pre-wrap font-normal">
                 {activeInquiry.details}
               </div>
             </div>
 
             {/* Status Change Selector */}
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block mb-1.5">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#A7AEA0] block mb-1.5">
                 Update Status
               </span>
               <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5">
@@ -523,10 +523,10 @@ export const AdminInquiries: React.FC = () => {
                       key={st}
                       type="button"
                       onClick={() => handleChangeStatus(activeInquiry.id, st)}
-                      className={`py-1.5 px-2 rounded-lg text-[10px] font-mono uppercase font-bold tracking-wider transition-colors ${
+                      className={`py-1.5 px-2 rounded-lg text-[10px] font-mono uppercase font-bold tracking-wider transition-colors cursor-pointer ${
                         activeInquiry.status === st
-                          ? 'bg-blue-600 text-white shadow-[0_0_10px_rgba(37,99,235,0.4)]'
-                          : 'bg-[#12121c] text-zinc-400 hover:text-white border border-white/5'
+                          ? 'bg-[#B1FF00] text-[#070809] shadow-[0_0_10px_rgba(177,255,0,0.3)] font-extrabold'
+                          : 'bg-[#121512] text-[#A7AEA0] hover:text-[#F5F7F2] border border-[#292E25]'
                       }`}
                     >
                       {st.replace('_', ' ')}
@@ -538,7 +538,7 @@ export const AdminInquiries: React.FC = () => {
 
             {/* Internal Notes */}
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block mb-1.5">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#A7AEA0] block mb-1.5">
                 Internal Studio Notes
               </span>
               <textarea
@@ -546,12 +546,12 @@ export const AdminInquiries: React.FC = () => {
                 value={notesText}
                 onChange={(e) => setNotesText(e.target.value)}
                 placeholder="Add private team notes regarding budget negotiation, schedule, or deliverable agreements..."
-                className="w-full p-3 rounded-xl bg-[#12121c] border border-white/10 text-xs text-white placeholder-zinc-500 outline-none focus:border-blue-500 leading-relaxed"
+                className="w-full p-3 rounded-xl bg-[#121512] border border-[#292E25] text-xs text-[#F5F7F2] placeholder-[#737B6B] outline-none focus:border-[#B1FF00] leading-relaxed resize-y"
               />
               <button
                 type="button"
                 onClick={handleSaveNotes}
-                className="mt-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 transition-colors inline-flex items-center gap-1.5"
+                className="mt-2 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] transition-colors inline-flex items-center gap-1.5 cursor-pointer shadow-[0_0_10px_rgba(177,255,0,0.25)]"
               >
                 <Save className="w-3 h-3" />
                 <span>Save Notes</span>
@@ -559,11 +559,11 @@ export const AdminInquiries: React.FC = () => {
             </div>
 
             {/* Footer Actions */}
-            <div className="flex items-center justify-between pt-3 border-t border-white/10">
+            <div className="flex items-center justify-between pt-3 border-t border-[#292E25]">
               <button
                 type="button"
                 onClick={() => setIsDeletingId(activeInquiry.id)}
-                className="px-3 py-1.5 rounded-lg text-xs text-red-400 hover:text-red-300 hover:bg-red-950/30 transition-colors inline-flex items-center gap-1.5"
+                className="px-3 py-1.5 rounded-lg text-xs text-red-400 hover:text-red-300 hover:bg-red-950/30 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 <span>Delete Inquiry</span>
@@ -572,7 +572,7 @@ export const AdminInquiries: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveInquiry(null)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white bg-[#12121c] border border-white/10"
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#121512] border border-[#292E25] cursor-pointer"
               >
                 Close
               </button>
@@ -588,23 +588,23 @@ export const AdminInquiries: React.FC = () => {
           aria-modal="true"
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
         >
-          <div className="w-full max-w-md bg-[#0b0b14] border border-white/15 rounded-2xl p-6 space-y-4 shadow-2xl">
-            <h3 className="text-base font-bold text-white">Delete Inquiry?</h3>
-            <p className="text-xs text-zinc-400">
+          <div className="w-full max-w-md bg-[#0D0F10] border border-[#292E25] rounded-2xl p-6 space-y-4 shadow-2xl">
+            <h3 className="text-base font-bold text-[#F5F7F2]">Delete Inquiry?</h3>
+            <p className="text-xs text-[#A7AEA0]">
               Are you sure you want to permanently remove this inquiry record from Supabase?
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => setIsDeletingId(null)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white bg-[#12121c] border border-white/10"
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#121512] border border-[#292E25] cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={() => confirmDelete(isDeletingId)}
-                className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-red-600 hover:bg-red-500"
+                className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-red-600 hover:bg-red-500 cursor-pointer"
               >
                 Delete
               </button>

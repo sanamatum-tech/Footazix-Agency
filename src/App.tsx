@@ -163,7 +163,7 @@ function MainWebsite() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050508] text-white flex flex-col selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#070809] text-[#F5F7F2] flex flex-col selection:bg-[#B1FF00] selection:text-[#070809]">
       {/* 1. HEADER (Visibility controlled from CMS) */}
       {visibility.header !== false && (
         <Navbar onOpenContact={openContactModal} />

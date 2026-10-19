@@ -191,25 +191,25 @@ export const AdminFAQ: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-20">
+    <div className="space-y-6 max-w-6xl mx-auto pb-20 font-sans">
       {/* Top Header Card */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl bg-[#090910] border border-white/10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl bg-[#0D0F10] border border-[#292E25]">
         <div>
-          <h2 className="text-base sm:text-lg font-display font-extrabold text-white tracking-tight flex items-center gap-2">
-            <HelpCircle className="w-5 h-5 text-blue-400" />
+          <h2 className="text-base sm:text-lg font-display font-extrabold text-[#F5F7F2] tracking-tight flex items-center gap-2">
+            <HelpCircle className="w-5 h-5 text-[#B1FF00]" />
             <span>FAQ Management</span>
-            <span className="text-xs font-mono font-normal text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
+            <span className="text-xs font-mono font-normal text-[#B1FF00] bg-[#B1FF00]/10 px-2 py-0.5 rounded border border-[#B1FF00]/30">
               {faqs.length} Total
             </span>
           </h2>
-          <p className="text-xs text-zinc-400 mt-0.5">
+          <p className="text-xs text-[#A7AEA0] mt-0.5">
             Manage the frequently asked questions displayed in the public accordion. All edits sync live to Supabase.
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
           {toastMessage && (
-            <span className="text-xs text-blue-400 font-medium animate-in fade-in flex items-center gap-1.5 bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20">
+            <span className="text-xs text-[#B1FF00] font-medium animate-in fade-in flex items-center gap-1.5 bg-[#B1FF00]/10 px-3 py-1.5 rounded-lg border border-[#B1FF00]/30">
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span>{toastMessage}</span>
             </span>
@@ -217,7 +217,7 @@ export const AdminFAQ: React.FC = () => {
 
           <button
             onClick={openAdd}
-            className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 active:scale-95 transition-all shadow-[0_0_16px_rgba(37,99,235,0.3)] cursor-pointer flex items-center gap-1.5 shrink-0"
+            className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] active:scale-95 transition-all shadow-[0_0_16px_rgba(177,255,0,0.3)] cursor-pointer flex items-center gap-1.5 shrink-0"
           >
             <Plus className="w-4 h-4" />
             <span>ADD NEW FAQ</span>
@@ -226,16 +226,16 @@ export const AdminFAQ: React.FC = () => {
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-4 rounded-xl bg-[#090910] border border-white/10">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-4 rounded-xl bg-[#0D0F10] border border-[#292E25]">
         {/* Search Input */}
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#737B6B] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search questions or answers..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-[#12121c] border border-white/10 rounded-xl text-xs text-white placeholder-zinc-500 outline-none focus:border-blue-500 transition-colors"
+            className="w-full pl-9 pr-4 py-2 bg-[#121512] border border-[#292E25] rounded-xl text-xs text-[#F5F7F2] placeholder-[#737B6B] outline-none focus:border-[#B1FF00] transition-colors"
           />
         </div>
 
@@ -247,8 +247,8 @@ export const AdminFAQ: React.FC = () => {
               onClick={() => setSelectedCategory(cat)}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono uppercase tracking-wider transition-colors cursor-pointer shrink-0 ${
                 selectedCategory.toLowerCase() === cat.toLowerCase()
-                  ? 'bg-blue-600 text-white font-bold'
-                  : 'bg-[#12121c] text-zinc-400 hover:text-white border border-white/5'
+                  ? 'bg-[#B1FF00] text-[#070809] font-bold shadow-[0_0_10px_rgba(177,255,0,0.25)]'
+                  : 'bg-[#121512] text-[#A7AEA0] hover:text-[#F5F7F2] border border-[#292E25]'
               }`}
             >
               {cat}
@@ -259,15 +259,15 @@ export const AdminFAQ: React.FC = () => {
 
       {/* FAQs List */}
       {filteredFaqs.length === 0 ? (
-        <div className="p-12 text-center rounded-2xl bg-[#090910] border border-white/10 space-y-3">
-          <HelpCircle className="w-8 h-8 text-zinc-600 mx-auto" />
-          <p className="text-sm font-semibold text-zinc-400">No FAQs match your search.</p>
+        <div className="p-12 text-center rounded-2xl bg-[#0D0F10] border border-[#292E25] space-y-3">
+          <HelpCircle className="w-8 h-8 text-[#737B6B] mx-auto" />
+          <p className="text-sm font-semibold text-[#A7AEA0]">No FAQs match your search.</p>
           <button
             onClick={() => {
               setSearchQuery('');
               setSelectedCategory('ALL');
             }}
-            className="text-xs text-blue-400 hover:underline cursor-pointer"
+            className="text-xs text-[#B1FF00] hover:underline cursor-pointer"
           >
             Clear filters
           </button>
@@ -279,10 +279,10 @@ export const AdminFAQ: React.FC = () => {
             return (
               <div
                 key={faq.id}
-                className={`p-5 rounded-2xl bg-[#090910] border transition-all duration-200 flex flex-col md:flex-row md:items-start justify-between gap-4 ${
+                className={`p-5 rounded-2xl bg-[#0D0F10] border transition-all duration-200 flex flex-col md:flex-row md:items-start justify-between gap-4 ${
                   !faq.published || !faq.visible
-                    ? 'border-white/5 opacity-60'
-                    : 'border-white/10 hover:border-blue-500/30'
+                    ? 'border-[#292E25]/50 opacity-60'
+                    : 'border-[#292E25] hover:border-[#B1FF00]/40'
                 }`}
               >
                 {/* Left: Reorder & Info */}
@@ -293,7 +293,7 @@ export const AdminFAQ: React.FC = () => {
                       type="button"
                       onClick={() => moveUp(actualIndex)}
                       disabled={actualIndex === 0}
-                      className="p-1 rounded bg-[#12121c] border border-white/10 text-zinc-400 hover:text-white disabled:opacity-20 cursor-pointer disabled:cursor-not-allowed"
+                      className="p-1 rounded bg-[#121512] border border-[#292E25] text-[#A7AEA0] hover:text-[#F5F7F2] disabled:opacity-20 cursor-pointer disabled:cursor-not-allowed"
                       title="Move Up"
                     >
                       <ChevronUp className="w-3.5 h-3.5" />
@@ -302,7 +302,7 @@ export const AdminFAQ: React.FC = () => {
                       type="button"
                       onClick={() => moveDown(actualIndex)}
                       disabled={actualIndex === sortedFaqs.length - 1}
-                      className="p-1 rounded bg-[#12121c] border border-white/10 text-zinc-400 hover:text-white disabled:opacity-20 cursor-pointer disabled:cursor-not-allowed"
+                      className="p-1 rounded bg-[#121512] border border-[#292E25] text-[#A7AEA0] hover:text-[#F5F7F2] disabled:opacity-20 cursor-pointer disabled:cursor-not-allowed"
                       title="Move Down"
                     >
                       <ChevronDown className="w-3.5 h-3.5" />
@@ -312,32 +312,32 @@ export const AdminFAQ: React.FC = () => {
                   {/* FAQ Content */}
                   <div className="space-y-1.5 min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 font-bold">
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#181C16] text-[#A7AEA0] font-bold">
                         #{faq.order || actualIndex + 1}
                       </span>
-                      <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-semibold">
+                      <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#B1FF00]/10 text-[#B1FF00] border border-[#B1FF00]/30 font-semibold">
                         {faq.category}
                       </span>
                       {faq.published ? (
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/15 text-blue-300 border border-blue-500/30 font-medium">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#B1FF00]/15 text-[#B1FF00] border border-[#B1FF00]/30 font-medium">
                           Published
                         </span>
                       ) : (
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-white/10 font-medium">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#181C16] text-[#737B6B] border border-[#292E25] font-medium">
                           Draft
                         </span>
                       )}
                       {!faq.visible && (
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 font-medium">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#181C16] text-[#737B6B] font-medium">
                           Hidden
                         </span>
                       )}
                     </div>
 
-                    <h3 className="text-sm font-bold text-white leading-snug">
+                    <h3 className="text-sm font-bold text-[#F5F7F2] leading-snug">
                       {faq.question}
                     </h3>
-                    <p className="text-xs text-zinc-400 leading-relaxed line-clamp-3">
+                    <p className="text-xs text-[#A7AEA0] leading-relaxed line-clamp-3">
                       {faq.answer}
                     </p>
                   </div>
@@ -351,8 +351,8 @@ export const AdminFAQ: React.FC = () => {
                     onClick={() => togglePublished(faq)}
                     className={`px-2.5 py-1.5 rounded-lg text-xs font-mono uppercase tracking-wider font-semibold transition-colors cursor-pointer border ${
                       faq.published
-                        ? 'bg-blue-600/20 text-blue-300 border-blue-500/30 hover:bg-blue-600/30'
-                        : 'bg-zinc-800 text-zinc-400 border-white/10 hover:text-white'
+                        ? 'bg-[#B1FF00]/10 text-[#B1FF00] border-[#B1FF00]/30 hover:bg-[#B1FF00]/20'
+                        : 'bg-[#121512] text-[#737B6B] border-[#292E25] hover:text-[#F5F7F2]'
                     }`}
                     title={faq.published ? 'Click to unpublish' : 'Click to publish'}
                   >
@@ -365,8 +365,8 @@ export const AdminFAQ: React.FC = () => {
                     onClick={() => toggleVisible(faq)}
                     className={`p-2 rounded-lg transition-colors cursor-pointer border ${
                       faq.visible
-                        ? 'bg-[#12121c] text-blue-400 border-blue-500/30 hover:bg-blue-600/10'
-                        : 'bg-zinc-900 text-zinc-500 border-white/5 hover:text-zinc-300'
+                        ? 'bg-[#121512] text-[#B1FF00] border-[#B1FF00]/30 hover:bg-[#B1FF00]/10'
+                        : 'bg-[#121512] text-[#737B6B] border-[#292E25] hover:text-[#A7AEA0]'
                     }`}
                     title={faq.visible ? 'Visible on website' : 'Hidden from website'}
                   >
@@ -377,7 +377,7 @@ export const AdminFAQ: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => openEdit(faq)}
-                    className="p-2 rounded-lg bg-[#12121c] border border-white/10 text-zinc-300 hover:text-white hover:border-blue-500/40 transition-colors cursor-pointer"
+                    className="p-2 rounded-lg bg-[#121512] border border-[#292E25] text-[#A7AEA0] hover:text-[#F5F7F2] hover:border-[#B1FF00]/40 transition-colors cursor-pointer"
                     title="Edit FAQ"
                   >
                     <Pencil className="w-4 h-4" />
@@ -387,7 +387,7 @@ export const AdminFAQ: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setDeletingId(faq.id)}
-                    className="p-2 rounded-lg bg-[#12121c] border border-white/10 text-zinc-400 hover:text-red-400 hover:border-red-500/40 transition-colors cursor-pointer"
+                    className="p-2 rounded-lg bg-[#121512] border border-[#292E25] text-[#737B6B] hover:text-red-400 hover:border-red-500/40 transition-colors cursor-pointer"
                     title="Delete FAQ"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -402,15 +402,15 @@ export const AdminFAQ: React.FC = () => {
       {/* Add / Edit Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#0b0e14] border border-white/15 rounded-2xl max-w-xl w-full p-6 space-y-5 my-8 shadow-2xl relative">
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 text-blue-400" />
+          <div className="bg-[#0D0F10] border border-[#292E25] rounded-2xl max-w-xl w-full p-6 space-y-5 my-8 shadow-2xl relative">
+            <div className="flex items-center justify-between pb-3 border-b border-[#292E25]">
+              <h3 className="text-base font-bold text-[#F5F7F2] flex items-center gap-2">
+                <HelpCircle className="w-4 h-4 text-[#B1FF00]" />
                 <span>{editingFAQ ? 'Edit FAQ Item' : 'Add New FAQ Item'}</span>
               </h3>
               <button
                 onClick={closeModal}
-                className="p-1 rounded-lg text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                className="p-1 rounded-lg text-[#A7AEA0] hover:text-[#F5F7F2] transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -418,7 +418,7 @@ export const AdminFAQ: React.FC = () => {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#A7AEA0] mb-1.5">
                   Question *
                 </label>
                 <input
@@ -427,12 +427,12 @@ export const AdminFAQ: React.FC = () => {
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
                   placeholder="e.g. Can I send my raw footage to Footazix?"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-blue-500"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-sm outline-none focus:border-[#B1FF00]"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#A7AEA0] mb-1.5">
                   Answer *
                 </label>
                 <textarea
@@ -441,19 +441,19 @@ export const AdminFAQ: React.FC = () => {
                   value={answer}
                   onChange={(e) => setAnswer(e.target.value)}
                   placeholder="Detailed, helpful answer explaining the process or service..."
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-blue-500 leading-relaxed resize-y"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-sm outline-none focus:border-[#B1FF00] leading-relaxed resize-y"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-[#A7AEA0] mb-1.5">
                     Category
                   </label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-blue-500 cursor-pointer"
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-sm outline-none focus:border-[#B1FF00] cursor-pointer"
                   >
                     <option value="General">General</option>
                     <option value="Services">Services</option>
@@ -464,7 +464,7 @@ export const AdminFAQ: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-[#A7AEA0] mb-1.5">
                     Display Order
                   </label>
                   <input
@@ -472,53 +472,53 @@ export const AdminFAQ: React.FC = () => {
                     min={1}
                     value={order}
                     onChange={(e) => setOrder(parseInt(e.target.value, 10) || 1)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#12121c] border border-white/10 text-white text-sm outline-none focus:border-blue-500"
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-sm outline-none focus:border-[#B1FF00]"
                   />
                 </div>
               </div>
 
               {/* Toggles */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                <label className="flex items-center gap-3 p-3 rounded-xl bg-[#12121c] border border-white/5 cursor-pointer">
+                <label className="flex items-center gap-3 p-3 rounded-xl bg-[#121512] border border-[#292E25] cursor-pointer">
                   <input
                     type="checkbox"
                     checked={published}
                     onChange={(e) => setPublished(e.target.checked)}
-                    className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    className="w-4 h-4 rounded bg-zinc-900 border-[#292E25] text-[#B1FF00] focus:ring-[#B1FF00] accent-[#B1FF00] cursor-pointer"
                   />
                   <div>
-                    <span className="text-xs font-bold text-white block">Published</span>
-                    <span className="text-[11px] text-zinc-400">Available to public view</span>
+                    <span className="text-xs font-bold text-[#F5F7F2] block">Published</span>
+                    <span className="text-[11px] text-[#A7AEA0]">Available to public view</span>
                   </div>
                 </label>
 
-                <label className="flex items-center gap-3 p-3 rounded-xl bg-[#12121c] border border-white/5 cursor-pointer">
+                <label className="flex items-center gap-3 p-3 rounded-xl bg-[#121512] border border-[#292E25] cursor-pointer">
                   <input
                     type="checkbox"
                     checked={visible}
                     onChange={(e) => setVisible(e.target.checked)}
-                    className="w-4 h-4 rounded bg-zinc-900 border-white/20 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    className="w-4 h-4 rounded bg-zinc-900 border-[#292E25] text-[#B1FF00] focus:ring-[#B1FF00] accent-[#B1FF00] cursor-pointer"
                   />
                   <div>
-                    <span className="text-xs font-bold text-white block">Visible</span>
-                    <span className="text-[11px] text-zinc-400">Shown in accordion</span>
+                    <span className="text-xs font-bold text-[#F5F7F2] block">Visible</span>
+                    <span className="text-[11px] text-[#A7AEA0]">Shown in accordion</span>
                   </div>
                 </label>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#292E25]">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white bg-[#12121c] border border-white/10 transition-colors cursor-pointer"
+                  className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#121512] border border-[#292E25] transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 disabled:opacity-50 transition-all shadow-[0_0_16px_rgba(37,99,235,0.3)] cursor-pointer"
+                  className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] disabled:opacity-50 transition-all shadow-[0_0_16px_rgba(177,255,0,0.3)] cursor-pointer"
                 >
                   {isSaving ? 'SAVING...' : editingFAQ ? 'SAVE CHANGES' : 'CREATE FAQ'}
                 </button>
@@ -531,19 +531,19 @@ export const AdminFAQ: React.FC = () => {
       {/* Delete Confirmation Modal */}
       {deletingId && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0b0e14] border border-red-500/30 rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl">
+          <div className="bg-[#0D0F10] border border-red-500/30 rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl">
             <div className="flex items-center gap-3 text-red-400">
               <AlertTriangle className="w-5 h-5 shrink-0" />
-              <h3 className="text-sm font-bold text-white">Delete FAQ?</h3>
+              <h3 className="text-sm font-bold text-[#F5F7F2]">Delete FAQ?</h3>
             </div>
-            <p className="text-xs text-zinc-400 leading-relaxed">
+            <p className="text-xs text-[#A7AEA0] leading-relaxed">
               Are you sure you want to delete this FAQ? It will be removed immediately from the public website.
             </p>
             <div className="flex items-center justify-end gap-2.5 pt-2">
               <button
                 type="button"
                 onClick={() => setDeletingId(null)}
-                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white bg-[#12121c] border border-white/10 transition-colors cursor-pointer"
+                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#121512] border border-[#292E25] transition-colors cursor-pointer"
               >
                 Cancel
               </button>

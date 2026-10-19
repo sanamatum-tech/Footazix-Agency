@@ -75,7 +75,7 @@ export const FootazixLogo: React.FC<FootazixLogoProps> = ({
   if (!resolvedUrl) {
     return (
       <span
-        className={`font-mono font-extrabold tracking-wider text-sm sm:text-base text-white hover:text-blue-400 transition-colors uppercase ${className}`}
+        className={`font-mono font-extrabold tracking-wider text-sm sm:text-base text-white hover:text-[#B1FF00] transition-colors uppercase ${className}`}
       >
         {content.brand?.name || 'FOOTAZIX'}
       </span>

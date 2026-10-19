@@ -158,37 +158,37 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
   };
 
   return (
-    <div className={`relative ${isModal ? 'p-0 sm:py-2' : 'py-20 sm:py-28 bg-[#050508] border-t border-white/5'}`}>
+    <div className={`relative ${isModal ? 'p-0 sm:py-2' : 'py-20 sm:py-28 bg-[#070809] border-t border-[#292E25]'}`}>
       <div className={`${isModal ? 'w-full' : 'max-w-3xl mx-auto px-6'}`}>
         {/* Header */}
         <div className="text-center max-w-xl mx-auto mb-8">
-          <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
+          <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#B1FF00] mb-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#B1FF00] shadow-[0_0_8px_rgba(177,255,0,0.8)]" />
             <span>{badgeText}</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-white tracking-tight mb-2">
+          <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-[#F5F7F2] tracking-tight mb-2">
             {titleText}
           </h2>
-          <p className="text-xs sm:text-sm text-zinc-400">
+          <p className="text-xs sm:text-sm text-[#A7AEA0]">
             {subtitleText}
           </p>
         </div>
 
         {/* Success Confirmation State */}
         {isSubmitted ? (
-          <div className="p-8 sm:p-10 rounded-2xl bg-zinc-900/90 border border-blue-500/40 text-center animate-in fade-in zoom-in-95 duration-200">
-            <div className="w-14 h-14 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center mx-auto mb-4 border border-blue-500/40 shadow-[0_0_15px_rgba(37,99,235,0.3)]">
-              <CheckCircle2 className="w-7 h-7 text-blue-400" />
+          <div className="p-8 sm:p-10 rounded-2xl bg-[#121512] border border-[#B1FF00]/40 text-center animate-in fade-in zoom-in-95 duration-200">
+            <div className="w-14 h-14 rounded-full bg-[#B1FF00]/15 text-[#B1FF00] flex items-center justify-center mx-auto mb-4 border border-[#B1FF00]/40 shadow-[0_0_15px_rgba(177,255,0,0.3)]">
+              <CheckCircle2 className="w-7 h-7 text-[#B1FF00]" />
             </div>
-            <h3 className="text-xl sm:text-2xl font-display font-extrabold text-white tracking-tight mb-2">
+            <h3 className="text-xl sm:text-2xl font-display font-extrabold text-[#F5F7F2] tracking-tight mb-2">
               {successTitle}
             </h3>
-            <p className="text-sm text-zinc-300 max-w-md mx-auto mb-6 leading-relaxed">
+            <p className="text-sm text-[#A7AEA0] max-w-md mx-auto mb-6 leading-relaxed">
               {successMessage}
             </p>
             <button
               onClick={handleReset}
-              className="px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-colors cursor-pointer"
+              className="px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] transition-colors cursor-pointer"
             >
               {doneButtonText}
             </button>
@@ -205,8 +205,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
             {/* Contact Details Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                  {nameLabel} <span className="text-blue-500">*</span>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#A7AEA0] mb-2">
+                  {nameLabel} <span className="text-[#B1FF00]">*</span>
                 </label>
                 <input
                   type="text"
@@ -214,13 +214,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                   placeholder="Your full name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-zinc-900/90 border border-white/10 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                  className="w-full px-4 py-3 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] placeholder-[#737B6B] text-sm focus:outline-none focus:border-[#B1FF00] focus:ring-1 focus:ring-[#B1FF00] transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                  {emailLabel} <span className="text-blue-500">*</span>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#A7AEA0] mb-2">
+                  {emailLabel} <span className="text-[#B1FF00]">*</span>
                 </label>
                 <input
                   type="email"
@@ -228,12 +228,12 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                   placeholder="your@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-zinc-900/90 border border-white/10 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                  className="w-full px-4 py-3 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] placeholder-[#737B6B] text-sm focus:outline-none focus:border-[#B1FF00] focus:ring-1 focus:ring-[#B1FF00] transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#A7AEA0] mb-2">
                   {phoneLabel}
                 </label>
                 <input
@@ -241,12 +241,12 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                   placeholder="+1 (555) 000-0000"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-zinc-900/90 border border-white/10 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                  className="w-full px-4 py-3 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] placeholder-[#737B6B] text-sm focus:outline-none focus:border-[#B1FF00] focus:ring-1 focus:ring-[#B1FF00] transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#A7AEA0] mb-2">
                   {companyLabel}
                 </label>
                 <input
@@ -254,14 +254,14 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                   placeholder="@handle or Company"
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-zinc-900/90 border border-white/10 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                  className="w-full px-4 py-3 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] placeholder-[#737B6B] text-sm focus:outline-none focus:border-[#B1FF00] focus:ring-1 focus:ring-[#B1FF00] transition-colors"
                 />
               </div>
             </div>
 
             {/* Service Selection */}
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2.5">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#A7AEA0] mb-2.5">
                 {servicesLabel}
               </label>
               <div className="flex flex-wrap gap-2">
@@ -274,8 +274,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                       onClick={() => toggleService(srv)}
                       className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                         isSelected
-                          ? 'bg-blue-600 text-white border border-blue-500 shadow-[0_0_12px_rgba(37,99,235,0.3)]'
-                          : 'bg-zinc-900/90 text-zinc-400 border border-white/10 hover:text-white hover:border-white/20'
+                          ? 'bg-[#B1FF00] text-[#070809] border border-[#B1FF00] font-bold shadow-[0_0_12px_rgba(177,255,0,0.3)]'
+                          : 'bg-[#121512] text-[#A7AEA0] border border-[#292E25] hover:text-[#F5F7F2] hover:border-[#B1FF00]/40'
                       }`}
                     >
                       {srv}
@@ -287,16 +287,16 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
 
             {/* Budget Range */}
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#A7AEA0] mb-2">
                 {budgetLabel}
               </label>
               <select
                 value={budget}
                 onChange={(e) => setBudget(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-zinc-900/90 border border-white/10 text-white text-sm focus:outline-none focus:border-blue-500 transition-colors cursor-pointer"
+                className="w-full px-4 py-3 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-sm focus:outline-none focus:border-[#B1FF00] focus:ring-1 focus:ring-[#B1FF00] transition-colors cursor-pointer"
               >
                 {BUDGET_OPTIONS.map((opt) => (
-                  <option key={opt} value={opt} className="bg-zinc-900 text-white">
+                  <option key={opt} value={opt} className="bg-[#121512] text-[#F5F7F2]">
                     {opt}
                   </option>
                 ))}
@@ -305,8 +305,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
 
             {/* Project Details */}
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                {detailsLabel} <span className="text-blue-500">*</span>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#A7AEA0] mb-2">
+                {detailsLabel} <span className="text-[#B1FF00]">*</span>
               </label>
               <textarea
                 required
@@ -314,7 +314,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                 placeholder="Share your current video cadence, goals, links to raw footage / drive folders, or reference styles..."
                 value={details}
                 onChange={(e) => setDetails(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-zinc-900/90 border border-white/10 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-blue-500 transition-colors resize-none"
+                className="w-full px-4 py-3 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] placeholder-[#737B6B] text-sm focus:outline-none focus:border-[#B1FF00] focus:ring-1 focus:ring-[#B1FF00] transition-colors resize-none"
               />
             </div>
 
@@ -322,11 +322,11 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-4 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 disabled:opacity-50 transition-all duration-200 cursor-pointer shadow-[0_0_24px_rgba(37,99,235,0.4)] flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] disabled:opacity-50 transition-all duration-200 cursor-pointer shadow-[0_0_24px_rgba(177,255,0,0.35)] flex items-center justify-center gap-2"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin text-[#070809]" />
                   <span>Submitting...</span>
                 </>
               ) : (

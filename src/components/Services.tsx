@@ -29,21 +29,21 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
   const highlightedBadge = servicesConfig?.highlightedBadge || 'MAIN SPECIALTY';
 
   return (
-    <section id="services" className="py-20 sm:py-28 bg-[#050508] relative font-sans">
+    <section id="services" className="py-20 sm:py-28 bg-[#070809] relative font-sans">
       <div className="max-w-6xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
           {showBadge && (
-            <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
+            <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#B1FF00] mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#B1FF00] shadow-[0_0_8px_rgba(177,255,0,0.8)]" />
               <span className="font-mono text-[11px]">{badgeText}</span>
             </div>
           )}
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-white tracking-tight mb-3">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-[#F5F7F2] tracking-tight mb-3">
             {headingText}
           </h2>
           {showSubheading && (
-            <p className="text-sm sm:text-base text-zinc-400 font-normal">
+            <p className="text-sm sm:text-base text-[#A7AEA0] font-normal">
               {subheadingText}
             </p>
           )}
@@ -51,7 +51,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
 
         {/* Services Cards */}
         {visibleServices.length === 0 ? (
-          <div className="text-center py-12 text-zinc-400 text-sm">
+          <div className="text-center py-12 text-[#A7AEA0] text-sm">
             No services published currently.
           </div>
         ) : (
@@ -67,14 +67,14 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
                   transition={{ duration: 0.5, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
                   className={`rounded-2xl p-7 flex flex-col justify-between transition-all duration-300 relative group ${
                     isHighlighted
-                      ? 'bg-[#0b0b14] border-2 border-blue-600/70 shadow-2xl shadow-blue-950/30'
-                      : 'bg-[#08080f] border border-white/10 hover:border-white/20'
+                      ? 'bg-[#181C16] border-2 border-[#B1FF00] shadow-2xl shadow-[#B1FF00]/10'
+                      : 'bg-[#121512] border border-[#292E25] hover:border-[#B1FF00]/40'
                   }`}
                 >
                   {isHighlighted && (
                     <div className="absolute -top-3 left-6">
-                      <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-blue-600 text-white shadow-md flex items-center gap-1">
-                        <Sparkles className="w-3 h-3" />
+                      <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-[#B1FF00] text-[#070809] shadow-md flex items-center gap-1">
+                        <Sparkles className="w-3 h-3 text-[#070809]" />
                         <span>{highlightedBadge}</span>
                       </span>
                     </div>
@@ -84,19 +84,19 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
                     {/* Number label */}
                     {showNumbers && (
                       <div className="flex items-center justify-between mb-6">
-                        <span className="font-mono text-xs font-bold text-blue-400">
+                        <span className="font-mono text-xs font-bold text-[#B1FF00]">
                           {service.number || `0${index + 1}`}
                         </span>
                       </div>
                     )}
 
                     {/* Title */}
-                    <h3 className="text-xl sm:text-2xl font-display font-extrabold text-white mb-3 tracking-tight">
+                    <h3 className="text-xl sm:text-2xl font-display font-extrabold text-[#F5F7F2] mb-3 tracking-tight">
                       {service.title}
                     </h3>
 
                     {/* Description */}
-                    <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed mb-6 font-normal">
+                    <p className="text-xs sm:text-sm text-[#A7AEA0] leading-relaxed mb-6 font-normal">
                       {service.description}
                     </p>
 
@@ -104,8 +104,8 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
                     {showFeatureList && service.features && service.features.length > 0 && (
                       <ul className="space-y-2.5 mb-8 border-t border-white/5 pt-5">
                         {service.features.map((feature, fIdx) => (
-                          <li key={fIdx} className="flex items-start gap-2.5 text-xs text-zinc-300 font-normal">
-                            <Check className="w-3.5 h-3.5 text-blue-400 shrink-0 mt-0.5" />
+                          <li key={fIdx} className="flex items-start gap-2.5 text-xs text-[#F5F7F2] font-normal">
+                            <Check className="w-3.5 h-3.5 text-[#B1FF00] shrink-0 mt-0.5" />
                             <span>{feature}</span>
                           </li>
                         ))}
@@ -121,8 +121,8 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
                       onClick={() => onSelectService(service.title)}
                       className={`w-full py-3.5 px-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 group ${
                         isHighlighted
-                          ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30'
-                          : 'bg-[#12121c] hover:bg-[#1a1a28] text-white border border-white/10'
+                          ? 'bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] text-[#070809] shadow-lg shadow-[#B1FF00]/30'
+                          : 'bg-[#0D0F10] hover:bg-[#181C16] text-[#F5F7F2] hover:text-[#B1FF00] border border-[#292E25] hover:border-[#B1FF00]/40'
                       }`}
                     >
                       <span>{service.ctaText || 'START EDITING PROJECT'}</span>

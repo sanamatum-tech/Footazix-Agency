@@ -66,9 +66,9 @@ Clients may request the permanent deletion of their contact records or archived 
   const bodyText = doc?.content || (isTerms ? defaultTermsContent : defaultPrivacyContent);
 
   return (
-    <div className="min-h-screen bg-[#050508] text-white flex flex-col font-sans selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#070809] text-[#F5F7F2] flex flex-col font-sans selection:bg-[#B1FF00] selection:text-[#070809]">
       {/* Top Header */}
-      <header className="border-b border-white/10 bg-[#050508]/90 backdrop-blur-md sticky top-0 z-40">
+      <header className="border-b border-[#292E25] bg-[#070809]/90 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <button
             onClick={navigateToPublic}
@@ -80,9 +80,9 @@ Clients may request the permanent deletion of their contact records or archived 
 
           <button
             onClick={navigateToPublic}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold uppercase tracking-wider text-zinc-300 hover:text-white bg-[#12121c] border border-white/10 transition-colors cursor-pointer"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold uppercase tracking-wider text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#0D0F10] border border-[#292E25] hover:border-[#B1FF00]/40 transition-colors cursor-pointer"
           >
-            <ArrowLeft className="w-3.5 h-3.5 text-blue-400" />
+            <ArrowLeft className="w-3.5 h-3.5 text-[#B1FF00]" />
             <span>Back to Home</span>
           </button>
         </div>
@@ -97,45 +97,45 @@ Clients may request the permanent deletion of their contact records or archived 
           className="space-y-8"
         >
           {/* Header Block */}
-          <div className="border-b border-white/10 pb-8">
-            <div className="inline-flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-blue-400 mb-3">
+          <div className="border-b border-[#292E25] pb-8">
+            <div className="inline-flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#B1FF00] mb-3">
               {isTerms ? (
-                <FileText className="w-3.5 h-3.5" />
+                <FileText className="w-3.5 h-3.5 text-[#B1FF00]" />
               ) : (
-                <Shield className="w-3.5 h-3.5" />
+                <Shield className="w-3.5 h-3.5 text-[#B1FF00]" />
               )}
               <span>FOOTAZIX LEGAL</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-white tracking-tight mb-3">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-[#F5F7F2] tracking-tight mb-3">
               {title}
             </h1>
 
-            <p className="text-xs font-mono text-zinc-400">
+            <p className="text-xs font-mono text-[#737B6B]">
               {lastUpdated}
             </p>
           </div>
 
           {/* Body Narrative */}
-          <div className="prose prose-invert max-w-none text-zinc-300 leading-relaxed text-sm sm:text-base font-normal space-y-4 whitespace-pre-line">
+          <div className="prose prose-invert max-w-none text-[#A7AEA0] leading-relaxed text-sm sm:text-base font-normal space-y-4 whitespace-pre-line">
             {bodyText}
           </div>
 
           {/* Quick Switcher */}
-          <div className="pt-8 border-t border-white/10 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
-            <div className="text-zinc-400">
+          <div className="pt-8 border-t border-[#292E25] flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
+            <div className="text-[#737B6B]">
               Related Document:{' '}
               {isTerms ? (
                 <button
                   onClick={navigateToPrivacy}
-                  className="text-blue-400 hover:text-blue-300 underline underline-offset-4 ml-1 cursor-pointer"
+                  className="text-[#B1FF00] hover:text-[#C4FF45] underline underline-offset-4 ml-1 cursor-pointer"
                 >
                   Privacy Policy →
                 </button>
               ) : (
                 <button
                   onClick={navigateToTerms}
-                  className="text-blue-400 hover:text-blue-300 underline underline-offset-4 ml-1 cursor-pointer"
+                  className="text-[#B1FF00] hover:text-[#C4FF45] underline underline-offset-4 ml-1 cursor-pointer"
                 >
                   Terms & Conditions →
                 </button>
@@ -144,7 +144,7 @@ Clients may request the permanent deletion of their contact records or archived 
 
             <button
               onClick={navigateToPublic}
-              className="text-zinc-400 hover:text-white transition-colors cursor-pointer"
+              className="text-[#A7AEA0] hover:text-[#F5F7F2] transition-colors cursor-pointer"
             >
               Return to footazix.site
             </button>
@@ -153,7 +153,7 @@ Clients may request the permanent deletion of their contact records or archived 
       </main>
 
       {/* Discreet Footer */}
-      <footer className="border-t border-white/10 py-8 bg-[#040406] text-center text-xs text-zinc-400 font-mono">
+      <footer className="border-t border-[#292E25] py-8 bg-[#070809] text-center text-xs text-[#737B6B] font-mono">
         <p>© {new Date().getFullYear()} Footazix. All rights reserved.</p>
       </footer>
     </div>

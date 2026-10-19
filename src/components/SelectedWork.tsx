@@ -318,16 +318,16 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 sm:mb-12">
           <div>
             {showBadge && (
-              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-3">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
+              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#B1FF00] mb-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#B1FF00] shadow-[0_0_8px_rgba(177,255,0,0.8)]" />
                 <span className="font-mono text-[11px]">{sectionBadge}</span>
               </div>
             )}
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-white tracking-tight mb-2">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-[#F5F7F2] tracking-tight mb-2">
               {sectionHeading}
             </h2>
             {showSubheading && (
-              <p className="text-sm sm:text-base text-zinc-400 font-normal max-w-xl">
+              <p className="text-sm sm:text-base text-[#A7AEA0] font-normal max-w-xl">
                 {sectionSubheading}
               </p>
             )}
@@ -337,15 +337,15 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
           <div className="flex flex-wrap items-center gap-3 self-start md:self-end">
             {/* Category Filter Buttons */}
             {showFilters && categories.length > 1 && (
-              <div className="flex items-center gap-1 p-1 bg-[#0c0c14] border border-white/10 rounded-xl overflow-x-auto max-w-full">
+              <div className="flex items-center gap-1 p-1 bg-[#0D0F10] border border-[#292E25] rounded-xl overflow-x-auto max-w-full">
                 {categories.map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setActiveCategory(cat)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer ${
                       activeCategory === cat
-                        ? 'bg-blue-600 text-white shadow-[0_0_12px_rgba(37,99,235,0.35)]'
-                        : 'text-zinc-400 hover:text-white'
+                        ? 'bg-[#B1FF00] text-[#070809] font-bold shadow-[0_0_12px_rgba(177,255,0,0.35)]'
+                        : 'text-[#A7AEA0] hover:text-[#F5F7F2]'
                     }`}
                   >
                     {cat}
@@ -362,7 +362,7 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
                   onClick={scrollPrev}
                   disabled={!canScrollPrev}
                   aria-label="Previous project"
-                  className="w-10 h-10 rounded-xl bg-[#0e0e18] border border-white/10 hover:border-blue-500/40 text-zinc-300 hover:text-white disabled:opacity-30 disabled:hover:border-white/10 disabled:hover:text-zinc-300 transition-all duration-200 flex items-center justify-center cursor-pointer shadow-sm active:scale-95"
+                  className="w-10 h-10 rounded-xl bg-[#0D0F10] border border-[#292E25] hover:border-[#B1FF00]/40 text-[#A7AEA0] hover:text-[#F5F7F2] disabled:opacity-30 disabled:hover:border-[#292E25] disabled:hover:text-[#A7AEA0] transition-all duration-200 flex items-center justify-center cursor-pointer shadow-sm active:scale-95"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
@@ -371,7 +371,7 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
                   onClick={scrollNext}
                   disabled={!canScrollNext}
                   aria-label="Next project"
-                  className="w-10 h-10 rounded-xl bg-[#0e0e18] border border-white/10 hover:border-blue-500/40 text-zinc-300 hover:text-white disabled:opacity-30 disabled:hover:border-white/10 disabled:hover:text-zinc-300 transition-all duration-200 flex items-center justify-center cursor-pointer shadow-sm active:scale-95"
+                  className="w-10 h-10 rounded-xl bg-[#0D0F10] border border-[#292E25] hover:border-[#B1FF00]/40 text-[#A7AEA0] hover:text-[#F5F7F2] disabled:opacity-30 disabled:hover:border-[#292E25] disabled:hover:text-[#A7AEA0] transition-all duration-200 flex items-center justify-center cursor-pointer shadow-sm active:scale-95"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
@@ -424,7 +424,7 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
                   key={project.id}
                   data-slider-card
                   onClick={() => handleCardClick(project)}
-                  className="snap-start shrink-0 w-[84vw] sm:w-[380px] md:w-[420px] lg:w-[460px] rounded-2xl bg-[#090910] border border-white/10 hover:border-blue-500/50 hover:shadow-[0_8px_30px_rgba(37,99,235,0.15)] transition-all duration-300 flex flex-col justify-between overflow-hidden group cursor-pointer"
+                  className="snap-start shrink-0 w-[84vw] sm:w-[380px] md:w-[420px] lg:w-[460px] rounded-2xl bg-[#121512] border border-[#292E25] hover:border-[#B1FF00]/50 hover:shadow-[0_8px_30px_rgba(177,255,0,0.15)] transition-all duration-300 flex flex-col justify-between overflow-hidden group cursor-pointer"
                 >
                   {/* Media Thumbnail Container — Strictly respects selected aspect ratio */}
                   <div
@@ -443,15 +443,15 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
                     />
 
                     {/* Dark gradient vignette */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#090910] via-black/25 to-transparent opacity-85 group-hover:opacity-60 transition-opacity" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#121512] via-black/25 to-transparent opacity-85 group-hover:opacity-60 transition-opacity" />
 
                     {/* Category & Aspect Ratio Badges */}
                     <div className="absolute top-4 left-4 z-10 flex items-center gap-1.5 flex-wrap pointer-events-none">
-                      <span className="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold tracking-wider uppercase bg-[#050508]/85 backdrop-blur-md text-white border border-white/15">
+                      <span className="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold tracking-wider uppercase bg-[#070809]/85 backdrop-blur-md text-white border border-white/15">
                         {project.category}
                       </span>
                       {project.videoAspectRatio && project.videoAspectRatio !== '16:9' && (
-                        <span className="px-2 py-0.5 rounded-md text-[9px] font-mono font-semibold uppercase bg-blue-950/85 text-blue-300 border border-blue-500/30">
+                        <span className="px-2 py-0.5 rounded-md text-[9px] font-mono font-semibold uppercase bg-[#181C16] text-[#B1FF00] border border-[#B1FF00]/30">
                           {project.videoAspectRatio}
                         </span>
                       )}
@@ -460,15 +460,15 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
                     {/* Play Video Trigger Overlay */}
                     {hasVideo && (
                       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="w-12 h-12 rounded-full bg-blue-600/90 text-white flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-200 backdrop-blur-sm">
-                          <Play className="w-5 h-5 fill-white translate-x-0.5" />
+                        <div className="w-12 h-12 rounded-full bg-[#B1FF00] text-[#070809] flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-200 backdrop-blur-sm">
+                          <Play className="w-5 h-5 fill-[#070809] text-[#070809] translate-x-0.5" />
                         </div>
                       </div>
                     )}
 
                     {/* Desktop Hover Action Badge */}
-                    <div className="absolute top-4 right-4 z-10 w-9 h-9 rounded-xl bg-blue-600/90 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:scale-100 scale-90 duration-200 pointer-events-none shadow-md">
-                      <ArrowUpRight className="w-4 h-4" />
+                    <div className="absolute top-4 right-4 z-10 w-9 h-9 rounded-xl bg-[#B1FF00] text-[#070809] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:scale-100 scale-90 duration-200 pointer-events-none shadow-md">
+                      <ArrowUpRight className="w-4 h-4 text-[#070809]" />
                     </div>
                   </div>
 
@@ -476,22 +476,22 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
                   <div className="p-5 sm:p-6 flex flex-col justify-between flex-grow">
                     <div>
                       {project.client && (
-                        <p className="text-[11px] font-mono uppercase tracking-wider text-blue-400 mb-1">
+                        <p className="text-[11px] font-mono uppercase tracking-wider text-[#B1FF00] mb-1">
                           {project.client}
                         </p>
                       )}
-                      <h3 className="text-base sm:text-lg font-display font-extrabold text-white tracking-tight group-hover:text-blue-400 transition-colors mb-2 line-clamp-1">
+                      <h3 className="text-base sm:text-lg font-display font-extrabold text-[#F5F7F2] tracking-tight group-hover:text-[#B1FF00] transition-colors mb-2 line-clamp-1">
                         {project.title}
                       </h3>
-                      <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-normal line-clamp-2">
+                      <p className="text-xs sm:text-sm text-[#A7AEA0] leading-relaxed font-normal line-clamp-2">
                         {project.description}
                       </p>
                     </div>
 
                     {/* Card Footer Action */}
                     <div className="pt-4 mt-4 border-t border-white/5 flex items-center justify-between text-xs">
-                      <span className="text-zinc-500 font-mono text-[11px] flex items-center gap-1.5">
-                        <Film className="w-3.5 h-3.5 text-blue-400" />
+                      <span className="text-[#737B6B] font-mono text-[11px] flex items-center gap-1.5">
+                        <Film className="w-3.5 h-3.5 text-[#B1FF00]" />
                         <span>{videoRatio.toUpperCase()} FORMAT</span>
                       </span>
                       <button
@@ -500,10 +500,10 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
                           e.stopPropagation();
                           onSelectProjectForInquiry(project.title);
                         }}
-                        className="text-blue-400 hover:text-blue-300 font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-colors text-[11px] active:scale-95"
+                        className="text-[#B1FF00] hover:text-[#C4FF45] font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-colors text-[11px] active:scale-95"
                       >
                         <span>{cardCta}</span>
-                        <ArrowUpRight className="w-3.5 h-3.5" />
+                        <ArrowUpRight className="w-3.5 h-3.5 text-[#B1FF00]" />
                       </button>
                     </div>
                   </div>
@@ -516,8 +516,8 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
           <div className="max-w-7xl mx-auto px-6 mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             {/* Slide Dots / Counter */}
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono text-zinc-400">
-                <span className="text-white font-bold">
+              <span className="text-xs font-mono text-[#A7AEA0]">
+                <span className="text-[#F5F7F2] font-bold">
                   {String(activeSlideIndex + 1).padStart(2, '0')}
                 </span>{' '}
                 /{' '}
@@ -532,7 +532,7 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
                     aria-label={`Jump to slide ${i + 1}`}
                     className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
                       activeSlideIndex === i
-                        ? 'w-6 bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.8)]'
+                        ? 'w-6 bg-[#B1FF00] shadow-[0_0_8px_rgba(177,255,0,0.8)]'
                         : 'w-1.5 bg-zinc-700 hover:bg-zinc-500'
                     }`}
                   />
@@ -543,7 +543,7 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
             {/* Tactile Progress Indicator Bar */}
             <div className="w-full sm:w-64 h-1 bg-white/10 rounded-full overflow-hidden">
               <div
-                className="h-full bg-blue-500 transition-all duration-150 rounded-full shadow-[0_0_8px_rgba(37,99,235,0.6)]"
+                className="h-full bg-[#B1FF00] transition-all duration-150 rounded-full shadow-[0_0_8px_rgba(177,255,0,0.6)]"
                 style={{
                   width: `${Math.max(15, scrollProgress)}%`,
                 }}
@@ -580,20 +580,20 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
               <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4">
                 <div className="min-w-0 pr-4">
                   <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-[10px] font-mono uppercase text-blue-400 font-semibold px-2 py-0.5 rounded bg-blue-950/60 border border-blue-500/30">
+                    <span className="text-[10px] font-mono uppercase text-[#B1FF00] font-semibold px-2 py-0.5 rounded bg-[#181C16] border border-[#B1FF00]/30">
                       {activeLightboxProject.category}
                     </span>
-                    <span className="text-[10px] font-mono text-zinc-400">
+                    <span className="text-[10px] font-mono text-[#A7AEA0]">
                       Ratio: {activeLightboxProject.videoAspectRatio || '16:9'}
                     </span>
                   </div>
-                  <h3 className="text-base sm:text-lg font-bold text-white tracking-tight truncate">
+                  <h3 className="text-base sm:text-lg font-bold text-[#F5F7F2] tracking-tight truncate">
                     {activeLightboxProject.title}
                   </h3>
                 </div>
                 <button
                   onClick={() => setActiveLightboxProject(null)}
-                  className="p-2 rounded-xl text-zinc-400 hover:text-white bg-[#12121c] border border-white/10 cursor-pointer shrink-0"
+                  className="p-2 rounded-xl text-[#A7AEA0] hover:text-[#F5F7F2] bg-[#0D0F10] border border-[#292E25] cursor-pointer shrink-0"
                   aria-label="Close modal"
                 >
                   <X className="w-4 h-4" />
@@ -602,7 +602,7 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
 
               {/* Video Player Container */}
               <div
-                className={`relative ${lightboxPlayerStyle.aspectClass} w-full rounded-xl overflow-hidden bg-black mb-4 border border-white/10 flex items-center justify-center shadow-inner`}
+                className={`relative ${lightboxPlayerStyle.aspectClass} w-full rounded-xl overflow-hidden bg-black mb-4 border border-[#292E25] flex items-center justify-center shadow-inner`}
               >
                 {lightboxVideoInfo.type === 'youtube' && lightboxVideoInfo.embedUrl ? (
                   <iframe
@@ -637,7 +637,7 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
                     />
                     <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center p-4 text-center">
                       <span className="text-xs font-mono text-zinc-300 mb-1">PREVIEW THUMBNAIL</span>
-                      <p className="text-[11px] text-zinc-400 max-w-xs">
+                      <p className="text-[11px] text-[#A7AEA0] max-w-xs">
                         Video edit showcase. Direct video URL can be added in the Portfolio CMS.
                       </p>
                     </div>
@@ -646,15 +646,15 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
               </div>
 
               {/* Project Meta and Description */}
-              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed mb-5 font-normal">
+              <p className="text-xs sm:text-sm text-[#F5F7F2] leading-relaxed mb-5 font-normal">
                 {activeLightboxProject.description}
               </p>
 
               {/* Modal Bottom Actions */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-white/10">
-                <div className="flex items-center gap-2 text-xs text-zinc-400 font-mono">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-[#292E25]">
+                <div className="flex items-center gap-2 text-xs text-[#A7AEA0] font-mono">
                   <span>Client:</span>
-                  <span className="text-white font-semibold">
+                  <span className="text-[#F5F7F2] font-semibold">
                     {activeLightboxProject.client || 'Creative Showcase'}
                   </span>
                   {activeLightboxProject.projectUrl && (
@@ -662,10 +662,10 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
                       href={activeLightboxProject.projectUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-400 hover:text-blue-300 ml-2 inline-flex items-center gap-1"
+                      className="text-[#B1FF00] hover:text-[#C4FF45] ml-2 inline-flex items-center gap-1"
                     >
                       <span>Link</span>
-                      <ExternalLink className="w-3 h-3" />
+                      <ExternalLink className="w-3 h-3 text-[#B1FF00]" />
                     </a>
                   )}
                 </div>
@@ -676,10 +676,10 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
                     setActiveLightboxProject(null);
                     onSelectProjectForInquiry(title);
                   }}
-                  className="px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/30 cursor-pointer flex items-center justify-center gap-1.5 active:scale-95"
+                  className="px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-[#070809] bg-[#B1FF00] hover:bg-[#C4FF45] active:bg-[#96DB00] transition-colors shadow-lg shadow-[#B1FF00]/30 cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   <span>{cardCta}</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
+                  <ArrowUpRight className="w-3.5 h-3.5 text-[#070809]" />
                 </button>
               </div>
             </motion.div>

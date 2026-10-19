@@ -4,16 +4,36 @@
   :root {
     --font-display: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+    /* Official Brand Colors */
+    --color-primary: #B1FF00;
+    --color-primary-hover: #C4FF45;
+    --color-primary-pressed: #96DB00;
+
+    --color-bg-main: #070809;
+    --color-bg-secondary: #0D0F10;
+    --color-bg-card: #121512;
+    --color-bg-elevated: #181C16;
+
+    --color-text-primary: #F5F7F2;
+    --color-text-secondary: #A7AEA0;
+    --color-text-muted: #737B6B;
+
+    --color-border-subtle: #292E25;
+    --color-border-accent: #B1FF00;
+    --color-ring-focus: #B1FF00;
   }
 
   html {
     scroll-behavior: smooth;
+    background-color: #070809;
+    color: #F5F7F2;
   }
 
   body {
     font-family: var(--font-sans);
-    background-color: #050508;
-    color: #f4f4f7;
+    background-color: #070809;
+    color: #F5F7F2;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -26,35 +46,40 @@
 
   /* Accessible focus indicators for keyboard navigation */
   :focus-visible {
-    outline: 2px solid #3b82f6;
+    outline: 2px solid #B1FF00;
     outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: #B1FF00;
+    color: #070809;
   }
 }
 
 /* Custom premium creative studio utility styles */
-.glow-blue-sm {
-  box-shadow: 0 0 20px -5px rgba(37, 99, 235, 0.35);
+.glow-lime-sm {
+  box-shadow: 0 0 20px -5px rgba(177, 255, 0, 0.35);
 }
 
-.glow-blue-lg {
-  box-shadow: 0 0 50px -10px rgba(37, 99, 235, 0.4);
+.glow-lime-lg {
+  box-shadow: 0 0 50px -10px rgba(177, 255, 0, 0.4);
 }
 
 .bg-radial-hero {
-  background: radial-gradient(circle at 50% 25%, rgba(37, 99, 235, 0.12) 0%, rgba(5, 5, 8, 0) 70%);
+  background: radial-gradient(circle at 50% 25%, rgba(177, 255, 0, 0.12) 0%, rgba(7, 8, 9, 0) 70%);
 }
 
-.bg-radial-blue-soft {
-  background: radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.08) 0%, transparent 65%);
+.bg-radial-lime-soft {
+  background: radial-gradient(circle at 50% 50%, rgba(177, 255, 0, 0.08) 0%, transparent 65%);
 }
 
 /* Glass & Hairlines */
 .border-subtle {
-  border-color: rgba(255, 255, 255, 0.08);
+  border-color: #292E25;
 }
 
 .border-subtle-hover:hover {
-  border-color: rgba(37, 99, 235, 0.4);
+  border-color: rgba(177, 255, 0, 0.4);
 }
 
 /* Custom scrollbar for dark aesthetic */
@@ -63,14 +88,14 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #050508;
+  background: #070809;
 }
 ::-webkit-scrollbar-thumb {
-  background: #27272a;
+  background: #292E25;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3b82f6;
+  background: #B1FF00;
 }
 
 /* Premium VSL Video Border Animation */
@@ -88,10 +113,10 @@
     from 0deg at 50% 50%,
     transparent 0deg,
     transparent 280deg,
-    rgba(37, 99, 235, 0.25) 305deg,
-    rgba(59, 130, 246, 0.75) 330deg,
-    rgba(147, 197, 253, 0.95) 345deg,
-    rgba(59, 130, 246, 0.75) 355deg,
+    rgba(150, 219, 0, 0.25) 305deg,
+    rgba(177, 255, 0, 0.75) 330deg,
+    rgba(196, 255, 69, 0.95) 345deg,
+    rgba(177, 255, 0, 0.75) 355deg,
     transparent 360deg
   );
   animation: vslBorderTravel 10s linear infinite;
@@ -114,4 +139,3 @@
     scroll-behavior: auto !important;
   }
 }
-
