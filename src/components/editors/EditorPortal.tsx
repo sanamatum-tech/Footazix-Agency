@@ -857,7 +857,7 @@ export const EditorPortal: React.FC = () => {
                 <div className="mb-4">
                   <span className="text-[10px] font-mono uppercase text-zinc-500 block mb-2">Specialties:</span>
                   <div className="flex flex-wrap gap-1.5">
-                    {currentEditor.specialties.map((s, idx) => (
+                    {currentEditor.specialties.map((s: string, idx: number) => (
                       <span key={idx} className="px-2.5 py-1 rounded-lg bg-[#12121c] border border-white/5 text-xs text-zinc-300">
                         {s}
                       </span>
@@ -870,7 +870,7 @@ export const EditorPortal: React.FC = () => {
                 <div>
                   <span className="text-[10px] font-mono uppercase text-zinc-500 block mb-2">Editing Stack:</span>
                   <div className="flex flex-wrap gap-1.5">
-                    {currentEditor.software.map((sw, idx) => (
+                    {currentEditor.software.map((sw: string, idx: number) => (
                       <span key={idx} className="px-2.5 py-1 rounded-lg bg-[#12121c] border border-white/5 text-xs text-zinc-400">
                         {sw}
                       </span>

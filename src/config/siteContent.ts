@@ -47,8 +47,8 @@ export const SITE_CONFIG = {
     label: 'FROM THE FOUNDER',
     heading: 'SEE HOW FOOTAZIX WORKS.',
     description: 'Who we are, what we do, and how we turn raw footage into better content.',
-    videoSrc: '/assets/vsl/footazix-vsl.mp4',
-    posterSrc: '/assets/vsl/vsl-poster.jpg',
+    videoSrc: 'https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/videos/1792376503200_New_Project__362C886_.mp4',
+    posterSrc: 'https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/images/1792376648306_New_Project__248FF91_.png',
     captions: [
       { start: 0, end: 4, text: "Hey, I'm Sanamatum, Founder of Footazix." },
       { start: 4, end: 10, text: "Most creators and brands have hours of raw footage, but lose attention in the first three seconds." },
@@ -73,7 +73,7 @@ export const SITE_CONFIG = {
         title: 'Cinematic Brand Campaign Still & Cut',
         category: 'Brand',
         description: 'Clean modern commercial aesthetic with precision timing and bespoke soundscape.',
-        coverImage: '/assets/vsl/vsl-poster.jpg',
+        coverImage: '/assets/portfolio/project-01/cover.jpg',
       },
       {
         id: 'project-03',
@@ -87,7 +87,7 @@ export const SITE_CONFIG = {
         title: 'High-Impact Social Video Teaser',
         category: 'Shorts',
         description: 'Rapid-tempo teaser engineered to command attention in the first frame.',
-        coverImage: '/assets/vsl/vsl-poster.jpg',
+        coverImage: '/assets/portfolio/project-01/cover.jpg',
       }
     ] as PortfolioProject[],
   },

@@ -1075,11 +1075,11 @@ export const AdminWebsiteEditor: React.FC = () => {
                       <div className="max-w-md mx-auto rounded-2xl overflow-hidden border border-white/15 bg-[#0b0e14] shadow-2xl">
                         <div className="relative aspect-[1.91/1] w-full bg-zinc-950 overflow-hidden">
                           <img
-                            src={formData.brandingAssets?.ogImage?.url || 'https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/branding/1790997433105_1001608268.png'}
+                            src={formData.brandingAssets?.ogImage?.url || 'https://footazix.site/assets/branding/footazix-og-preview-v2.png?v=2026'}
                             alt={formData.brandingAssets?.ogImage?.alt || 'OG Preview'}
                             className="w-full h-full object-cover"
                             onError={(e) => {
-                              (e.target as HTMLImageElement).src = '/assets/branding/footazix-og-default.png';
+                              (e.target as HTMLImageElement).src = '/assets/branding/footazix-og-preview-v2.png';
                             }}
                           />
                           <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/80 backdrop-blur text-[10px] font-mono text-zinc-300">
@@ -1105,7 +1105,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                           <div className="max-w-sm rounded-2xl rounded-tr-none bg-[#0b3b2c] p-2.5 shadow-xl text-white space-y-2 border border-emerald-500/20">
                             <div className="rounded-xl overflow-hidden border border-black/20 bg-black aspect-[1.91/1]">
                               <img
-                                src={formData.brandingAssets?.ogImage?.url || 'https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/branding/1790997433105_1001608268.png'}
+                                src={formData.brandingAssets?.ogImage?.url || 'https://footazix.site/assets/branding/footazix-og-preview-v2.png?v=2026'}
                                 alt="WhatsApp link preview"
                                 className="w-full h-full object-cover"
                               />
@@ -1139,7 +1139,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                         </p>
                         <div className="rounded-lg overflow-hidden border border-black/30 aspect-[1.91/1] w-full">
                           <img
-                            src={formData.brandingAssets?.ogImage?.url || 'https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/branding/1790997433105_1001608268.png'}
+                            src={formData.brandingAssets?.ogImage?.url || 'https://footazix.site/assets/branding/footazix-og-preview-v2.png?v=2026'}
                             alt="Discord preview"
                             className="w-full h-full object-cover"
                           />
@@ -1228,7 +1228,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => {
-                        const fallbackUrl = 'https://footazix.site/assets/branding/footazix-og-default.png';
+                        const fallbackUrl = 'https://footazix.site/assets/branding/footazix-og-preview-v2.png?v=2026';
                         setFormData((prev) => {
                           const next = JSON.parse(JSON.stringify(prev));
                           if (!next.brandingAssets) next.brandingAssets = {};
@@ -3134,7 +3134,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <div className="w-20 h-12 rounded-lg bg-zinc-900 border border-white/10 overflow-hidden shrink-0">
                     <img
-                      src={formData.brandingAssets?.ogImage?.url || 'https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/branding/1790997433105_1001608268.png'}
+                      src={formData.brandingAssets?.ogImage?.url || 'https://footazix.site/assets/branding/footazix-og-preview-v2.png?v=2026'}
                       alt="OG Image Preview"
                       className="w-full h-full object-cover"
                     />

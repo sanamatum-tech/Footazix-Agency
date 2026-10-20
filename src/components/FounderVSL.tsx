@@ -220,6 +220,13 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
     return `${m}:${s < 10 ? '0' : ''}${s}`;
   };
 
+  // Source of truth: published custom thumbnail saved in Supabase CMS.
+  // Never fallback to AI Studio placeholder images.
+  // If custom thumbnail is missing or unavailable, cleanly show black background using existing Footazix styling.
+  const rawPoster = (vsl.posterUrl || '').trim();
+  const customThumbnail =
+    rawPoster && !rawPoster.includes('vsl-poster.jpg') ? rawPoster : '';
+
   return (
     <section id="system" className="py-20 sm:py-28 bg-[#070809] relative font-sans">
       <div className="max-w-5xl mx-auto px-6">
@@ -304,13 +311,17 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
                 ) : (
                   <div
                     onClick={() => setIsPlaying(true)}
-                    className="relative w-full h-full cursor-pointer group"
+                    className="relative w-full h-full cursor-pointer group bg-black"
                   >
-                    <img
-                      src={vsl.posterUrl || '/assets/vsl/vsl-poster.jpg'}
-                      alt={vsl.heading}
-                      className={`w-full h-full object-cover ${isMonochrome ? 'grayscale contrast-110' : ''} group-hover:scale-[1.02] transition-all duration-500`}
-                    />
+                    {customThumbnail ? (
+                      <img
+                        src={customThumbnail}
+                        alt={vsl.heading || 'Footazix VSL'}
+                        className={`w-full h-full object-cover ${isMonochrome ? 'grayscale contrast-110' : ''} group-hover:scale-[1.02] transition-all duration-500`}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-black" />
+                    )}
                     <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                       <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#B1FF00] text-[#070809] flex items-center justify-center pl-1 glow-lime-sm group-hover:scale-110 active:scale-95 transition-transform">
                         <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-[#070809] text-[#070809]" />
@@ -333,13 +344,17 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
                 ) : (
                   <div
                     onClick={() => setIsPlaying(true)}
-                    className="relative w-full h-full cursor-pointer group"
+                    className="relative w-full h-full cursor-pointer group bg-black"
                   >
-                    <img
-                      src={vsl.posterUrl || '/assets/vsl/vsl-poster.jpg'}
-                      alt={vsl.heading}
-                      className={`w-full h-full object-cover ${isMonochrome ? 'grayscale contrast-110' : ''} group-hover:scale-[1.02] transition-all duration-500`}
-                    />
+                    {customThumbnail ? (
+                      <img
+                        src={customThumbnail}
+                        alt={vsl.heading || 'Footazix VSL'}
+                        className={`w-full h-full object-cover ${isMonochrome ? 'grayscale contrast-110' : ''} group-hover:scale-[1.02] transition-all duration-500`}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-black" />
+                    )}
                     <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                       <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#B1FF00] text-[#070809] flex items-center justify-center pl-1 glow-lime-sm group-hover:scale-110 active:scale-95 transition-transform">
                         <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-[#070809] text-[#070809]" />
@@ -355,9 +370,9 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
                   <video
                     ref={videoRef}
                     key={vsl.videoUrl || 'footazix-direct-vsl'}
-                    src={vsl.videoUrl || '/assets/vsl/footazix-vsl.mp4'}
-                    poster={vsl.posterUrl || '/assets/vsl/vsl-poster.jpg'}
-                    className={`w-full h-full object-cover ${!isPlaying && isMonochrome ? 'grayscale contrast-110' : ''}`}
+                    src={vsl.videoUrl || undefined}
+                    poster={customThumbnail || undefined}
+                    className={`w-full h-full object-cover bg-black ${!isPlaying && isMonochrome ? 'grayscale contrast-110' : ''}`}
                     playsInline
                     preload="metadata"
                     crossOrigin="anonymous"
@@ -385,7 +400,6 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
                     onClick={handlePlayToggle}
                   >
                     {vsl.videoUrl && <source src={vsl.videoUrl} type="video/mp4" />}
-                    <source src="/assets/vsl/footazix-vsl.mp4" type="video/mp4" />
                     {hasCaptionsConfigured && showCaptions && (
                       <track
                         kind="subtitles"

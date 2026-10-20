@@ -278,6 +278,7 @@ export interface SectionVisibilitySettings {
   hero: boolean;
   system: boolean;
   portfolio: boolean;
+  feedbackGallery?: boolean;
   process: boolean;
   services: boolean;
   faq: boolean;
@@ -291,6 +292,35 @@ export interface SectionVisibilitySettings {
   heroDescription?: boolean;
   heroSecondaryCta?: boolean;
   faqCta?: boolean;
+}
+
+export interface FeedbackGalleryItem {
+  id: string;
+  imageUrl: string;
+  storagePath?: string;
+  aspectRatio?: AspectRatioType;
+  displayOrder: number;
+  published: boolean;
+  visible: boolean;
+  altText?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface FeedbackGallerySettings {
+  enabled: boolean;
+  aspectRatio: AspectRatioType;
+  autoScroll: boolean;
+  scrollSpeed: number; // seconds per full loop (e.g. 28)
+  direction: 'left' | 'right';
+  pauseOnHover: boolean;
+  cardGap: number; // pixels
+  cardRadius: number; // pixels
+  badge?: string;
+  heading?: string;
+  subheading?: string;
+  showSectionHeading?: boolean;
+  items: FeedbackGalleryItem[];
 }
 
 export interface SeoSettings {
@@ -350,6 +380,7 @@ export interface WebsiteContent {
   hero: HeroSettings;
   vsl: VSLSettings;
   portfolio?: PortfolioSettings;
+  feedbackGallery?: FeedbackGallerySettings;
   rawToReady: RawToReadySettings;
   servicesContent?: ServicesSectionSettings;
   aboutContent?: AboutSectionSettings;
@@ -461,6 +492,70 @@ export interface AdminUser {
   email: string;
   name: string;
   role: 'owner' | 'editor';
+}
+
+export type EditorRole = 'lead_editor' | 'editor' | 'motion_designer' | 'colorist';
+export type EditorAssignmentStatus =
+  | 'assigned'
+  | 'in_progress'
+  | 'review_needed'
+  | 'revision_requested'
+  | 'revisions_requested'
+  | 'approved'
+  | 'delivered'
+  | 'completed';
+export type EditorAssignmentPriority = 'normal' | 'high' | 'urgent';
+
+export interface Editor {
+  id: string;
+  name: string;
+  email: string;
+  role: EditorRole;
+  status: 'active' | 'busy' | 'away';
+  avatar?: string;
+  specialties?: string[];
+  software?: string[];
+  bio?: string;
+  phone?: string;
+  turnaroundHoursAvg?: number;
+  assignedTasksCount?: number;
+  completedTasksCount?: number;
+  createdAt?: string;
+  lastActive?: string;
+}
+
+export interface EditorAssignment {
+  id: string;
+  title: string;
+  clientName: string;
+  editorId: string;
+  editorName: string;
+  format: string;
+  status: EditorAssignmentStatus;
+  priority: EditorAssignmentPriority;
+  dueDate: string;
+  targetDuration?: string;
+  rawFootageUrl?: string;
+  assetFolderUrl?: string;
+  brief: string;
+  styleNotes?: string;
+  draftVideoUrl?: string;
+  feedbackNotes?: string;
+  editorNotes?: string;
+  submissionDate?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface EditorAsset {
+  id: string;
+  title: string;
+  category: string;
+  description: string;
+  url: string;
+  fileSize: string;
+  fileType: string;
+  updatedAt: string;
 }
 
 export * from './clientPortal';

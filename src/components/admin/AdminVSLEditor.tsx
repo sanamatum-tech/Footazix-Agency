@@ -624,7 +624,7 @@ export const AdminVSLEditor: React.FC = () => {
               type="text"
               value={vslData.posterUrl}
               onChange={(e) => setVslData({ ...vslData, posterUrl: e.target.value })}
-              placeholder="/assets/vsl/vsl-poster.jpg"
+              placeholder="https://... custom thumbnail URL (or empty for clean black)"
               className="w-full px-4 py-2.5 rounded-xl bg-[#121512] border border-[#292E25] text-[#F5F7F2] text-xs font-mono outline-none focus:border-[#B1FF00]"
             />
           </div>

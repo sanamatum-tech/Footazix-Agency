@@ -53,6 +53,37 @@ function getStoredContent(): WebsiteContent {
       parsed.brandingAssets.favicon.url = '/favicon.png';
     }
 
+    // Purge obsolete or 404 OG image URLs from cached local storage
+    if (
+      parsed.brandingAssets?.ogImage?.url &&
+      (parsed.brandingAssets.ogImage.url.includes('1790997433105') ||
+        parsed.brandingAssets.ogImage.url.includes('1790995570940') ||
+        parsed.brandingAssets.ogImage.url.includes('vsl-poster.jpg'))
+    ) {
+      parsed.brandingAssets.ogImage.url = 'https://footazix.site/assets/branding/footazix-og-v2.png';
+      parsed.brandingAssets.ogImage.width = 1200;
+      parsed.brandingAssets.ogImage.height = 630;
+    }
+    if (
+      parsed.seo?.ogImage &&
+      (parsed.seo.ogImage.includes('1790997433105') ||
+        parsed.seo.ogImage.includes('1790995570940') ||
+        parsed.seo.ogImage.includes('vsl-poster.jpg'))
+    ) {
+      parsed.seo.ogImage = 'https://footazix.site/assets/branding/footazix-og-v2.png';
+      parsed.seo.ogImageWidth = 1200;
+      parsed.seo.ogImageHeight = 630;
+    }
+
+    // Purge obsolete AI Studio placeholder poster URLs from cached local storage
+    if (
+      parsed.vsl?.posterUrl &&
+      (parsed.vsl.posterUrl.includes('vsl-poster.jpg') ||
+        parsed.vsl.posterUrl.startsWith('/assets/vsl/'))
+    ) {
+      parsed.vsl.posterUrl = 'https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/images/1792376648306_New_Project__248FF91_.png';
+    }
+
     return deepMerge(INITIAL_WEBSITE_CONTENT, parsed);
   } catch (err) {
     console.warn('Failed reading website content from localStorage:', err);
@@ -164,18 +195,24 @@ export const contentService = {
           ? deepMerge(current, extendedFromStorage)
           : current;
 
-        // Sanitize OG image: enforce single source of truth and purge legacy VSL poster / relative paths
-        const defaultOgUrl = 'https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/branding/1790997433105_1001608268.png';
+        // Sanitize OG image: enforce single source of truth and purge legacy VSL poster / relative paths / obsolete 404 hashes
+        const defaultOgUrl = 'https://footazix.site/assets/branding/footazix-og-v2.png';
         let resolvedOgUrl = baseMerged.brandingAssets?.ogImage?.url;
-        if (!resolvedOgUrl || resolvedOgUrl.includes('vsl-poster.jpg') || resolvedOgUrl.startsWith('/')) {
-          resolvedOgUrl = (baseMerged.seo?.ogImage && !baseMerged.seo.ogImage.includes('vsl-poster.jpg') && !baseMerged.seo.ogImage.startsWith('/'))
+        if (
+          !resolvedOgUrl ||
+          resolvedOgUrl.includes('vsl-poster.jpg') ||
+          resolvedOgUrl.includes('1790997433105') ||
+          resolvedOgUrl.includes('1790995570940') ||
+          resolvedOgUrl.startsWith('/')
+        ) {
+          resolvedOgUrl = (baseMerged.seo?.ogImage && !baseMerged.seo.ogImage.includes('vsl-poster.jpg') && !baseMerged.seo.ogImage.includes('1790997433105') && !baseMerged.seo.ogImage.includes('1790995570940') && !baseMerged.seo.ogImage.startsWith('/'))
             ? baseMerged.seo.ogImage
             : defaultOgUrl;
         }
 
-        const resolvedOgAlt = baseMerged.brandingAssets?.ogImage?.alt || baseMerged.seo?.ogImageAlt || 'Footazix Content Growth Agency';
-        const resolvedOgWidth = baseMerged.brandingAssets?.ogImage?.width || 1734;
-        const resolvedOgHeight = baseMerged.brandingAssets?.ogImage?.height || 907;
+        const resolvedOgAlt = baseMerged.brandingAssets?.ogImage?.alt || baseMerged.seo?.ogImageAlt || 'Footazix — Content Growth Agency';
+        const resolvedOgWidth = baseMerged.brandingAssets?.ogImage?.width || 1200;
+        const resolvedOgHeight = baseMerged.brandingAssets?.ogImage?.height || 630;
         const resolvedOgType = baseMerged.brandingAssets?.ogImage?.type || 'image/png';
 
         if (baseMerged.brandingAssets) {
@@ -243,7 +280,9 @@ export const contentService = {
             description: vslSettings?.description || baseMerged.vsl.description,
             videoSource: vslSettings?.video_source || baseMerged.vsl.videoSource,
             videoUrl: vslSettings?.video_url || baseMerged.vsl.videoUrl,
-            posterUrl: vslSettings?.poster_url || baseMerged.vsl.posterUrl,
+            posterUrl: (vslSettings?.poster_url && !vslSettings.poster_url.includes('vsl-poster.jpg'))
+              ? vslSettings.poster_url
+              : (baseMerged.vsl?.posterUrl && !baseMerged.vsl.posterUrl.includes('vsl-poster.jpg') ? baseMerged.vsl.posterUrl : 'https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/images/1792376648306_New_Project__248FF91_.png'),
             captionUrl: vslSettings?.caption_url ?? baseMerged.vsl.captionUrl,
             published: vslSettings?.published ?? baseMerged.vsl.published,
             aspectRatio: (vslSettings as any)?.aspect_ratio || baseMerged.vsl?.aspectRatio || '16:9',

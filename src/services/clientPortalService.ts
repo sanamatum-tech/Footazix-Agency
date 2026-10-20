@@ -79,7 +79,7 @@ const DEMO_DELIVERABLES: ClientDeliverable[] = [
     client_id: 'demo-client-01',
     title: 'Podcast Highlights Reel: Episode 42',
     description: 'Talking head with animated zoom-ins, captions, and color-graded highlights.',
-    thumbnail_url: '/assets/vsl/vsl-poster.jpg',
+    thumbnail_url: 'https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/images/1792376648306_New_Project__248FF91_.png',
     video_url: 'https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-video-editor-working-on-his-computer-42861-large.mp4',
     category: 'Shorts',
     delivery_date: new Date().toISOString().split('T')[0],

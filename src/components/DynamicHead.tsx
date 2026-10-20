@@ -2,28 +2,31 @@ import React, { useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 
 /**
- * Universal Absolute HTTPS fallback OG Image stored in Supabase Storage.
- * This is the deliberate Footazix brand card uploaded to Supabase Storage.
+ * Universal Absolute HTTPS fallback OG Image.
+ * Deliberate Footazix brand card with official logo, electric lime (#B1FF00) accents, and 1200x630 dimensions.
  */
 export const DEFAULT_FOOTAZIX_OG_IMAGE =
-  'https://gdwlkqrzcixjajzvcwvg.supabase.co/storage/v1/object/public/footazix-media/branding/1790997433105_1001608268.png';
+  'https://footazix.site/assets/branding/footazix-og-v2.png';
 
-export const FALLBACK_FOOTAZIX_OG_ASSET = 'https://footazix.site/assets/branding/footazix-og-default.png';
+export const FALLBACK_FOOTAZIX_OG_ASSET =
+  'https://footazix.site/assets/branding/footazix-og-v2.png';
 
 /**
  * Helper to ensure a URL is an absolute HTTPS URL suitable for social link scrapers.
- * Rejects temporary blobs, localhost, and legacy VSL posters.
+ * Rejects temporary blobs, localhost, legacy VSL posters, and broken/obsolete Supabase hashes.
  */
 export function resolveUniversalOgImageUrl(rawUrl?: string): string {
   if (!rawUrl || typeof rawUrl !== 'string') {
     return DEFAULT_FOOTAZIX_OG_IMAGE;
   }
   const trimmed = rawUrl.trim();
-  // Filter out any legacy references to the VSL poster or AI studio placeholders
+  // Filter out any legacy references to the VSL poster, temporary blobs, or obsolete 404 hashes
   if (
     trimmed.includes('vsl-poster.jpg') ||
     trimmed.includes('blob:') ||
     trimmed.includes('localhost') ||
+    trimmed.includes('1790997433105') ||
+    trimmed.includes('1790995570940') ||
     trimmed === ''
   ) {
     return DEFAULT_FOOTAZIX_OG_IMAGE;
@@ -64,7 +67,7 @@ export const DynamicHead: React.FC = () => {
     // 1. Page Title
     const title =
       content.seo?.siteTitle ||
-      `${content.brand?.name || 'Footazix'} — Turn Raw Footage Into Content Worth Watching`;
+      'Footazix — Content Growth Agency';
     document.title = title;
 
     // Helper for updating or creating meta tags
@@ -97,7 +100,7 @@ export const DynamicHead: React.FC = () => {
     // 2. Standard Search Meta
     const metaDescription =
       content.seo?.metaDescription ||
-      'Footazix is a content growth agency helping creators, brands and businesses turn raw footage into engaging content through professional editing, scripting and content strategy.';
+      'We turn raw footage and ideas into content worth watching. Professional video editing, content scripting, and growth solutions for creators, brands, and businesses.';
     setMetaTag('name', 'description', metaDescription);
 
     if (content.seo?.keywords) {
@@ -108,7 +111,7 @@ export const DynamicHead: React.FC = () => {
     // 3. Universal OpenGraph Metadata
     const ogTitle = content.seo?.ogTitle || title;
     const ogDesc = content.seo?.ogDescription || metaDescription;
-    const canonicalUrl = content.seo?.canonicalUrl || 'https://footazix.site';
+    const canonicalUrl = content.seo?.canonicalUrl || 'https://footazix.site/';
     const siteName = content.brand?.name || 'FOOTAZIX';
 
     // Prioritize CMS brandingAssets.ogImage as single source of truth
@@ -117,13 +120,13 @@ export const DynamicHead: React.FC = () => {
     const ogImgAlt =
       content.brandingAssets?.ogImage?.alt ||
       content.seo?.ogImageAlt ||
-      `${siteName} Content Growth Agency`;
+      'Footazix — Content Growth Agency';
 
     const ogImgWidth = String(
-      content.brandingAssets?.ogImage?.width || content.seo?.ogImageWidth || 1734
+      content.brandingAssets?.ogImage?.width || content.seo?.ogImageWidth || 1200
     );
     const ogImgHeight = String(
-      content.brandingAssets?.ogImage?.height || content.seo?.ogImageHeight || 907
+      content.brandingAssets?.ogImage?.height || content.seo?.ogImageHeight || 630
     );
     const ogImgType =
       content.brandingAssets?.ogImage?.type ||

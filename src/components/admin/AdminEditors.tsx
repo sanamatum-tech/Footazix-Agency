@@ -577,7 +577,7 @@ export const AdminEditors: React.FC = () => {
 
                   {/* Specialties */}
                   <div className="flex flex-wrap gap-1 mb-4">
-                    {ed.specialties.map((s, idx) => (
+                    {ed.specialties?.map((s: string, idx: number) => (
                       <span key={idx} className="px-2 py-0.5 rounded text-[10px] bg-[#12121c] text-zinc-300 border border-white/5">
                         {s}
                       </span>

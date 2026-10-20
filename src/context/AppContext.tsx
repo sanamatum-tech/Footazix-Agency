@@ -35,7 +35,7 @@ import { authService } from '../services/authService';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { INITIAL_WEBSITE_CONTENT } from '../data/mockData';
 
-export type ActiveView = 'public' | 'admin' | 'terms' | 'privacy' | 'clients';
+export type ActiveView = 'public' | 'admin' | 'terms' | 'privacy' | 'clients' | 'editors';
 
 interface AppContextValue {
   // Navigation / View
@@ -46,11 +46,13 @@ interface AppContextValue {
   navigateToTerms: () => void;
   navigateToPrivacy: () => void;
   navigateToClients: () => void;
+  navigateToEditors: () => void;
 
   // Auth (Supabase Auth + admin_profiles)
   currentUser: AdminUser | null;
   isAuthenticated: boolean;
   login: (email: string, password: string, remember?: boolean) => Promise<{ success: boolean; error?: string }>;
+  loginEditor: (email: string, password: string, remember?: boolean) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
 
   // Supabase Status
@@ -87,6 +89,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const path = window.location.pathname.toLowerCase();
     if (path.startsWith('/clients') || window.location.hash === '#clients' || window.location.search.includes('clients=true')) {
       return 'clients';
+    }
+    if (path.startsWith('/editors') || window.location.hash === '#editors' || window.location.search.includes('editors=true')) {
+      return 'editors';
     }
     if (path.startsWith('/secureadmin') || window.location.hash === '#secureadmin' || window.location.search.includes('admin=true')) {
       return 'admin';
@@ -146,12 +151,21 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   }, []);
 
+  const navigateToEditors = useCallback(() => {
+    setActiveView('editors');
+    if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/editors')) {
+      window.history.pushState({}, '', '/editors');
+    }
+  }, []);
+
   // Sync browser back/forward buttons
   useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname.toLowerCase();
       if (path.startsWith('/clients')) {
         setActiveView('clients');
+      } else if (path.startsWith('/editors')) {
+        setActiveView('editors');
       } else if (path.startsWith('/secureadmin')) {
         setActiveView('admin');
       } else if (path.startsWith('/terms')) {
@@ -356,9 +370,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         navigateToTerms,
         navigateToPrivacy,
         navigateToClients,
+        navigateToEditors,
         currentUser,
         isAuthenticated: !!currentUser,
         login,
+        loginEditor: login,
         logout,
         isSupabaseConnected,
         content,
