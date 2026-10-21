@@ -389,22 +389,33 @@ return activeContentFetchPromise;
       };
     }
 
-    // Guarantee sectionVisibility.faq is enabled by default
-    if (updated.sectionVisibility && updated.sectionVisibility.faq === undefined) {
-      updated.sectionVisibility.faq = true;
+    // Guarantee sectionVisibility.faq and feedbackGallery are defined
+    if (updated.sectionVisibility) {
+      if (updated.sectionVisibility.faq === undefined) updated.sectionVisibility.faq = true;
+      if (updated.sectionVisibility.feedbackGallery === undefined) updated.sectionVisibility.feedbackGallery = true;
     }
 
-    // Guarantee sectionOrder contains 'faq'
-    if (updated.sectionOrder && !updated.sectionOrder.includes('faq')) {
-      const sIdx = updated.sectionOrder.indexOf('services');
-      if (sIdx !== -1) {
-        updated.sectionOrder.splice(sIdx + 1, 0, 'faq');
-      } else {
-        const ctaIdx = updated.sectionOrder.indexOf('finalCta');
-        if (ctaIdx !== -1) {
-          updated.sectionOrder.splice(ctaIdx, 0, 'faq');
+    // Guarantee sectionOrder contains 'feedbackGallery' and 'faq'
+    if (updated.sectionOrder) {
+      if (!updated.sectionOrder.includes('feedbackGallery')) {
+        const pIdx = updated.sectionOrder.indexOf('portfolio');
+        if (pIdx !== -1) {
+          updated.sectionOrder.splice(pIdx + 1, 0, 'feedbackGallery');
         } else {
-          updated.sectionOrder.push('faq');
+          updated.sectionOrder.push('feedbackGallery');
+        }
+      }
+      if (!updated.sectionOrder.includes('faq')) {
+        const sIdx = updated.sectionOrder.indexOf('services');
+        if (sIdx !== -1) {
+          updated.sectionOrder.splice(sIdx + 1, 0, 'faq');
+        } else {
+          const ctaIdx = updated.sectionOrder.indexOf('finalCta');
+          if (ctaIdx !== -1) {
+            updated.sectionOrder.splice(ctaIdx, 0, 'faq');
+          } else {
+            updated.sectionOrder.push('faq');
+          }
         }
       }
     }

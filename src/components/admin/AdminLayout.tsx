@@ -12,6 +12,7 @@ import { AdminInquiries } from './AdminInquiries';
 import { AdminMediaLibrary } from './AdminMediaLibrary';
 import { AdminSettings } from './AdminSettings';
 import { AdminGlobalTextEditor } from './AdminGlobalTextEditor';
+import { AdminFeedbackGallery } from './AdminFeedbackGallery';
 import { FootazixLogo } from '../FootazixLogo';
 import {
   LayoutDashboard,
@@ -36,6 +37,7 @@ import {
   CheckCircle2,
   AlertCircle,
   Loader2,
+  MessageSquareQuote,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -46,6 +48,7 @@ export type AdminSection =
   | 'hero'
   | 'vsl'
   | 'portfolio'
+  | 'feedback'
   | 'services'
   | 'team'
   | 'faq'
@@ -92,6 +95,7 @@ export const AdminLayout: React.FC = () => {
         { id: 'hero', label: 'Hero', icon: PanelsTopLeft },
         { id: 'vsl', label: 'System / VSL', icon: PlaySquare },
         { id: 'portfolio', label: 'Portfolio', icon: FolderKanban },
+        { id: 'feedback', label: 'Testimonial & Feedback', icon: MessageSquareQuote },
         { id: 'services', label: 'Services', icon: BriefcaseBusiness },
         { id: 'team', label: 'Team', icon: UsersRound },
         { id: 'faq', label: 'FAQ', icon: HelpCircle },
@@ -119,6 +123,7 @@ export const AdminLayout: React.FC = () => {
     hero: { title: 'Hero CMS', breadcrumb: 'Content / Hero' },
     vsl: { title: 'VSL Settings', breadcrumb: 'Content / VSL' },
     portfolio: { title: 'Portfolio Management', breadcrumb: 'Content / Portfolio' },
+    feedback: { title: 'Testimonial & Feedback Gallery', breadcrumb: 'Content / Testimonial & Feedback Gallery' },
     services: { title: 'Services Management', breadcrumb: 'Content / Services' },
     team: { title: 'Team Members', breadcrumb: 'Content / Team' },
     faq: { title: 'FAQ Management', breadcrumb: 'Content / FAQ' },
@@ -141,6 +146,8 @@ export const AdminLayout: React.FC = () => {
         return <AdminVSLEditor />;
       case 'portfolio':
         return <AdminPortfolio />;
+      case 'feedback':
+        return <AdminFeedbackGallery />;
       case 'services':
         return <AdminServices />;
       case 'team':

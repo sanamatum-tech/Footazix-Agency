@@ -263,6 +263,7 @@ export const AdminWebsiteEditor: React.FC = () => {
     hero: 'Hero Section',
     system: 'The Footazix System (VSL)',
     portfolio: 'Selected Work / Portfolio',
+    feedbackGallery: 'Testimonial & Feedback Gallery',
     process: 'Raw → Edit → Ready (Process)',
     services: 'Services Grid',
     faq: 'Frequently Asked Questions (FAQ)',
@@ -1360,6 +1361,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                   { key: 'hero', label: 'Hero', desc: 'Main headline, badges, 3D interactive sculpture, and hero call-to-actions.' },
                   { key: 'system', label: 'System / VSL', desc: 'The Footazix System video player showcase, player controls, and reel.' },
                   { key: 'portfolio', label: 'Portfolio', desc: 'Selected Work gallery with category filters, aspect ratio video, and project cards.' },
+                  { key: 'feedbackGallery', label: 'Testimonial & Feedback Gallery', desc: 'Real client feedback screenshots in an infinite marquee carousel.' },
                   { key: 'process', label: 'Process / About', desc: 'Raw → Edit → Ready three-stage content transformation pipeline strip.' },
                   { key: 'services', label: 'Services', desc: 'Core service cards with feature breakdowns, highlights, and CTAs.' },
                   { key: 'faq', label: 'FAQ', desc: 'Interactive frequently asked questions accordion module.' },
@@ -1423,11 +1425,16 @@ export const AdminWebsiteEditor: React.FC = () => {
                 {(() => {
                   const rawList = Array.from(
                     new Set(
-                      (formData.sectionOrder || ['hero', 'system', 'portfolio', 'process', 'services', 'faq', 'about', 'finalCta']).map(
+                      (formData.sectionOrder || ['hero', 'system', 'portfolio', 'feedbackGallery', 'process', 'services', 'faq', 'about', 'finalCta']).map(
                         (s) => (s === 'team' ? 'about' : s)
                       )
                     )
                   );
+                  if (!rawList.includes('feedbackGallery')) {
+                    const pIdx = rawList.indexOf('portfolio');
+                    if (pIdx !== -1) rawList.splice(pIdx + 1, 0, 'feedbackGallery');
+                    else rawList.push('feedbackGallery');
+                  }
                   if (!rawList.includes('faq')) {
                     const sIdx = rawList.indexOf('services');
                     if (sIdx !== -1) rawList.splice(sIdx + 1, 0, 'faq');

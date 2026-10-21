@@ -23,6 +23,8 @@ import {
   MediaAsset,
   AdminUser,
   FAQ,
+  FeedbackGalleryItem,
+  FeedbackGallerySettings,
 } from '../types';
 import { contentService } from '../services/contentService';
 import { portfolioService } from '../services/portfolioService';
@@ -31,6 +33,7 @@ import { teamService } from '../services/teamService';
 import { inquiryService } from '../services/inquiryService';
 import { mediaService } from '../services/mediaService';
 import { faqService } from '../services/faqService';
+import { feedbackGalleryService } from '../services/feedbackGalleryService';
 import { authService } from '../services/authService';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { INITIAL_WEBSITE_CONTENT } from '../data/mockData';
@@ -78,6 +81,14 @@ interface AppContextValue {
   updateFAQ: (id: string, partial: Partial<FAQ>) => Promise<boolean>;
   deleteFAQ: (id: string) => Promise<boolean>;
   reorderFAQs: (orderedIds: string[]) => Promise<boolean>;
+
+  // Feedback Gallery Actions
+  updateFeedbackGallerySettings: (settings: Partial<FeedbackGallerySettings>) => Promise<boolean>;
+  addFeedbackItem: (item: Parameters<typeof feedbackGalleryService.addItem>[0]) => Promise<FeedbackGalleryItem | null>;
+  updateFeedbackItem: (id: string, updates: Partial<FeedbackGalleryItem>) => Promise<boolean>;
+  deleteFeedbackItem: (id: string) => Promise<boolean>;
+  reorderFeedbackItems: (orderedIds: string[]) => Promise<boolean>;
+
   refreshAll: () => Promise<void>;
 }
 
@@ -206,7 +217,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const loadData = useCallback(async () => {
     try {
       setIsLoading(true);
-      const [c, p, s, t, f, i, m] = await Promise.all([
+      const [c, p, s, t, f, i, m, fb] = await Promise.all([
         contentService.getWebsiteContent(),
         portfolioService.getProjects(),
         servicesService.getServices(),
@@ -214,8 +225,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         faqService.getFAQs(),
         inquiryService.getInquiries(),
         mediaService.getMedia(),
+        feedbackGalleryService.getSettings(),
       ]);
-      setContent(c);
+      setContent({
+        ...c,
+        feedbackGallery: fb,
+      });
       setProjects(p);
       setServices(s);
       setTeam(t);
@@ -233,13 +248,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     loadData();
 
     // Subscribe to service changes
-    const unsubContent = contentService.subscribe((c) => setContent(c));
+    const unsubContent = contentService.subscribe((c) => setContent((prev) => ({ ...c, feedbackGallery: prev.feedbackGallery || c.feedbackGallery })));
     const unsubProjects = portfolioService.subscribe((p) => setProjects(p));
     const unsubServices = servicesService.subscribe((s) => setServices(s));
     const unsubTeam = teamService.subscribe((t) => setTeam(t));
     const unsubFaqs = faqService.subscribe((f) => setFaqs(f));
     const unsubInquiries = inquiryService.subscribe((i) => setInquiries(i));
     const unsubMedia = mediaService.subscribe((m) => setMedia(m));
+    const unsubFeedback = feedbackGalleryService.subscribe((fb) => setContent((prev) => ({ ...prev, feedbackGallery: fb })));
 
     return () => {
       unsubContent();
@@ -249,6 +265,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       unsubFaqs();
       unsubInquiries();
       unsubMedia();
+      unsubFeedback();
     };
   }, [loadData]);
 
@@ -360,6 +377,64 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
+  const updateFeedbackGallerySettings = async (settings: Partial<FeedbackGallerySettings>) => {
+    try {
+      setSaveStatus('saving');
+      const updated = await feedbackGalleryService.updateSettings(settings);
+      setContent((prev) => ({
+        ...prev,
+        feedbackGallery: updated,
+        sectionVisibility: {
+          ...prev.sectionVisibility,
+          feedbackGallery: updated.enabled,
+        },
+      }));
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+      return true;
+    } catch (err) {
+      console.error('Failed updating feedback gallery settings:', err);
+      setSaveStatus('error');
+      return false;
+    }
+  };
+
+  const addFeedbackItem = async (data: Parameters<typeof feedbackGalleryService.addItem>[0]) => {
+    try {
+      return await feedbackGalleryService.addItem(data);
+    } catch (err) {
+      console.error('Failed adding feedback gallery item:', err);
+      return null;
+    }
+  };
+
+  const updateFeedbackItem = async (id: string, updates: Partial<FeedbackGalleryItem>) => {
+    try {
+      return await feedbackGalleryService.updateItem(id, updates);
+    } catch (err) {
+      console.error('Failed updating feedback gallery item:', err);
+      return false;
+    }
+  };
+
+  const deleteFeedbackItem = async (id: string) => {
+    try {
+      return await feedbackGalleryService.deleteItem(id);
+    } catch (err) {
+      console.error('Failed deleting feedback gallery item:', err);
+      return false;
+    }
+  };
+
+  const reorderFeedbackItems = async (orderedIds: string[]) => {
+    try {
+      return await feedbackGalleryService.reorderItems(orderedIds);
+    } catch (err) {
+      console.error('Failed reordering feedback gallery items:', err);
+      return false;
+    }
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -394,6 +469,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         updateFAQ,
         deleteFAQ,
         reorderFAQs,
+        updateFeedbackGallerySettings,
+        addFeedbackItem,
+        updateFeedbackItem,
+        deleteFeedbackItem,
+        reorderFeedbackItems,
         refreshAll: loadData,
       }}
     >

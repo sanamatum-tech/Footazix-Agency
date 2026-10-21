@@ -409,7 +409,7 @@ export interface WebsiteContent {
 }
 
 export type ProjectCategory = 'Reels' | 'Shorts' | 'YouTube' | 'Brand' | 'Motion' | 'Other';
-export type AspectRatioType = '16:9' | '9:16' | '1:1' | '4:5' | '4:3' | 'auto' | 'original';
+export type AspectRatioType = '16:9' | '9:16' | '1:1' | '4:5' | '3:4' | '4:3' | 'auto' | 'original';
 
 export interface Project {
   id: string;

@@ -5,6 +5,7 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { FounderVSL } from './components/FounderVSL';
 import { SelectedWork } from './components/SelectedWork';
+import { FeedbackGallery } from './components/FeedbackGallery';
 import { RawToFinal } from './components/RawToFinal';
 import { Services } from './components/Services';
 import { FAQSection } from './components/FAQSection';
@@ -70,8 +71,16 @@ function MainWebsite() {
   // Normalize 'team' to 'about', then deduplicate to strictly prevent duplicate keys or duplicate section renders
   const normalizedOrder = Array.from(new Set(rawOrder.map((s) => (s === 'team' ? 'about' : s))));
   
-  // Guarantee FAQ is present in the homepage layout in the intended position (after Services and before Final CTA)
+  // Guarantee feedbackGallery and FAQ are present in the homepage layout in the intended position
   const order = [...normalizedOrder];
+  if (!order.includes('feedbackGallery')) {
+    const portfolioIndex = order.indexOf('portfolio');
+    if (portfolioIndex !== -1) {
+      order.splice(portfolioIndex + 1, 0, 'feedbackGallery');
+    } else {
+      order.push('feedbackGallery');
+    }
+  }
   if (!order.includes('faq')) {
     const servicesIndex = order.indexOf('services');
     if (servicesIndex !== -1) {
@@ -115,6 +124,13 @@ function MainWebsite() {
               openContactModal(`Similar edit to: ${projectTitle}`)
             }
           />
+        ) : null;
+
+      case 'feedbackGallery':
+      case 'feedback':
+      case 'testimonials':
+        return visibility.feedbackGallery !== false && content.feedbackGallery?.enabled !== false ? (
+          <FeedbackGallery key="feedbackGallery" />
         ) : null;
 
       case 'process':
