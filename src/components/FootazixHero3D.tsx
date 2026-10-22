@@ -10,6 +10,7 @@ export const FootazixHero3D: React.FC<FootazixHero3DProps> = ({ className = '' }
   const [hasWebGL, setHasWebGL] = useState<boolean>(true);
   const [isLowPower, setIsLowPower] = useState<boolean>(false);
   const [isInteracting, setIsInteracting] = useState<boolean>(false);
+  const [showHint, setShowHint] = useState<boolean>(false);
 
   // Interaction refs (kept in refs for 60fps performance without React re-renders)
   const isDraggingRef = useRef<boolean>(false);
@@ -21,6 +22,8 @@ export const FootazixHero3D: React.FC<FootazixHero3DProps> = ({ className = '' }
   const lastPointerRef = useRef<{ x: number; y: number; time: number }>({ x: 0, y: 0, time: 0 });
   const lastInteractionTimeRef = useRef<number>(Date.now());
   const mouseParallaxRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const hintTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasTriggeredHintRef = useRef<boolean>(false);
 
   // WebGL Lifecycle & Scene
   useEffect(() => {
@@ -60,10 +63,24 @@ export const FootazixHero3D: React.FC<FootazixHero3DProps> = ({ className = '' }
       const width = currentMount.clientWidth || 400;
       const height = currentMount.clientHeight || 400;
 
+      // Dynamic camera distance calculator: ensures full 3D assembly (cube, orbital rings r=2.18, timeline clips,
+      // growth bars, spark node, and harmonic bobbing) fits with >=20% breathing margin across any viewport.
+      const computeCameraDistance = (aspect: number): number => {
+        const compositionRadius = 2.42; // Outer ring r=2.18 + node reach + harmonic amplitude
+        const safetyMargin = 1.20; // 20% safe margin
+        const targetHalfFrustum = compositionRadius * safetyMargin; // ~2.904
+        const tanHalfFov = Math.tan((45 * Math.PI) / 360); // 0.41421
+
+        const distY = targetHalfFrustum / tanHalfFov; // ~7.01
+        const distX = targetHalfFrustum / (tanHalfFov * Math.max(0.35, aspect));
+        return Math.max(distY, distX);
+      };
+
       // Scene & Camera
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-      camera.position.set(0, 0, 5.2);
+      const initialZ = computeCameraDistance(width / height);
+      camera.position.set(0, 0, initialZ);
 
       renderer = new THREE.WebGLRenderer({
         antialias: !isMobile,
@@ -349,12 +366,14 @@ export const FootazixHero3D: React.FC<FootazixHero3DProps> = ({ className = '' }
 
       window.addEventListener('mousemove', handleWindowPointerMove, { passive: true });
 
-      // Resize Observer
+      // Resize Observer: Dynamically recalculates aspect ratio and camera distance so rings are never clipped
       const resizeObserver = new ResizeObserver((entries) => {
         if (!entries[0]) return;
         const { width: newW, height: newH } = entries[0].contentRect;
         if (newW > 0 && newH > 0) {
-          camera.aspect = newW / newH;
+          const aspect = newW / newH;
+          camera.aspect = aspect;
+          camera.position.z = computeCameraDistance(aspect);
           camera.updateProjectionMatrix();
           renderer.setSize(newW, newH);
         }
@@ -369,6 +388,41 @@ export const FootazixHero3D: React.FC<FootazixHero3DProps> = ({ className = '' }
         { threshold: 0.05 }
       );
       intersectionObserver.observe(currentMount);
+
+      // Temporary Hint Observer: triggers subtle non-intrusive hint ONLY on first scroll into 3D view
+      const SESSION_HINT_KEY = 'footazix_3d_hint_seen';
+      let hasSeenHint = false;
+      try {
+        hasSeenHint = sessionStorage.getItem(SESSION_HINT_KEY) === 'true';
+      } catch {
+        // ignore storage errors
+      }
+
+      const hintObserver = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          if (
+            entry &&
+            entry.isIntersecting &&
+            !hasSeenHint &&
+            !hasTriggeredHintRef.current &&
+            !mediaReduced
+          ) {
+            hasTriggeredHintRef.current = true;
+            setShowHint(true);
+            try {
+              sessionStorage.setItem(SESSION_HINT_KEY, 'true');
+            } catch {
+              // ignore
+            }
+            hintTimeoutRef.current = setTimeout(() => {
+              setShowHint(false);
+            }, 3200);
+          }
+        },
+        { threshold: 0.25 }
+      );
+      hintObserver.observe(currentMount);
 
       // Tab visibility listener
       const handleVisibilityChange = () => {
@@ -477,6 +531,11 @@ export const FootazixHero3D: React.FC<FootazixHero3DProps> = ({ className = '' }
         document.removeEventListener('visibilitychange', handleVisibilityChange);
         resizeObserver.disconnect();
         intersectionObserver.disconnect();
+        hintObserver.disconnect();
+        if (hintTimeoutRef.current) {
+          clearTimeout(hintTimeoutRef.current);
+          hintTimeoutRef.current = null;
+        }
 
         // Dispose all GPU geometries, materials and buffers
         disposables.forEach((item) => {
@@ -505,6 +564,20 @@ export const FootazixHero3D: React.FC<FootazixHero3DProps> = ({ className = '' }
     // Only primary button
     if (e.button !== 0) return;
 
+    // Immediately dismiss temporary hint on user interaction
+    if (showHint) {
+      setShowHint(false);
+      if (hintTimeoutRef.current) {
+        clearTimeout(hintTimeoutRef.current);
+        hintTimeoutRef.current = null;
+      }
+      try {
+        sessionStorage.setItem('footazix_3d_hint_seen', 'true');
+      } catch {
+        // ignore
+      }
+    }
+
     isDraggingRef.current = true;
     setIsInteracting(true);
     pointerStartRef.current = { x: e.clientX, y: e.clientY };
@@ -522,7 +595,7 @@ export const FootazixHero3D: React.FC<FootazixHero3DProps> = ({ className = '' }
     } catch {
       // ignore if pointer capture fails
     }
-  }, []);
+  }, [showHint]);
 
   const handlePointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDraggingRef.current) return;
@@ -572,14 +645,17 @@ export const FootazixHero3D: React.FC<FootazixHero3DProps> = ({ className = '' }
       className={`relative flex items-center justify-center overflow-hidden select-none pointer-events-auto cursor-grab active:cursor-grabbing ${className}`}
       style={{ touchAction: 'pan-y' }}
     >
-      {/* Interactive Drag Hint (fades out during interaction) */}
+      {/* Temporary, Non-Intrusive First-View Interaction Hint */}
       <div
-        className={`absolute bottom-3 left-1/2 -translate-x-1/2 z-10 pointer-events-none transition-opacity duration-300 flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 border border-white/10 backdrop-blur-md ${
-          isInteracting ? 'opacity-0' : 'opacity-70 hover:opacity-100'
+        className={`absolute bottom-3.5 left-1/2 -translate-x-1/2 z-10 pointer-events-none flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/75 border border-[#B1FF00]/30 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.7)] transition-all duration-700 ease-out select-none ${
+          showHint && !isInteracting
+            ? 'opacity-90 translate-y-0 scale-100'
+            : 'opacity-0 translate-y-2 scale-95 pointer-events-none'
         }`}
+        aria-hidden={!showHint}
       >
-        <span className="w-1.5 h-1.5 rounded-full bg-[#B1FF00] animate-pulse" />
-        <span className="text-[10px] uppercase font-mono tracking-wider text-[#A7AEA0]">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#B1FF00] shadow-[0_0_8px_#B1FF00] animate-pulse" />
+        <span className="text-[10.5px] uppercase font-mono tracking-widest text-[#F5F7F2] font-semibold">
           Drag to Rotate
         </span>
       </div>

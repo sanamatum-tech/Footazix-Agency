@@ -39,11 +39,7 @@ export const FeedbackGallery: React.FC<FeedbackGalleryProps> = ({ className = ''
     return feedbackSettings.items.filter((item) => item.published !== false && item.visible !== false);
   }, [feedbackSettings?.items]);
 
-  // If section is disabled or has no visible items, render nothing
-  if (!isEnabled || visibleItems.length === 0) {
-    return null;
-  }
-
+  // Global gallery options
   const globalRatio: AspectRatioType = feedbackSettings?.aspectRatio || '1:1';
   const autoScroll = feedbackSettings?.autoScroll !== false;
   const scrollSpeed = feedbackSettings?.scrollSpeed || 28; // seconds
@@ -180,6 +176,11 @@ export const FeedbackGallery: React.FC<FeedbackGalleryProps> = ({ className = ''
   // Determine animation style
   const animationDuration = `${scrollSpeed}s`;
   const animationDirection = direction === 'right' ? 'marquee-scroll-right' : 'marquee-scroll-left';
+
+  // If section is disabled or has no visible items, render nothing (placed after all hooks)
+  if (!isEnabled || visibleItems.length === 0) {
+    return null;
+  }
 
   return (
     <section

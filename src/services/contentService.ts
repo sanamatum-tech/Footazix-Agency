@@ -48,9 +48,16 @@ function getStoredContent(): WebsiteContent {
     }
     if (
       parsed.brandingAssets?.favicon?.url &&
-      parsed.brandingAssets.favicon.url.includes('favicon.svg')
+      (parsed.brandingAssets.favicon.url.includes('favicon.svg') ||
+        parsed.brandingAssets.favicon.url.includes('1790995570940'))
     ) {
       parsed.brandingAssets.favicon.url = '/favicon.png';
+    }
+    if (
+      parsed.brandingAssets?.favicon?.appleTouchIconUrl &&
+      parsed.brandingAssets.favicon.appleTouchIconUrl.includes('1790995570940')
+    ) {
+      parsed.brandingAssets.favicon.appleTouchIconUrl = '/apple-touch-icon.png';
     }
 
     // Purge obsolete or 404 OG image URLs from cached local storage

@@ -153,13 +153,13 @@ export const Hero: React.FC<HeroProps> = ({ onWorkWithUs, onWatchVSL }) => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="lg:col-span-5 flex items-center justify-center relative min-h-[300px] sm:min-h-[380px] lg:min-h-[460px]"
+          className="lg:col-span-5 flex items-center justify-center relative min-h-[340px] sm:min-h-[400px] lg:min-h-[460px]"
         >
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="w-64 h-64 rounded-full bg-[#B1FF00]/10 blur-3xl" />
           </div>
 
-          <FootazixHero3D className="w-full h-[320px] sm:h-[400px] max-w-[420px]" />
+          <FootazixHero3D className="w-full h-[340px] sm:h-[400px] lg:h-[450px] max-w-[440px] mx-auto" />
         </motion.div>
       </div>
     </section>
