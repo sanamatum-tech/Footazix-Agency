@@ -49,15 +49,20 @@ function getStoredContent(): WebsiteContent {
     if (
       parsed.brandingAssets?.favicon?.url &&
       (parsed.brandingAssets.favicon.url.includes('favicon.svg') ||
-        parsed.brandingAssets.favicon.url.includes('1790995570940'))
+        parsed.brandingAssets.favicon.url.includes('1790995570940') ||
+        parsed.brandingAssets.favicon.url.includes('1792382940027') ||
+        parsed.brandingAssets.favicon.url === '/favicon.png' ||
+        parsed.brandingAssets.favicon.url === '/favicon.ico')
     ) {
-      parsed.brandingAssets.favicon.url = '/favicon.png';
+      parsed.brandingAssets.favicon.url = '/favicon.ico?v=3';
     }
     if (
       parsed.brandingAssets?.favicon?.appleTouchIconUrl &&
-      parsed.brandingAssets.favicon.appleTouchIconUrl.includes('1790995570940')
+      (parsed.brandingAssets.favicon.appleTouchIconUrl.includes('1790995570940') ||
+        parsed.brandingAssets.favicon.appleTouchIconUrl.includes('1792382951676') ||
+        parsed.brandingAssets.favicon.appleTouchIconUrl === '/apple-touch-icon.png')
     ) {
-      parsed.brandingAssets.favicon.appleTouchIconUrl = '/apple-touch-icon.png';
+      parsed.brandingAssets.favicon.appleTouchIconUrl = '/apple-touch-icon.png?v=3';
     }
 
     // Purge obsolete or 404 OG image URLs from cached local storage

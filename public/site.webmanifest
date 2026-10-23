@@ -1,0 +1,20 @@
+{
+  "name": "Footazix — Content Growth Agency",
+  "short_name": "FOOTAZIX",
+  "description": "We turn raw footage and ideas into content worth watching.",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png?v=3",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512x512.png?v=3",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#070809",
+  "background_color": "#070809",
+  "display": "standalone"
+}

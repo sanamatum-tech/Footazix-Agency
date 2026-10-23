@@ -816,7 +816,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => {
-                        handleChange('brandingAssets.favicon.url', '/favicon.png');
+                        handleChange('brandingAssets.favicon.url', '/favicon.ico?v=3');
                         setToastMessage({ type: 'success', text: 'Reset favicon to official asset.' });
                       }}
                       className="px-3 py-2 rounded-lg text-xs font-medium text-zinc-400 hover:text-white bg-black border border-white/10 transition-colors cursor-pointer"
@@ -905,7 +905,7 @@ export const AdminWebsiteEditor: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => {
-                        handleChange('brandingAssets.favicon.appleTouchIconUrl', '/apple-touch-icon.png');
+                        handleChange('brandingAssets.favicon.appleTouchIconUrl', '/apple-touch-icon.png?v=3');
                         setToastMessage({ type: 'success', text: 'Reset apple touch icon to default.' });
                       }}
                       className="px-3 py-2 rounded-lg text-xs font-medium text-zinc-400 hover:text-white bg-black border border-white/10 transition-colors cursor-pointer"

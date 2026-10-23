@@ -164,17 +164,23 @@ export const DynamicHead: React.FC = () => {
     // 6. Dynamic Favicon & Apple Touch Icon (CMS synchronized with Google Search standards)
     const faviconConfig = content.brandingAssets?.favicon;
     const isFaviconVisible = faviconConfig?.visible !== false;
-    const rawFaviconUrl = isFaviconVisible ? (faviconConfig?.url?.trim() || '/favicon.ico') : '';
+    const rawFaviconUrl = isFaviconVisible ? (faviconConfig?.url?.trim() || '/favicon.ico?v=3') : '';
 
     if (!isFaviconVisible) {
       // User explicitly toggled off favicon in CMS
       document.querySelectorAll<HTMLLinkElement>('link[rel*="icon"]').forEach((el) => el.remove());
     } else if (rawFaviconUrl) {
-      // If a custom external/Supabase favicon was uploaded via CMS, update the primary icon
+      // Ignore legacy hashes from prior uploads so they don't overwrite the official new symbol
+      const isLegacyHash =
+        rawFaviconUrl.includes('1790995570940') ||
+        rawFaviconUrl.includes('1792382940027') ||
+        rawFaviconUrl.includes('1792382951676');
+
       const isCustomFavicon =
-        rawFaviconUrl.startsWith('http://') ||
-        rawFaviconUrl.startsWith('https://') ||
-        (!rawFaviconUrl.includes('favicon.ico') && !rawFaviconUrl.includes('favicon.png'));
+        !isLegacyHash &&
+        (rawFaviconUrl.startsWith('http://') || rawFaviconUrl.startsWith('https://')) &&
+        !rawFaviconUrl.includes('favicon.ico') &&
+        !rawFaviconUrl.includes('favicon.png');
 
       if (isCustomFavicon) {
         const isSvg = rawFaviconUrl.endsWith('.svg') || rawFaviconUrl.includes('.svg');
@@ -193,7 +199,7 @@ export const DynamicHead: React.FC = () => {
     }
 
     const rawTouchIconUrl = isFaviconVisible
-      ? (faviconConfig?.appleTouchIconUrl?.trim() || '/apple-touch-icon.png')
+      ? (faviconConfig?.appleTouchIconUrl?.trim() || '/apple-touch-icon.png?v=3')
       : '';
 
     if (rawTouchIconUrl) {

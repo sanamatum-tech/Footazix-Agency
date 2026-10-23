@@ -37,8 +37,8 @@ export const INITIAL_WEBSITE_CONTENT: WebsiteContent = {
       visible: true,
     },
     favicon: {
-      url: '/favicon.png',
-      appleTouchIconUrl: '/apple-touch-icon.png',
+      url: '/favicon.ico?v=3',
+      appleTouchIconUrl: '/apple-touch-icon.png?v=3',
       visible: true,
     },
     footerLogo: {
