@@ -292,6 +292,7 @@ export interface SectionVisibilitySettings {
   heroDescription?: boolean;
   heroSecondaryCta?: boolean;
   faqCta?: boolean;
+  progressBar?: boolean;
 }
 
 export interface FeedbackGalleryItem {

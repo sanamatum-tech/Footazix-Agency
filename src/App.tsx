@@ -16,6 +16,7 @@ import { Footer } from './components/Footer';
 import { AdminLayout } from './components/admin/AdminLayout';
 import { AdminLogin } from './components/admin/AdminLogin';
 import { LegalPage } from './components/LegalPage';
+import { ScrollProgressBar } from './components/ScrollProgressBar';
 
 function MainWebsite() {
   const { content } = useApp();
@@ -208,11 +209,13 @@ function MainWebsite() {
 }
 
 function AppContent() {
-  const { activeView, isAuthenticated } = useApp();
+  const { activeView, isAuthenticated, content } = useApp();
+  const showProgressBar = content.sectionVisibility?.progressBar !== false;
 
   return (
     <>
       <DynamicHead />
+      {activeView !== 'admin' && showProgressBar && <ScrollProgressBar />}
       {activeView === 'admin' ? (
         isAuthenticated ? <AdminLayout /> : <AdminLogin />
       ) : activeView === 'terms' ? (

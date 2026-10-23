@@ -40,9 +40,9 @@ export const Hero: React.FC<HeroProps> = ({ onWorkWithUs, onWatchVSL }) => {
           {/* Badge Kicker */}
           {showBadge && (
             <motion.div
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.5, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
               className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#B1FF00] mb-5 sm:mb-6"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-[#B1FF00] shadow-[0_0_8px_rgba(177,255,0,0.8)]" />
@@ -65,17 +65,17 @@ export const Hero: React.FC<HeroProps> = ({ onWorkWithUs, onWatchVSL }) => {
           {/* Main Headline */}
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-display font-extrabold text-[#F5F7F2] tracking-tight leading-[1.1] mb-4 text-balance overflow-hidden">
             <motion.span
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.65, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
               className="block"
             >
               {hero.headlineLine1 || 'TURN RAW FOOTAGE INTO'}
             </motion.span>
             <motion.span
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.65, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
               className="block text-[#B1FF00]"
             >
               {hero.headlineLine2 || 'CONTENT WORTH WATCHING.'}
@@ -87,7 +87,7 @@ export const Hero: React.FC<HeroProps> = ({ onWorkWithUs, onWatchVSL }) => {
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.34, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.5, delay: 0.42, ease: [0.16, 1, 0.3, 1] }}
               className="text-sm sm:text-base font-semibold text-[#F5F7F2] mb-2"
             >
               {hero.supportingLine}
@@ -99,7 +99,7 @@ export const Hero: React.FC<HeroProps> = ({ onWorkWithUs, onWatchVSL }) => {
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.44, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.55, delay: 0.52, ease: [0.16, 1, 0.3, 1] }}
               className="text-xs sm:text-sm font-normal text-[#A7AEA0] mb-8 max-w-lg leading-relaxed"
             >
               {hero.description}
@@ -109,9 +109,9 @@ export const Hero: React.FC<HeroProps> = ({ onWorkWithUs, onWatchVSL }) => {
           {/* Action CTAs */}
           {(showPrimaryCta || showSecondaryCta) && (
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.54, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.55, delay: 0.62, ease: [0.16, 1, 0.3, 1] }}
               className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full sm:w-auto"
             >
               {showPrimaryCta && (
@@ -150,9 +150,9 @@ export const Hero: React.FC<HeroProps> = ({ onWorkWithUs, onWatchVSL }) => {
 
         {/* Right Column: 3D Interactive Abstract Sculpture */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.9, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
           className="lg:col-span-5 flex items-center justify-center relative min-h-[340px] sm:min-h-[400px] lg:min-h-[460px]"
         >
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">

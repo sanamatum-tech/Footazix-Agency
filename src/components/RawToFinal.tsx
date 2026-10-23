@@ -44,7 +44,13 @@ export const RawToFinal: React.FC<RawToFinalProps> = ({ onOpenContact }) => {
     <section className="py-20 sm:py-24 bg-[#0D0F10] border-t border-b border-[#292E25] relative overflow-hidden font-sans">
       <div className="max-w-5xl mx-auto px-6">
         {/* Section Header */}
-        <div className="text-center max-w-xl mx-auto mb-14">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-xl mx-auto mb-14"
+        >
           {showBadge && (
             <div className="flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#B1FF00] mb-2">
               <span className="w-1.5 h-1.5 rounded-full bg-[#B1FF00] shadow-[0_0_8px_rgba(177,255,0,0.8)]" />
@@ -59,7 +65,7 @@ export const RawToFinal: React.FC<RawToFinalProps> = ({ onOpenContact }) => {
               {subheadingText}
             </p>
           )}
-        </div>
+        </motion.div>
 
         {/* Compact Visual Transformation Strip */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative">

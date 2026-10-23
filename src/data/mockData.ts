@@ -305,6 +305,7 @@ export const INITIAL_WEBSITE_CONTENT: WebsiteContent = {
     heroDescription: true,
     heroSecondaryCta: true,
     faqCta: true,
+    progressBar: true,
   },
   sectionOrder: ['hero', 'system', 'portfolio', 'feedbackGallery', 'process', 'services', 'faq', 'about', 'finalCta'],
   seo: {

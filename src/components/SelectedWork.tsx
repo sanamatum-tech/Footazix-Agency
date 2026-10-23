@@ -315,7 +315,13 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
     >
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header with Category Filters & Slider Controls */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 sm:mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 sm:mb-12"
+        >
           <div>
             {showBadge && (
               <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#B1FF00] mb-3">
@@ -378,7 +384,7 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Horizontal Carousel Viewport Container (Zero page overflow, edge-peeking layout) */}
@@ -420,9 +426,17 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
               const isProjectMonochrome = Boolean(project.monochrome ?? portfolio?.monochrome ?? false);
 
               return (
-                <div
+                <motion.div
                   key={project.id}
                   data-slider-card
+                  initial={{ opacity: 0, y: 22 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-30px' }}
+                  transition={{
+                    duration: 0.5,
+                    delay: Math.min(idx * 0.08, 0.32),
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
                   onClick={() => handleCardClick(project)}
                   className="snap-start shrink-0 w-[84vw] sm:w-[380px] md:w-[420px] lg:w-[460px] rounded-2xl bg-[#121512] border border-[#292E25] hover:border-[#B1FF00]/50 hover:shadow-[0_8px_30px_rgba(177,255,0,0.15)] transition-all duration-300 flex flex-col justify-between overflow-hidden group cursor-pointer"
                 >
@@ -507,7 +521,7 @@ export const SelectedWork: React.FC<SelectedWorkProps> = ({
                       </button>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>

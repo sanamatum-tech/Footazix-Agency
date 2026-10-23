@@ -456,9 +456,11 @@ export const AdminWebsiteEditor: React.FC = () => {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {Object.entries({
                   header: 'Header',
+                  progressBar: 'Scroll Progress Bar',
                   hero: 'Hero',
                   system: 'System (VSL)',
                   portfolio: 'Portfolio',
+                  feedbackGallery: 'Feedback Gallery',
                   process: 'Process',
                   services: 'Services',
                   about: 'About / Team',

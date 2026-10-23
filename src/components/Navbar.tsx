@@ -96,7 +96,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
   };
 
   return (
-    <header
+    <motion.header
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 font-sans ${
         scrolled
           ? 'bg-[#070809]/92 backdrop-blur-md border-b border-[#292E25] py-3.5 shadow-2xl shadow-black/80'
@@ -234,6 +237,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </motion.header>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { Play, Pause, Volume2, VolumeX, Maximize, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
+import { motion } from 'motion/react';
 
 interface FounderVSLProps {
   onOpenContact?: () => void;
@@ -231,7 +232,13 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
     <section id="system" className="py-20 sm:py-28 bg-[#070809] relative font-sans">
       <div className="max-w-5xl mx-auto px-6">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-2xl mx-auto mb-12"
+        >
           {showBadge && (
             <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#B1FF00] mb-3">
               <span className="w-1.5 h-1.5 rounded-full bg-[#B1FF00] shadow-[0_0_8px_rgba(177,255,0,0.8)]" />
@@ -250,10 +257,16 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
               {vsl.description || 'See how we transform raw footage into content built for attention.'}
             </p>
           )}
-        </div>
+        </motion.div>
 
         {/* Video Player Container with Premium Travelling Lime Border */}
-        <div className={`w-full ${wrapperClass}`}>
+        <motion.div
+          initial={{ opacity: 0, y: 30, scale: 0.98 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.7, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+          className={`w-full ${wrapperClass}`}
+        >
           <div className="relative group/vsl p-[1.5px] rounded-2xl sm:rounded-3xl transition-all duration-500">
             {/* Ambient Soft Outer Glow - Refined, subtle, matching Footazix lime signature */}
             <div
@@ -533,7 +546,7 @@ export const FounderVSL: React.FC<FounderVSLProps> = ({ onOpenContact }) => {
               )}
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Optional Section CTA */}
         {vsl.showCta && vsl.ctaText && (

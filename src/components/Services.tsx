@@ -32,7 +32,13 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
     <section id="services" className="py-20 sm:py-28 bg-[#070809] relative font-sans">
       <div className="max-w-6xl mx-auto px-6">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-2xl mx-auto mb-16"
+        >
           {showBadge && (
             <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#B1FF00] mb-3">
               <span className="w-1.5 h-1.5 rounded-full bg-[#B1FF00] shadow-[0_0_8px_rgba(177,255,0,0.8)]" />
@@ -47,7 +53,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
               {subheadingText}
             </p>
           )}
-        </div>
+        </motion.div>
 
         {/* Services Cards */}
         {visibleServices.length === 0 ? (
